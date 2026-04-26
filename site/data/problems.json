@@ -11,5 +11,18 @@
     "tags": ["geometry", "folding"],
     "path": "../problems/tj/24/tj-2025-bufenqu-ermo-24.html",
     "status": "published"
+  },
+  {
+    "id": "tj-2026-beichen-yimo-24",
+    "city": "tianjin",
+    "cityLabel": "天津",
+    "year": 2026,
+    "exam": "beichen-yimo",
+    "examLabel": "北辰区一模",
+    "slot": "24",
+    "title": "2026 年天津市北辰区一模第 24 题（矩形平移与重叠面积）",
+    "tags": ["geometry", "dynamic-point"],
+    "path": "../problems/tj/24/tj-2026-beichen-yimo-24.html",
+    "status": "published"
   }
 ]

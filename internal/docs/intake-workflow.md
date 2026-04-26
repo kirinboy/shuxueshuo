@@ -12,6 +12,7 @@
 4. 基于统一题页模板生成单文件题页（并视需要同目录放置静态资源）：
    - `site/problems/<城市>/<题位>/<problem-id>.html`
    - 同目录静态资源用带 `problem-id` 前缀的文件名（如 `…-diagram.svg`），避免同题位多题重名
+   - 样式使用公共表 `site/assets/css/interactive-geometry-page.css`（与 `internal/templates/interactive_geometry_page_style.css` 说明一致，题页中 `<link rel="stylesheet" href="../../../assets/css/interactive-geometry-page.css" />`）
 5. 向 `site/data/problems.json` 增加一条元信息
 6. 检查导航页是否能在正确的“地区 -> 题位”下聚合出该题
 

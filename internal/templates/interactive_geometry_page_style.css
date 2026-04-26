@@ -1,0 +1,11 @@
+/*
+  交互几何题页样式（与站点发布文件保持内容一致）
+
+  线上/本地预览请使用（题页相对路径自 site/problems/.../ 起算）：
+  site/assets/css/interactive-geometry-page.css
+
+  题页 <head> 中：
+  <link rel="stylesheet" href="../../../assets/css/interactive-geometry-page.css" />
+*/
+
+@import url("../../site/assets/css/interactive-geometry-page.css");

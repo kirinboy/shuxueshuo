@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 年天津市河东区一模 第 24 题（正方形平移）| 数学说</title>
+  <meta
+    name="description"
+    content="2026 河东区一模第 24 题：等腰直角三角形与正方形平移、MH 与面积范围。分步讲解，公共几何标注脚本（GeometryLabelLayout）。"
+  />
+  <link rel="stylesheet" href="../../../assets/css/interactive-geometry-page.css" />
+  <style>
+    /* 本题图例与动区：脚本内使用 var(--tri)、var(--square) 等，与统一样式表叠加 */
+    :root {
+      --tri: rgba(245, 158, 11, 0.15);
+      --tri-stroke: #d97706;
+      --square: rgba(14, 116, 144, 0.14);
+      --square-stroke: #0f766e;
+      --cut: rgba(245, 158, 11, 0.18);
+    }
+    .p-control input[type="range"] {
+      width: 260px;
+      max-width: 100%;
+    }
+    .p-control label {
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+    }
+    #tLabel {
+      font-size: 16px;
+      font-weight: 900;
+      color: #172033;
+      min-width: 74px;
+    }
+    /* 不额外覆盖 .tool-head/.btns，保持与北辰页一致的 .p-row 布局 */
+  </style>
+</head>
+<body>
+  <header class="lesson-topbar" role="navigation" aria-label="页面导航">
+    <a href="../../../index.html">首页</a>
+    <span aria-hidden="true">·</span>
+    <a href="../../../nav/index.html">题库导航</a>
+    <span class="lesson-title">2026 天津市河东区一模 第 24 题</span>
+  </header>
+  <main class="page" id="main">
+    <section class="card problem collapsed" id="problemCard">
+      <div class="problem-summary">
+        <div class="problem-summary-text">第24题（2026河东区一模）正方形平移：求 B、E，求 MH 与 t 范围，求面积条件下 t 范围</div>
+        <button id="problemToggle" class="problem-toggle" type="button">展开完整题目</button>
+      </div>
+      <div class="problem-full">
+        <div class="problem-line"><span>（24）（本小题10分）在平面直角坐标系中，O 为原点，等腰 △AOB 的顶点 A（4，0），∠BAO＝90°。四边形 OCDE 是正方形，点 C 是 OB 的中点，点 D 在 y 轴上。</span></div>
+        <div class="problem-line"><span>（I）填空：如图①，点 B 的坐标为______，点 E 的坐标为______；</span><span class="answer-chip" id="answerI">答案：B＝（4，4），E＝（－2，2）</span></div>
+        <div class="problem-line"><span>（II）将四边形 OCDE 沿 x 轴向右平移得到四边形 O'C'D'E'，点 O，C，D，E 的对应点分别为 O'，C'，D'，E'，设 OO'＝t。</span></div>
+        <div class="problem-line"><span>（i）如图②，当四边形 O'C'D'E' 与 △AOB 重叠部分为五边形时，O'C'，C'D'，E'O' 分别与 AB，BO 相交于点 G，H，M，N。试用含有 t 的式子表示线段 MH，并直接写出 t 的取值范围；</span><span class="answer-chip" id="answerQ1">答案：MH＝2√2－(√2/2)t，2&lt;t&lt;4</span></div>
+        <div class="problem-line"><span>（ii）设平移后四边形 O'C'D'E' 与 △AOB 重叠部分的面积为 S，当 3≤S≤5 时，求 t 的取值范围（直接写出结果即可）。</span><span class="answer-chip" id="answerQ2">答案：3/2≤t≤6－√3</span></div>
+      </div>
+    </section>
+
+    <section class="card lesson-nav">
+      <div class="step-nav" id="stepNav"></div>
+    </section>
+
+    <section class="workspace">
+      <article class="card diagram">
+        <div class="svg-wrap">
+          <svg id="diagram" viewBox="0 0 1080 720" aria-label="第24题图形"></svg>
+        </div>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--tri)"></i>固定 △AOB</span>
+          <span><i class="sw" style="background:var(--square)"></i>平移后正方形 O'C'D'E'</span>
+          <span><i class="sw" style="background:var(--overlap)"></i>当前重叠区域 S</span>
+        </div>
+      </article>
+      <article class="card panel">
+        <div class="step-head">
+          <div class="step-section" id="stepSection">第（I）问</div>
+          <h2 id="stepTitle">第1步：利用等腰直角三角形求 B 点坐标</h2>
+        </div>
+        <div class="derive-list" id="deriveList"></div>
+        <div class="mini-boundaries" id="boundaryGallery" hidden></div>
+      </article>
+    </section>
+
+    <section class="card tools">
+      <div class="tool-block">
+        <div class="p-row">
+          <div class="tool-title">t 点交互</div>
+          <div class="p-control" id="pControl">
+            <label for="tRange">平移组件 (t=OO')</label>
+            <input id="tRange" type="range" min="0" max="6" step="0.001" value="3">
+            <span id="tLabel">t=3.000</span>
+          </div>
+          <button id="moveBtn" class="warn" type="button">本步锁定</button>
+        </div>
+        <div class="milestones" id="milestoneBar" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../../assets/js/geometry-label-layout.js"></script>
+  <script src="../../../assets/js/interactive-lesson-ui.js"></script>
+  <script>
+    const SQRT2=Math.sqrt(2);
+    const W=1080, SVG_H=720;
+    const PAD={left:70,right:62,top:42,bottom:54};
+    const DOMAIN={minX:-2.9,maxX:7.1,minY:-.8,maxY:5.2};
+    const BASE={O:{x:0,y:0},A:{x:4,y:0},B:{x:4,y:4},C:{x:2,y:2},D:{x:0,y:4},E:{x:-2,y:2}};
+    const TRI=[BASE.O,BASE.A,BASE.B];
+    const SQUARE=[BASE.O,BASE.C,BASE.D,BASE.E];
+    const STEPS=[
+      {id:"i1s1",section:"第（I）问",title:"第1步：利用等腰直角三角形求 B 点坐标",t:0,derive:[
+        ["∵","A＝（4，0），O＝（0，0）"],["∴","AO＝4"],["∵","△AOB 是等腰直角三角形，∠BAO＝90°"],["∴","AB＝AO＝4，AB⊥AO"],["∴","B＝（4，4）"]
+      ],box:["B＝（4，4）"]},
+      {id:"i1s2",section:"第（I）问",title:"第2步：利用正方形性质求 E 点坐标",t:0,derive:[
+        ["∵","C 是 OB 的中点"],["∴","C＝（2，2）"],["∵","四边形 OCDE 是正方形"],["∵","OC＝OE，且 OC⊥OE"],["∴","E＝（－2，2）"]
+      ],box:["C＝（2，2）","E＝（－2，2）"]},
+      {id:"q1s1",section:"第（II）（i）问",title:"第1步：由平移写出 O'、C'、D'、E' 坐标",t:3,derive:[
+        ["∵","四边形 OCDE 沿 x 轴向右平移，OO'＝t"],["∴","O'＝（t，0）"],["∴","C'＝（t＋2，2）"],["∴","D'＝（t，4）"],["∴","E'＝（t－2，2）"]
+      ],box:["O'＝（t，0）","C'＝（t＋2，2）","D'＝（t，4）","E'＝（t－2，2）"]},
+      {id:"q1s2",section:"第（II）（i）问",title:"第2步：由边界位置判断五边形范围",t:3,derive:[
+        ["∵","当 t＝2 时，C' 在 AB 上，G 与 H 重合，重叠部分是四边形"],["∵","当 2<t<4 时，重叠部分是五边形"],["∵","当 t＝4 时，D' 与 B 重合，H 与 M 重合，重叠部分是三角形"],["∴","五边形情形下，2<t<4"]
+      ],box:["五边形：2<t<4"],minis:[
+        {title:"状态1：t=2",caption:"G 与 H 重合，五边形还未形成。",t:2},
+        {title:"状态2：2<t<4",caption:"重叠部分是五边形。",t:3},
+        {title:"状态3：t=4",caption:"H 与 M 重合，五边形结束。",t:4}
+      ]},
+      {id:"q1s3",section:"第（II）（i）问",title:"第3步：由线段和差求 MH",t:3,derive:[
+        ["∵","在 Rt△OO'N 中，OO'＝t，∠OO'N＝45°"],["∴","ON＝OO'·cos45°＝t·√2/2＝√2t/2"],
+        ["∵","四边形 O'C'D'E' 是正方形，边长 O'C'＝OC＝2√2"],["∵","MN 是正方形的一条边"],["∴","MN＝2√2"],
+        ["∵","OB＝4√2"],["∴","BM＝OB－ON－MN＝4√2－√2t/2－2√2"],["∴","BM＝2√2－(√2/2)t"],
+        ["∵","BM 在 BO 上，MH 在 C'D' 上，且 BO⊥C'D'"],["∵","∠MBH＝45°"],["∴","Rt△BMH 是等腰直角三角形"],["∴","MH＝BM＝2√2－(√2/2)t"]
+      ],box:["ON＝√2t/2","MN＝2√2","BM＝MH＝2√2－(√2/2)t","2<t<4"]},
+      {id:"q1s4",section:"第（II）（i）问",title:"第4步：合并答案",t:3,derive:[
+        ["∴","MH＝2√2－(√2/2)t，且 2<t<4"]
+      ],box:["MH＝2√2－(√2/2)t","2<t<4"]},
+      {id:"q2s1",section:"第（II）（ii）问",title:"第1步：由图形变化判断面积分段",t:3,derive:[
+        ["∵","当 t＝0 时，重叠部分退化为线段 OC"],
+        ["∵","当 0<t≤2 时，重叠部分是四边形"],
+        ["∵","当 2<t<4 时，重叠部分是五边形"],
+        ["∵","当 4≤t<6 时，重叠部分是三角形"],
+        ["∵","当 t＝6 时，重叠部分退化为点 B"],
+        ["∴","研究面积时，只需按 0<t≤2，2<t<4，4≤t<6 三段讨论"]
+      ],box:["t＝0：线段","0<t≤2：四边形","2<t<4：五边形","4≤t<6：三角形","t＝6：点"],minis:[
+        {title:"状态1：t=0",caption:"重叠部分退化为线段。",t:0},
+        {title:"状态2：0<t≤2",caption:"重叠部分是四边形。",t:1},
+        {title:"状态3：2<t<4",caption:"重叠部分是五边形。",t:3},
+        {title:"状态4：4≤t<6",caption:"重叠部分是三角形。",t:5},
+        {title:"状态5：t=6",caption:"重叠部分退化为点。",t:6}
+      ]},
+      {id:"q2s2",section:"第（II）（ii）问",title:"第2步：在 0<t≤2 中由四边形面积求范围",t:1.5,derive:[
+        ["∵","0<t≤2 时，重叠部分是矩形 MNO'C'"],
+        ["∵","在 Rt△OO'N 中，∠NOO'＝45°，OO'＝t"],
+        ["∴","O'N＝OO'·cos45°＝√2t/2"],
+        ["∵","四边形 O'C'D'E' 是正方形"],
+        ["∴","MN＝O'C'＝2√2"],
+        ["∴","S＝O'N×MN＝√2t/2×2√2＝2t"],
+        ["∵","3≤S≤5"],
+        ["∴","3≤2t≤5"],
+        ["∴","3/2≤t≤5/2"],
+        ["∵","又 0<t≤2"],
+        ["∴","3/2≤t≤2"]
+      ],box:["0<t≤2","O'N＝√2t/2","MN＝2√2","S＝2t","3/2≤t≤2"]},
+      {id:"q2s3",section:"第（II）（ii）问",title:"第3步：在 2<t<4 中由五边形面积求范围",t:3,derive:[
+        ["∵","2<t<4 时，重叠部分是五边形"],
+        ["∵","S＝S矩形MNO'C'－S△C'HG"],
+        ["∵","O'N＝√2t/2，且 MN＝2√2"],
+        ["∴","S矩形MNO'C'=2t"],
+        ["∵","上一问已求得 MH＝2√2－(√2/2)t"],
+        ["∵","Rt△BMH 是等腰直角三角形"],
+        ["∴","BH＝√2·MH＝4－t"],
+        ["∵","AG＝O'A＝4－t"],
+        ["∴","HG＝AB－BH－AG＝4－（4－t）－（4－t）＝2t－4"],
+        ["∵","△C'HG 是等腰直角三角形，且 HG 是斜边"],
+        ["∴","S△C'HG＝HG²/4＝（t－2）²"],
+        ["∴","S＝2t－（t－2）²＝5－（t－3）²"],
+        ["∵","2<t<4"],
+        ["∴","0≤（t－3）²<1"],
+        ["∴","4<S≤5"],
+        ["∴","这一整段都满足 3≤S≤5"],
+        ["∴","2<t<4"]
+      ],box:["2<t<4","S矩形MNO'C'＝2t","HG＝2t－4","S△C'HG＝HG²/4＝（t－2）²","S＝5－（t－3）²"]},
+      {id:"q2s4",section:"第（II）（ii）问",title:"第4步：在 4≤t<6 中由三角形面积求范围",t:5,derive:[
+        ["∵","4≤t<6 时，重叠部分是等腰直角三角形 E'PQ"],
+        ["∵","过 E' 向 OA 作垂线，垂足为 I；过 E' 向 AB 作垂线，垂足为 J"],
+        ["∵","IO'＝2，O'A＝t－4"],
+        ["∴","IA＝IO'－O'A＝2－（t－4）＝6－t"],
+        ["∵","E'J∥OA，且四边形 E'I AJ 是矩形"],
+        ["∴","E'J＝IA＝6－t"],
+        ["∵","△E'JP，△E'JQ 都是等腰直角三角形"],
+        ["∴","PJ＝JQ＝E'J＝6－t"],
+        ["∴","PQ＝PJ＋JQ＝2（6－t）"],
+        ["∴","S＝1/2×2（6－t）×（6－t）＝（6－t）²"],
+        ["∵","3≤S≤5"],
+        ["∴","3≤（6－t）²≤5"],
+        ["∵","又 4≤t<6，所以 0<6－t≤2"],
+        ["∴","√3≤6－t≤√5"],
+        ["∴","6－√5≤t≤6－√3"],
+        ["∵","又 4≤6－√5"],
+        ["∴","4≤t≤6－√3"]
+      ],box:["4≤t<6","E'J＝6－t","PQ＝2（6－t）","S＝（6－t）²","4≤t≤6－√3"]},
+      {id:"q2s5",section:"第（II）（ii）问",title:"第5步：合并最终答案",t:3,derive:[
+        ["∵","四边形得到 3/2≤t≤2"],["∵","五边形得到 2<t<4"],["∵","三角形得到 4≤t≤6－√3"],["∴","3/2≤t≤6－√3"]
+      ],box:["四边形：3/2≤t≤2","五边形：2<t<4","三角形：4≤t≤6－√3","3/2≤t≤6－√3"]}
+    ];
+    const STEP_LABELS={i1s1:"1 求B",i1s2:"2 求E",q1s1:"1 求O'、C'、D'、E'",q1s2:"2 判断边界",q1s3:"3 求MH",q1s4:"4 合并答案",q2s1:"1 判断分段",q2s2:"2 四边形面积",q2s3:"3 五边形面积",q2s4:"4 三角形面积",q2s5:"5 合并答案"};
+    const POLICIES={
+      i1s1:{movable:false,range:[0,0],reason:"本步只看固定图形，先求 B 点坐标。"},
+      i1s2:{movable:false,range:[0,0],reason:"本步只看固定图形，先求 E 点坐标。"},
+      q1s1:{movable:true,range:[0,6],reason:"本步观察平移后 O'、C'、D'、E' 的坐标变化。"},
+      q1s2:{movable:true,range:[2,4],reason:"本步只在五边形出现的边界附近观察图形状态。"},
+      q1s3:{movable:true,range:[2.001,3.999],reason:"本步只在五边形情形内观察 M、H 的变化。"},
+      q1s4:{movable:true,range:[2.001,3.999],reason:"本步用于验证 MH 公式和范围。"},
+      q2s1:{movable:true,range:[0,6],reason:"本步观察不同范围内重叠图形的变化。"},
+      q2s2:{movable:true,range:[0.001,2],reason:"本步只在 0<t≤2 内验证四边形面积。"},
+      q2s3:{movable:true,range:[2.001,3.999],reason:"本步只在 2<t<4 内验证五边形面积。"},
+      q2s4:{movable:true,range:[4,5.999],reason:"本步只在 4≤t<6 内验证三角形面积。"},
+      q2s5:{movable:true,range:[1.5,6-Math.sqrt(3)],reason:"本步回到最终答案范围内做验证。"}
+    };
+    const MILESTONES={
+      q1s2:[{t:2,label:"t=2",note:"左边界"},{t:3,label:"t=3",note:"五边形"},{t:4,label:"t=4",note:"右边界"}],
+      q2s1:[{t:0,label:"t=0",note:"线段"},{t:1,label:"t=1",note:"四边形"},{t:3,label:"t=3",note:"五边形"},{t:5,label:"t=5",note:"三角形"},{t:6,label:"t=6",note:"点"}],
+      q2s5:[{t:1.5,label:"t=3/2",note:"S=3"},{t:2,label:"t=2",note:"S=4"},{t:3,label:"t=3",note:"S=5"},{t:4,label:"t=4",note:"S=4"},{t:6-Math.sqrt(3),label:"t=6-√3",note:"S=3"}]
+    };
+    let stepIndex=0,t=0,canMove=false,problemUserPreference=null,currentLabelLayout=null;
+    const svg=document.getElementById("diagram"), stepNav=document.getElementById("stepNav"), stepSection=document.getElementById("stepSection"), stepTitle=document.getElementById("stepTitle"), deriveList=document.getElementById("deriveList"), boundaryGallery=document.getElementById("boundaryGallery"), tRange=document.getElementById("tRange"), tLabel=document.getElementById("tLabel"), moveBtn=document.getElementById("moveBtn"), milestoneBar=document.getElementById("milestoneBar"), problemCard=document.getElementById("problemCard"), problemToggle=document.getElementById("problemToggle"), pControl=document.getElementById("pControl");
+    const answerI=document.getElementById("answerI"), answerQ1=document.getElementById("answerQ1"), answerQ2=document.getElementById("answerQ2");
+    function esc(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
+    function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+    function toScreen(p,w=W,h=SVG_H,pad=PAD){
+      const innerW=w-pad.left-pad.right, innerH=h-pad.top-pad.bottom;
+      const scale=Math.min(innerW/(DOMAIN.maxX-DOMAIN.minX),innerH/(DOMAIN.maxY-DOMAIN.minY));
+      const ox=pad.left+(innerW-(DOMAIN.maxX-DOMAIN.minX)*scale)/2, oy=pad.top+(innerH-(DOMAIN.maxY-DOMAIN.minY)*scale)/2;
+      return {x:ox+(p.x-DOMAIN.minX)*scale,y:h-oy-(p.y-DOMAIN.minY)*scale};
+    }
+    function path(points,w=W,h=SVG_H,pad=PAD){if(!points.length)return"";const first=toScreen(points[0],w,h,pad);return points.slice(1).reduce((d,p)=>{const s=toScreen(p,w,h,pad);return d+` L ${s.x} ${s.y}`},`M ${first.x} ${first.y}`)+" Z";}
+    function line(a,b,color="#334155",width=2,dash=""){const p=toScreen(a),q=toScreen(b);return `<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="${color}" stroke-width="${width}" ${dash?`stroke-dasharray="${dash}"`:""} />`;}
+    function point(p,label,color="#1f2937",dx=8,dy=-8){
+      const s=toScreen(p);
+      const circle=`<circle cx="${s.x}" cy="${s.y}" r="5" fill="${color}" />`;
+      if(window.GeometryLabelLayout && currentLabelLayout){
+        window.GeometryLabelLayout.addPointObstacle(currentLabelLayout,p,8);
+        if(!label) return circle;
+        return circle+window.GeometryLabelLayout.labelSvg(currentLabelLayout,p,label,{color,fontSize:15,fontWeight:900,preferredDx:dx,preferredDy:dy});
+      }
+      return circle+(label?`<text x="${s.x+dx}" y="${s.y+dy}" font-size="15" font-weight="900" fill="${color}">${esc(label)}</text>`:"");
+    }
+    function textAt(p,text,color="#334155",dx=8,dy=-10,size=14){const s=toScreen(p);return `<text x="${s.x+dx}" y="${s.y+dy}" font-size="${size}" font-weight="900" fill="${color}">${esc(text)}</text>`;}
+    function box(lines){const x=760,y=52,w=280,lineH=24,h=16+lines.length*lineH;return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="rgba(255,255,255,.95)" stroke="#475569" stroke-width="1.4" />`+lines.map((line,i)=>`<text x="${x+14}" y="${y+22+i*lineH}" font-size="14" font-weight="900" fill="#111827">${esc(line)}</text>`).join("");}
+    function dimension(a,b,text,color="#0f766e",offsetPx=18,options={}){
+      if(window.GeometryLabelLayout&&currentLabelLayout){
+        return window.GeometryLabelLayout.segmentMeasureSvg(currentLabelLayout,toScreen,a,b,text,{
+          color,
+          style:"dimension",
+          showGuide:true,
+          rotateWithLine:options.rotateWithLine ?? false,
+          fontSize:14,
+          fontWeight:900,
+          offsetPx,
+          extraNormal:options.extraNormal,
+          extraAlong:options.extraAlong,
+          extraX:options.extraX,
+          extraY:options.extraY,
+          segmentRole:options.segmentRole ?? "derived",
+          crowded:options.crowded ?? false,
+          collinearGroup:options.collinearGroup ?? true,
+          reusedInFormula:options.reusedInFormula ?? true,
+          visuallyUnique:options.visuallyUnique ?? false,
+          named:options.named ?? false,
+          segmentName:options.segmentName
+        });
+      }
+      const p=toScreen(a),q=toScreen(b),dx=q.x-p.x,dy=q.y-p.y,len=Math.hypot(dx,dy);if(len<1e-6)return"";const nx=-dy/len,ny=dx/len,p1={x:p.x+nx*offsetPx,y:p.y+ny*offsetPx},p2={x:q.x+nx*offsetPx,y:q.y+ny*offsetPx},midX=(p1.x+p2.x)/2+nx*10,midY=(p1.y+p2.y)/2+ny*10;return `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${color}" stroke-width="1.8" stroke-dasharray="5 4" /><line x1="${p1.x-nx*7}" y1="${p1.y-ny*7}" x2="${p1.x+nx*7}" y2="${p1.y+ny*7}" stroke="${color}" stroke-width="1.8" /><line x1="${p2.x-nx*7}" y1="${p2.y-ny*7}" x2="${p2.x+nx*7}" y2="${p2.y+ny*7}" stroke="${color}" stroke-width="1.8" /><text x="${midX}" y="${midY}" font-size="14" font-weight="900" text-anchor="middle" dominant-baseline="middle" fill="${color}">${esc(text)}</text>`;
+    }
+    function segmentLabel(a,b,text,color="#b45309",options={}){
+      if(window.GeometryLabelLayout&&currentLabelLayout){
+        return window.GeometryLabelLayout.segmentMeasureSvg(currentLabelLayout,toScreen,a,b,text,{
+          color,
+          style:options.style ?? "parallel",
+          showGuide:options.showGuide ?? true,
+          rotateWithLine:options.rotateWithLine ?? true,
+          fontSize:14,
+          fontWeight:900,
+          extraNormal:options.extraNormal ?? -12,
+          extraAlong:options.extraAlong ?? 0,
+          extraX:options.extraX ?? 0,
+          extraY:options.extraY ?? 0,
+          offsetPx:options.offsetPx,
+          segmentRole:options.segmentRole ?? "helper",
+          crowded:options.crowded ?? false,
+          collinearGroup:options.collinearGroup ?? false,
+          reusedInFormula:options.reusedInFormula ?? true,
+          visuallyUnique:options.visuallyUnique ?? false,
+          named:options.named ?? false,
+          segmentName:options.segmentName
+        });
+      }
+      return "";
+    }
+    function rightAngle(v,a,b,size=11,color="#334155"){const V=toScreen(v),A=toScreen(a),B=toScreen(b),u={x:A.x-V.x,y:A.y-V.y},w={x:B.x-V.x,y:B.y-V.y},lu=Math.hypot(u.x,u.y),lw=Math.hypot(w.x,w.y);if(lu<1e-6||lw<1e-6)return"";const u1={x:u.x/lu,y:u.y/lu},w1={x:w.x/lw,y:w.y/lw},p1={x:V.x+u1.x*size,y:V.y+u1.y*size},p2={x:V.x+w1.x*size,y:V.y+w1.y*size},p3={x:p1.x+w1.x*size,y:p1.y+w1.y*size};return `<path d="M ${p1.x} ${p1.y} L ${p3.x} ${p3.y} L ${p2.x} ${p2.y}" fill="none" stroke="${color}" stroke-width="1.8" />`;}
+    function angleArc(c,a,b,r=25,color="#b45309",label=""){const C=toScreen(c),A=toScreen(a),B=toScreen(b),a1=Math.atan2(A.y-C.y,A.x-C.x),a2=Math.atan2(B.y-C.y,B.x-C.x);let d=a2-a1;while(d<=-Math.PI)d+=2*Math.PI;while(d>Math.PI)d-=2*Math.PI;const sweep=d>0?1:0,end=a1+d,p1={x:C.x+r*Math.cos(a1),y:C.y+r*Math.sin(a1)},p2={x:C.x+r*Math.cos(end),y:C.y+r*Math.sin(end)},mid=a1+d/2;const textSvg=label?(window.GeometryLabelLayout&&currentLabelLayout?window.GeometryLabelLayout.polarLabelSvg(currentLabelLayout,C,label,{radius:r+17,angle:mid,color,fontSize:15,fontWeight:900}):`<text x="${C.x+(r+17)*Math.cos(mid)}" y="${C.y+(r+17)*Math.sin(mid)}" text-anchor="middle" dominant-baseline="middle" font-size="15" font-weight="900" fill="${color}">${esc(label)}</text>`):"";return `<path d="M ${p1.x} ${p1.y} A ${r} ${r} 0 0 ${sweep} ${p2.x} ${p2.y}" fill="none" stroke="${color}" stroke-width="2" />`+textSvg;}
+    function state(tt){
+      const Op={x:tt,y:0},Cp={x:tt+2,y:2},Dp={x:tt,y:4},Ep={x:tt-2,y:2};
+      const G={x:4,y:4-tt},H={x:4,y:tt},M={x:2+tt/2,y:2+tt/2},N={x:tt/2,y:tt/2};
+      let overlap=[];
+      if(tt<=2) overlap=[N,Op,Cp,M];
+      else if(tt<=4) overlap=[M,N,Op,G,H];
+      else overlap=[Ep,{x:4,y:tt-4},{x:4,y:8-tt}];
+      return {Op,Cp,Dp,Ep,G,H,M,N,square:[Op,Cp,Dp,Ep],overlap};
+    }
+    function area(tt){if(tt<=2)return 2*tt;if(tt<=4)return 5-(tt-3)*(tt-3);return (6-tt)*(6-tt);}
+    function mh(tt){return 2*SQRT2-SQRT2*tt/2;}
+    function liveText(step,tt){
+      if(["q1s3","q1s4"].includes(step.id)) return `MH≈${mh(tt).toFixed(3)}`;
+      if(step.id.startsWith("q2")) return `S≈${area(tt).toFixed(3)}`;
+      return "";
+    }
+    function mergeLabel(primaryLabel, primaryPoint, peers, tolerance=.03){
+      if(!window.GeometryLabelLayout) return {label:primaryLabel, hidden:[]};
+      return window.GeometryLabelLayout.mergeCoincidentLabel(
+        {label:primaryLabel, point:primaryPoint},
+        peers,
+        {tolerance}
+      );
+    }
+    function baseMarkup(step,s){
+      const cMerge=step.id==="q1s2" ? mergeLabel("C",BASE.C,[{label:"O'",point:s.Op}]) : {label:"C",hidden:[]};
+      const bMerge=step.id==="q1s2" ? mergeLabel("B",BASE.B,[{label:"C'",point:s.Cp}]) : {label:"B",hidden:[]};
+      return `<path d="${path(TRI)}" fill="var(--tri)" stroke="var(--tri-stroke)" stroke-width="2.3" />
+      <path d="${path(SQUARE)}" fill="rgba(15,118,110,.06)" stroke="#0f766e" stroke-width="2" />
+      ${line({x:DOMAIN.minX,y:0},{x:DOMAIN.maxX,y:0},"#64748b",1.8)}${line({x:0,y:DOMAIN.minY},{x:0,y:DOMAIN.maxY},"#64748b",1.8)}
+      ${point(BASE.O,"O","#1f2937",8,18)}${point(BASE.A,"A","#1f2937",8,18)}${point(BASE.B,bMerge.label,"#1f2937",10,-10)}${point(BASE.C,cMerge.label,"#1f2937",10,-10)}${point(BASE.D,"D","#1f2937",8,-8)}${point(BASE.E,"E","#1f2937",-28,-8)}`;
+    }
+    function drawMini(tt){
+      const s=state(tt),w=250,h=130,pad={left:18,right:18,top:12,bottom:18};
+      function ts(p){const d={minX:-.5,maxX:6.2,minY:-.4,maxY:4.5},scale=Math.min((w-pad.left-pad.right)/(d.maxX-d.minX),(h-pad.top-pad.bottom)/(d.maxY-d.minY));return {x:pad.left+(p.x-d.minX)*scale,y:h-pad.top-(p.y-d.minY)*scale};}
+      function mp(points){if(!points.length)return"";const first=ts(points[0]);return points.slice(1).reduce((d,p)=>{const q=ts(p);return d+` L ${q.x} ${q.y}`},`M ${first.x} ${first.y}`)+" Z";}
+      const ax=ts({x:0,y:0}),x2=ts({x:6,y:0});
+      return `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true"><line x1="${ax.x-8}" y1="${ax.y}" x2="${x2.x}" y2="${x2.y}" stroke="#64748b" /><path d="${mp(TRI)}" fill="rgba(245,158,11,.12)" stroke="#d97706" stroke-width="2" /><path d="${mp(s.square)}" fill="rgba(14,116,144,.14)" stroke="#0f766e" stroke-width="2" /><path d="${mp(s.overlap)}" fill="rgba(220,38,38,.22)" stroke="#dc2626" stroke-width="2" /></svg>`;
+    }
+    function updateAnswers(){answerI.classList.toggle("show",stepIndex>=1);answerQ1.classList.toggle("show",stepIndex>=5);answerQ2.classList.toggle("show",stepIndex>=10);}
+    function groupTitle(section){if(section==="第（I）问")return"第（I）问 坐标";if(section==="第（II）（i）问")return"第（II）（i）MH";return"第（II）（ii）面积";}
+    function renderNav(){const groups=[];STEPS.forEach(st=>{let g=groups.find(x=>x.section===st.section);if(!g){g={section:st.section,steps:[]};groups.push(g)}g.steps.push(st)});stepNav.innerHTML=groups.map((g,gi)=>{const dots=g.steps.map((st,idx)=>{const index=STEPS.indexOf(st),label=STEP_LABELS[st.id];const dot=`<button class="step-dot ${index<stepIndex?"done":""} ${index===stepIndex?"active":""}" type="button" data-step="${index}" title="${esc(st.title)}">${esc(label)}</button>`;return idx===0?dot:`<span class="step-connector"></span>${dot}`}).join("");const btns=gi===0?`<div class="nav-buttons"><button id="prevBtn" class="secondary" type="button">后退</button><button id="nextBtn" type="button">前进</button></div>`:"";return `<div class="step-group"><div class="step-group-title">${esc(groupTitle(g.section))}</div><div class="step-dots">${dots}</div>${btns}</div>`}).join("");document.getElementById("prevBtn").addEventListener("click",()=>setStep(stepIndex-1));document.getElementById("nextBtn").addEventListener("click",()=>setStep(stepIndex+1));}
+    function renderMilestones(step){const items=MILESTONES[step.id]||[];milestoneBar.hidden=!items.length;milestoneBar.innerHTML=items.length?`<span class="milestone-label">关键点</span>`+items.map(item=>`<button class="milestone-btn ${Math.abs(t-item.t)<.02?"active":""}" type="button" data-t="${item.t}">${esc(item.label)} · ${esc(item.note)}</button>`).join(""):"";}
+    function renderMinis(step){boundaryGallery.hidden=!step.minis;if(!step.minis){boundaryGallery.innerHTML="";return}boundaryGallery.innerHTML=step.minis.map(item=>`<div class="mini-card ${Math.abs(t-item.t)<.03?"active":""}" data-t="${item.t}"><h3>${esc(item.title)}</h3>${drawMini(item.t)}<p>${esc(item.caption)}</p></div>`).join("");}
+    function draw(){
+      const step=STEPS[stepIndex],policy=POLICIES[step.id];if(!policy.movable)canMove=false;t=clamp(t,policy.range[0],policy.range[1]);const s=state(t);updateAnswers();renderNav();renderMilestones(step);renderMinis(step);
+      currentLabelLayout=window.GeometryLabelLayout ? window.GeometryLabelLayout.createLabelLayout({toScreen,padding:4,pointRadius:8}) : null;
+      stepSection.textContent=step.section;stepTitle.textContent=step.title;deriveList.innerHTML=step.derive.map(([m,txt])=>`<div class="derive-line"><strong>${m}</strong>${esc(txt)}</div>`).join("");
+      pControl.hidden=!policy.movable;
+      window.InteractiveLessonUI?.applyMoveControls({
+        policy,
+        canMove,
+        t,
+        controlEl: pControl,
+        rangeEl: tRange,
+        labelEl: tLabel,
+        buttonEl: moveBtn
+      });
+      let overlays="";
+      if(step.id==="i1s1"){overlays+=dimension(BASE.O,BASE.A,"AO=4","#0f766e",-24)+dimension(BASE.A,BASE.B,"AB=4","#0f766e",24)+rightAngle(BASE.A,BASE.O,BASE.B,13);}
+      if(step.id==="i1s2"){overlays+=line(BASE.O,BASE.C,"#0f766e",2.6)+line(BASE.O,BASE.E,"#0f766e",2.6)+rightAngle(BASE.O,BASE.C,BASE.E,12)+textAt(BASE.C,"C=(2,2)","#0f766e",8,-22)+textAt(BASE.E,"E=(-2,2)","#0f766e",-68,18);}
+      if(step.section!=="第（I）问"){
+        overlays+=`<path d="${path(s.square)}" fill="var(--square)" stroke="var(--square-stroke)" stroke-width="2.4" />`;
+        overlays+=`<path d="${path(s.overlap)}" fill="var(--overlap)" stroke="var(--overlap-stroke)" stroke-width="2.8" />`;
+        const oMerge=step.id==="q1s2" ? mergeLabel("O'",s.Op,[{label:"C",point:BASE.C}]) : {label:"O'",hidden:[]};
+        const cpMerge=step.id==="q1s2" ? mergeLabel("C'",s.Cp,[{label:"B",point:BASE.B}]) : {label:"C'",hidden:[]};
+        overlays+=point(s.Op,oMerge.hidden.length?"":"O'","#0f766e",8,18)+point(s.Cp,cpMerge.hidden.length?"":"C'","#0f766e",10,-12)+point(s.Dp,"D'","#0f766e",10,-12)+point(s.Ep,"E'","#0f766e",-34,-10);
+        overlays+=dimension(BASE.O,s.Op,"OO'=t","#0f766e",-24)+textAt({x:s.overlap.reduce((a,p)=>a+p.x,0)/s.overlap.length,y:s.overlap.reduce((a,p)=>a+p.y,0)/s.overlap.length},"S","#dc2626",-4,5);
+      }
+      if(["q1s2","q1s3","q1s4"].includes(step.id)){
+        const gMerge=step.id==="q1s2" ? mergeLabel("G",s.G,[{label:"H",point:s.H}]) : {label:"G",hidden:[]};
+        const mMerge=step.id==="q1s2" ? mergeLabel("M",s.M,[{label:"H",point:s.H}]) : {label:"M",hidden:[]};
+        const hHide=step.id==="q1s2" && (gMerge.hidden.includes("H") || mMerge.hidden.includes("H"));
+        overlays+=point(s.G,gMerge.label,"#dc2626",10,22);
+        overlays+=point(s.H,hHide?"":"H","#dc2626",10,-12);
+        overlays+=point(s.M,mMerge.label,"#dc2626",12,-12);
+        overlays+=point(s.N,"N","#dc2626",12,24);
+      }
+      if(["q1s3","q1s4"].includes(step.id)){
+        overlays+=line(BASE.O,s.N,"#b45309",2.2,"5 4");
+        overlays+=line(s.N,s.M,"#b45309",2.2,"5 4");
+        overlays+=line(s.M,BASE.B,"#b45309",2.2,"5 4");
+        overlays+=line(s.M,s.H,"#dc2626",3);
+        overlays+=segmentLabel(BASE.O,s.N,"√2t/2","#b45309",{segmentName:"ON",showGuide:true,style:"parallel",extraNormal:16,extraAlong:-10});
+        overlays+=segmentLabel(s.N,s.M,"2√2","#b45309",{segmentName:"MN",showGuide:true,style:"parallel",extraNormal:-14,extraAlong:8});
+        overlays+=dimension(s.M,s.H,"MH","#dc2626",18);
+        overlays+=rightAngle(s.N,BASE.O,s.Op,10,"#b45309");
+        overlays+=angleArc(BASE.O,s.N,s.Op,20,"#b45309","45°");
+        overlays+=rightAngle(s.M,BASE.B,s.H,10,"#b45309");
+        overlays+=angleArc(BASE.B,{x:4,y:3},s.M,18,"#b45309","45°");
+      }
+      if(step.id==="q2s2"){
+        overlays+=point(s.M,"M","#dc2626",10,-12)+point(s.N,"N","#dc2626",-20,22);
+        overlays+=line(s.N,s.M,"#b45309",2.2,"5 4");
+        overlays+=segmentLabel(s.Op,s.N,"√2t/2","#b45309",{segmentName:"O'N",showGuide:true,style:"parallel",extraNormal:16,extraAlong:-8});
+        overlays+=segmentLabel(s.N,s.M,"2√2","#b45309",{segmentName:"MN",showGuide:true,style:"parallel",extraNormal:-16,extraAlong:8});
+        overlays+=rightAngle(s.N,BASE.O,s.Op,10,"#b45309");
+        overlays+=angleArc(BASE.O,s.N,s.Op,20,"#b45309","45°");
+      }
+      if(step.id==="q2s3"){
+        overlays+=point(s.G,"G","#dc2626",12,24)+point(s.H,"H","#dc2626",12,-12)+point(s.M,"M","#dc2626",12,-12)+point(s.N,"N","#dc2626",12,24);
+        overlays+=line(s.N,s.M,"#b45309",2.2,"5 4");
+        overlays+=line(s.G,s.H,"#b45309",2.2,"5 4");
+        overlays+=segmentLabel(s.Op,s.N,"√2t/2","#b45309",{segmentName:"O'N",showGuide:true,style:"parallel",extraNormal:16,extraAlong:-8});
+        overlays+=segmentLabel(s.N,s.M,"2√2","#b45309",{segmentName:"MN",showGuide:true,style:"parallel",extraNormal:-16,extraAlong:8});
+        overlays+=segmentLabel(s.G,s.H,"2t-4","#b45309",{segmentName:"HG",showGuide:true,style:"dimension",rotateWithLine:false,offsetPx:24});
+        overlays+=dimension(s.Op,BASE.A,"4-t","#b45309",-20,{segmentName:"O'A",named:false});
+        overlays+=dimension(s.H,BASE.B,"4-t","#b45309",18,{segmentName:"BH",named:false});
+        overlays+=rightAngle(s.N,BASE.O,s.Op,10,"#b45309");
+        overlays+=angleArc(BASE.O,s.N,s.Op,20,"#b45309","45°");
+        overlays+=rightAngle(s.M,BASE.B,s.H,10,"#b45309");
+        overlays+=angleArc(BASE.B,{x:4,y:3},s.M,18,"#b45309","45°");
+        overlays+=rightAngle(s.Cp,s.H,s.G,10,"#b45309");
+        overlays+=angleArc(s.H,s.Cp,s.G,16,"#b45309","45°");
+      }
+      if(step.id==="q2s4"){
+        const I={x:s.Ep.x,y:0},J={x:4,y:s.Ep.y},P={x:4,y:t-4},Q={x:4,y:8-t};
+        overlays+=point(I,"I","#b45309",8,18)+point(J,"J","#b45309",10,-10)+point(P,"P","#dc2626",10,18)+point(Q,"Q","#dc2626",10,-10);
+        overlays+=line(s.Ep,I,"#b45309",2.2,"5 4");
+        overlays+=line(s.Ep,J,"#b45309",2.2,"5 4");
+        overlays+=rightAngle(I,{x:s.Ep.x+1,y:0},s.Ep,11,"#b45309");
+        overlays+=rightAngle(J,{x:4,y:s.Ep.y+1},s.Ep,11,"#b45309");
+        overlays+=dimension(I,s.Op,`2`,"#b45309",18);
+        overlays+=dimension(s.Ep,J,`6-t`,"#b45309",-18);
+        overlays+=dimension(P,Q,`2(6-t)`,"#b45309",24);
+        overlays+=angleArc(s.Ep,J,P,16,"#b45309","45°");
+      }
+      const live=liveText(step,t);const liveBox=live?[...step.box,`当前 ${live}`]:step.box;
+      svg.innerHTML=baseMarkup(step,s)+overlays+box(liveBox);
+      currentLabelLayout=null;
+    }
+    function updateProblemToggle(){problemToggle.textContent=problemCard.classList.contains("collapsed")?"展开完整题目":"收起题目";}
+    function syncProblemCardForInteraction(){if(problemUserPreference!==null)return;problemCard.classList.add("collapsed");updateProblemToggle();}
+    function setProblemVisibility(collapsed,user=false){problemCard.classList.toggle("collapsed",collapsed);if(user)problemUserPreference=collapsed?"collapsed":"expanded";updateProblemToggle();}
+    function setStep(next){
+      syncProblemCardForInteraction();
+      stepIndex=clamp(next,0,STEPS.length-1);
+      canMove=window.InteractiveLessonUI?.canMoveForPolicy(POLICIES[STEPS[stepIndex].id]) ?? Boolean(POLICIES[STEPS[stepIndex].id]?.movable);
+      t=STEPS[stepIndex].t;
+      draw();
+    }
+    function jumpToT(v){const policy=POLICIES[STEPS[stepIndex].id];if(!policy.movable)return;t=clamp(Number(v),policy.range[0],policy.range[1]);canMove=true;draw();}
+    stepNav.addEventListener("click",e=>{const target=e.target.closest("button[data-step]");if(target)setStep(Number(target.dataset.step));});
+    moveBtn.addEventListener("click",()=>{const policy=POLICIES[STEPS[stepIndex].id];if(!policy.movable)return;syncProblemCardForInteraction();canMove=!canMove;if(!canMove)t=STEPS[stepIndex].t;t=clamp(t,policy.range[0],policy.range[1]);draw();});
+    tRange.addEventListener("input",()=>{const policy=POLICIES[STEPS[stepIndex].id];if(!canMove||!policy.movable)return;syncProblemCardForInteraction();t=clamp(Number(tRange.value),policy.range[0],policy.range[1]);draw();});
+    milestoneBar.addEventListener("click",e=>{const target=e.target.closest("button[data-t]");if(target){syncProblemCardForInteraction();jumpToT(target.dataset.t);}});
+    boundaryGallery.addEventListener("click",e=>{const target=e.target.closest(".mini-card[data-t]");if(target){syncProblemCardForInteraction();jumpToT(target.dataset.t);}});
+    problemToggle.addEventListener("click",()=>setProblemVisibility(!problemCard.classList.contains("collapsed"),true));
+    updateProblemToggle();draw();
+  </script>
+</body>
+</html>

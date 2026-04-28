@@ -73,6 +73,8 @@
     </section>
   </main>
 
+  <script src="../../../assets/js/geometry-label-layout.js"></script>
+  <script src="../../../assets/js/interactive-lesson-ui.js"></script>
   <script>
     const SQRT3=Math.sqrt(3);
     const H=2*SQRT3;
@@ -113,7 +115,7 @@
       ]},
       {id:"q1s3",section:"第（II）①问",title:"第3步：由直角三角形求 S△O'DM、S△DND'",t:1,derive:[
         ["∵","O'D＝OD－OO'＝2－t"],["∵","△MO'D 是直角三角形，∠O'DM＝60°"],["∴","O'M＝√3（2－t）"],["∴","S△O'DM＝1/2×（2－t）×√3（2－t）＝√3（2－t）²/2"],["∵","DD'＝t，△DND' 是直角三角形，∠DD'N＝30°"],["∴","DN＝t/2，D'N＝√3t/2"],["∴","S△DND'＝1/2×t/2×√3t/2＝√3t²/8"]
-      ],box:["O'＝（t，0），C'＝（t，2√3），D'＝（t＋2，0）","S△O'DM＝√3（2－t）²/2","S△DND'＝√3t²/8"]},
+      ],box:["O'＝（t，0），D'＝（t＋2，0）","S△O'DM＝√3（2－t）²/2","S△DND'＝√3t²/8"]},
       {id:"q1s4",section:"第（II）①问",title:"第4步：由三角形面积相减求 S",t:1,derive:[
         ["∵","S＝S△O'D'C'－S△O'DM－S△DND'"],["∵","S△O'D'C'＝1/2×2×2√3＝2√3"],["∵","S△O'DM＝√3（2－t）²/2，S△DND'＝√3t²/8"],["∴","S＝2√3－√3（2－t）²/2－√3t²/8"],["∴","S＝2√3t－5√3t²/8"],["∴","0<t<2"]
       ],box:["S＝2√3t－5√3t²/8","0<t<2"]},
@@ -157,6 +159,7 @@
     let stepIndex=0;
     let t=STEPS[0].t;
     let canMove=false;
+    let currentLabelLayout=null;
     let problemUserPreference=null;
     const svg=document.getElementById("diagram");
     const stepNav=document.getElementById("stepNav");
@@ -194,7 +197,27 @@
     }
     function point(p,label,color="#1f2937",dx=8,dy=-8){
       const s=toScreen(p);
-      return `<circle cx="${s.x}" cy="${s.y}" r="5" fill="${color}" /><text x="${s.x+dx}" y="${s.y+dy}" font-size="15" font-weight="800" fill="${color}">${esc(label)}</text>`;
+      const circle=`<circle cx="${s.x}" cy="${s.y}" r="5" fill="${color}" />`;
+      if(window.GeometryLabelLayout && currentLabelLayout){
+        currentLabelLayout.occupied.push({
+          left:s.x-8,
+          top:s.y-8,
+          right:s.x+8,
+          bottom:s.y+8,
+          kind:"self-point"
+        });
+        if(!label) return circle;
+        return circle + window.GeometryLabelLayout.labelSvg(currentLabelLayout,p,label,{
+          color,
+          fontSize:15,
+          fontWeight:800,
+          preferredDx:dx,
+          preferredDy:dy,
+          candidates:window.GeometryLabelLayout.candidateOffsets?.(dx,dy),
+          allowNearPoint:true
+        });
+      }
+      return circle + (label ? `<text x="${s.x+dx}" y="${s.y+dy}" font-size="15" font-weight="800" fill="${color}">${esc(label)}</text>` : "");
     }
     function textAt(p,text,color="#334155",dx=8,dy=-10,size=14){
       const s=toScreen(p);
@@ -213,7 +236,9 @@
       const p1={x:C.x+r*Math.cos(a1),y:C.y+r*Math.sin(a1)}, p2={x:C.x+r*Math.cos(end),y:C.y+r*Math.sin(end)};
       const mid=a1+d/2, tx=C.x+(r+18)*Math.cos(mid), ty=C.y+(r+18)*Math.sin(mid);
       return `<path d="M ${p1.x} ${p1.y} A ${r} ${r} 0 0 ${sweep} ${p2.x} ${p2.y}" fill="none" stroke="${color}" stroke-width="2" />`+
-        (label?`<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="middle" font-size="15" font-weight="800" fill="${color}">${esc(label)}</text>`:"");
+        (label?(window.GeometryLabelLayout&&currentLabelLayout
+          ? window.GeometryLabelLayout.polarLabelSvg(currentLabelLayout,C,label,{radius:r+18,angle:mid,color,fontSize:15,fontWeight:800})
+          : `<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="middle" font-size="15" font-weight="800" fill="${color}">${esc(label)}</text>`):"");
     }
     function rightAngle(v,a,b,size=10,color="#334155"){
       const V=toScreen(v),A=toScreen(a),B=toScreen(b);
@@ -225,6 +250,17 @@
       return `<path d="M ${p1.x} ${p1.y} L ${p3.x} ${p3.y} L ${p2.x} ${p2.y}" fill="none" stroke="${color}" stroke-width="1.8" />`;
     }
     function dimension(a,b,text,color="#0f766e",offsetPx=18){
+      if(window.GeometryLabelLayout && currentLabelLayout){
+        return window.GeometryLabelLayout.segmentMeasureSvg(currentLabelLayout,toScreen,a,b,text,{
+          color,
+          style:"dimension",
+          showGuide:true,
+          rotateWithLine:false,
+          offsetPx,
+          fontSize:14,
+          fontWeight:800
+        });
+      }
       const p=toScreen(a), q=toScreen(b), dx=q.x-p.x, dy=q.y-p.y, len=Math.hypot(dx,dy);
       if(len<1e-6) return "";
       const nx=-dy/len, ny=dx/len, tx=dx/len, ty=dy/len;
@@ -322,6 +358,7 @@
       if(!policy.movable) canMove=false;
       t=clamp(t,policy.range[0],policy.range[1]);
       const s=state(t);
+      currentLabelLayout = window.GeometryLabelLayout ? window.GeometryLabelLayout.createLabelLayout({toScreen,padding:4,pointRadius:8}) : null;
       updateAnswers();
       renderNav();
       renderMilestones(step);
@@ -329,13 +366,15 @@
       stepSection.textContent=step.section;
       stepTitle.textContent=step.title;
       deriveList.innerHTML=step.derive.map(([mark,text])=>`<div class="derive-line"><strong>${mark}</strong>${esc(text)}</div>`).join("");
-      tRange.min=String(policy.range[0]); tRange.max=String(policy.range[1]); tRange.value=String(t);
-      tLabel.textContent=`t=${t.toFixed(3)}`;
-      document.querySelector(".p-control").hidden=!policy.movable;
-      tRange.disabled=!canMove || !policy.movable;
-      moveBtn.disabled=false;
-      moveBtn.textContent=policy.movable ? (canMove ? "关闭移动" : "打开移动") : "本步锁定";
-      moveBtn.className=policy.movable ? (canMove ? "move-on" : "warn") : "warn";
+      window.InteractiveLessonUI?.applyMoveControls({
+        policy,
+        canMove,
+        t,
+        controlEl: document.querySelector(".p-control"),
+        rangeEl: tRange,
+        labelEl: tLabel,
+        buttonEl: moveBtn
+      });
       let overlays="";
       if(step.id==="i1s1"){
         overlays+=dimension(BASE.O,BASE.C,"OC=2√3","#0f766e",-52);
@@ -401,6 +440,7 @@
       const liveBox=["q2s2","q2s3","q2s4"].includes(step.id) ? [...step.box,`当前 ${areaText(t)}`] : step.id==="q1s4" ? [...step.box,`当前 S≈${s.area.toFixed(3)}`] : step.box;
       const boxOpts=step.id==="q1s3"?{x:760,y:42,w:330,lineH:22,h:90}:step.id==="q1s2"?{x:790,y:44,w:275,lineH:22,h:92}:{};
       svg.innerHTML=axisX+axisY+fixedMarkup()+overlays+box(liveBox,boxOpts);
+      currentLabelLayout = null;
     }
     function updateProblemToggle(){problemToggle.textContent=problemCard.classList.contains("collapsed") ? "展开完整题目" : "收起题目";}
     function syncProblemCardForInteraction(){if(problemUserPreference!==null) return; problemCard.classList.add("collapsed"); updateProblemToggle();}
@@ -409,7 +449,7 @@
       syncProblemCardForInteraction();
       stepIndex=clamp(next,0,STEPS.length-1);
       const policy=MOVE_POLICIES[STEPS[stepIndex].id];
-      canMove=Boolean(policy?.movable);
+      canMove=window.InteractiveLessonUI?.canMoveForPolicy(policy) ?? Boolean(policy?.movable);
       t=STEPS[stepIndex].t;
       draw();
     }

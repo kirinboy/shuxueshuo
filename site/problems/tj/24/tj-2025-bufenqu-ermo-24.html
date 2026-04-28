@@ -73,6 +73,8 @@
     </section>
   </main>
 
+  <script src="../../../assets/js/geometry-label-layout.js"></script>
+  <script src="../../../assets/js/interactive-lesson-ui.js"></script>
   <script>
     const SQRT3=Math.sqrt(3);
     const BASE={O:{x:0,y:0},A:{x:-2,y:0},B:{x:4,y:0},D:{x:-2,y:2*SQRT3},G:{x:0,y:2*SQRT3},C:{x:4,y:2*SQRT3}};
@@ -194,6 +196,7 @@
     let stepIndex=0;
     let t=STEPS[0].t;
     let canMove=false;
+    let currentLabelLayout=null;
     const svg=document.getElementById("diagram");
     const stepSection=document.getElementById("stepSection");
     const stepTitle=document.getElementById("stepTitle");
@@ -253,9 +256,7 @@
 
     function esc(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
     function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
-    function movePolicy(step){
-      return MOVE_POLICIES[step.id] || {movable:false,range:[step.t,step.t],reason:"本步固定在推荐位置。"};
-    }
+    const DEFAULT_MOVE_POLICY = { movable: false, range: [0, 0], reason: "本步固定在推荐位置。" };
     function navGroupTitle(section){
       if(section==="第（I）问") return "第（I）问 坐标";
       if(section==="第（II）①问") return "第（II）① A'F";
@@ -286,18 +287,33 @@
       <text x="${s.x+dx}" y="${s.y+dy}" font-size="16" font-weight="700" fill="${color}">${esc(label)}</text>`;
     }
     function drawLabeledPoint(p,label,color="#1f2937",options={}){
-      const {
-        dx=8,dy=-8,altDx=-44,altDy=22,occupied=[]
-      } = options;
+      const { dx=8,dy=-8,altDx=-44,altDy=22 } = options;
       const s=toScreen(p);
-      let tx=s.x+dx, ty=s.y+dy;
-      const tooClose = occupied.some(o=>Math.hypot(tx-o.x,ty-o.y)<42);
-      if(tooClose){ tx=s.x+altDx; ty=s.y+altDy; }
-      occupied.push({x:tx,y:ty});
-      return {
-        markup:`<circle cx="${s.x}" cy="${s.y}" r="5.3" fill="${color}" />
-        <text x="${tx}" y="${ty}" font-size="16" font-weight="700" fill="${color}">${esc(label)}</text>`
-      };
+      const circle=`<circle cx="${s.x}" cy="${s.y}" r="5.3" fill="${color}" />`;
+      if(window.GeometryLabelLayout && currentLabelLayout){
+        const selfScreen=toScreen(p);
+        currentLabelLayout.occupied.push({
+          left:selfScreen.x-8,
+          top:selfScreen.y-8,
+          right:selfScreen.x+8,
+          bottom:selfScreen.y+8,
+          kind:"self-point"
+        });
+        if(!label) return { markup: circle };
+        const preferredCandidates = [
+          {dx, dy},
+          {dx: altDx, dy: altDy}
+        ];
+        const candidates = [
+          ...preferredCandidates,
+          ...(window.GeometryLabelLayout.candidateOffsets?.(dx,dy) || [])
+        ];
+        return {
+          markup: circle + window.GeometryLabelLayout.labelSvg(currentLabelLayout,p,label,{color,fontSize:16,fontWeight:700,preferredDx:dx,preferredDy:dy,candidates,allowNearPoint:true})
+        };
+      }
+      const tx=s.x+dx, ty=s.y+dy;
+      return { markup: circle + `<text x="${tx}" y="${ty}" font-size="16" font-weight="700" fill="${color}">${esc(label)}</text>` };
     }
     function outlinePoint(p,color="#0f766e",r=9){
       const s=toScreen(p);
@@ -389,6 +405,19 @@
       const s=toScreen(p);
       return `<text x="${s.x+dx}" y="${s.y+dy}" font-size="15" font-weight="700" fill="${color}">${esc(text)}</text>`;
     }
+    function addDiagramObstacles(s,step){
+      if(!window.GeometryLabelLayout || !currentLabelLayout) return;
+      const segmentOptions={radius:7,step:18};
+      [
+        [BASE.A,BASE.B],[BASE.B,BASE.C],[BASE.C,BASE.D],[BASE.D,BASE.A],
+        [s.P,s.Q],[s.A1,s.D1],[s.D1,s.Q],[s.A1,s.P],[BASE.D,s.Q]
+      ].forEach(([a,b])=>window.GeometryLabelLayout.addSegmentObstacle(currentLabelLayout,toScreen,a,b,segmentOptions));
+      if(step.id.startsWith("q1") || step.id.startsWith("q2")){
+        [[s.Q,s.F],[s.D1,s.F],[s.A1,s.F],[s.Q,BASE.G]].forEach(([a,b])=>{
+          window.GeometryLabelLayout.addSegmentObstacle(currentLabelLayout,toScreen,a,b,{radius:6,step:18});
+        });
+      }
+    }
     function dimensionSegment(a,b,text,color="#0f766e",offset=0.22,textDy=-8){
       const p1={x:a.x,y:a.y+offset}, p2={x:b.x,y:b.y+offset};
       const vertical=Math.abs(a.x-b.x)<1e-6;
@@ -404,6 +433,18 @@
       return markup;
     }
     function dimensionSegmentOffset(a,b,text,color="#0f766e",offsetPx=18,labelShiftPx=12){
+      if(window.GeometryLabelLayout && currentLabelLayout){
+        return window.GeometryLabelLayout.segmentMeasureSvg(currentLabelLayout,toScreen,a,b,text,{
+          color,
+          style:"dimension",
+          showGuide:true,
+          rotateWithLine:false,
+          offsetPx,
+          fontSize:15,
+          fontWeight:700,
+          extraNormal: labelShiftPx
+        });
+      }
       const p1=toScreen(a), p2=toScreen(b);
       const dx=p2.x-p1.x, dy=p2.y-p1.y, len=Math.hypot(dx,dy);
       if(len<1e-6) return "";
@@ -424,6 +465,25 @@
     }
     function filledPoly(points,fill,stroke,width=2,opacity=.18){
       return `<path d="${path(points)}" fill="${fill}" fill-opacity="${opacity}" stroke="${stroke}" stroke-width="${width}" />`;
+    }
+    function areaFormulaCard(p,terms){
+      const s=toScreen(p);
+      const text=terms.map(term=>term.text).join(" ");
+      const unitWidth=(value)=>Array.from(value).reduce((sum,ch)=>sum+(/[\u0000-\u00ff]/.test(ch)?8.5:17),0);
+      const width=Math.max(330, terms.reduce((sum,term)=>sum+unitWidth(term.text)+8,0)+28);
+      const height=38;
+      let x=s.x, y=s.y;
+      let cursor=x+14;
+      const spans=terms.map(term=>{
+        const className=term.kind ? `area-formula-${term.kind}` : "area-formula-op";
+        const out=`<tspan class="${className}" x="${cursor}" dy="0">${esc(term.text)}</tspan>`;
+        cursor += unitWidth(term.text) + 8;
+        return out;
+      }).join("");
+      return `<g class="area-formula" aria-label="${esc(text)}">
+        <rect class="area-formula-bg" x="${x}" y="${y-height+8}" width="${width}" height="${height}" rx="9" />
+        <text class="area-formula-text" x="${x+14}" y="${y}" dominant-baseline="middle">${spans}</text>
+      </g>`;
     }
     function centroid(points){
       return points.reduce((acc,p)=>({x:acc.x+p.x/points.length,y:acc.y+p.y/points.length}),{x:0,y:0});
@@ -469,7 +529,7 @@
       boundaryGallery.innerHTML=items.map(miniSvgMarkup).join("");
     }
     function jumpToT(rawT){
-      const policy=movePolicy(STEPS[stepIndex]);
+      const policy = MOVE_POLICIES[STEPS[stepIndex].id] || { ...DEFAULT_MOVE_POLICY, range: [STEPS[stepIndex].t, STEPS[stepIndex].t] };
       if(!policy.movable) return;
       canMove=true;
       t=clamp(Number(rawT),policy.range[0],policy.range[1]);
@@ -537,24 +597,24 @@
     }
     function draw(){
       const step=STEPS[stepIndex];
-      const policy=movePolicy(step);
+      const policy = MOVE_POLICIES[step.id] || { ...DEFAULT_MOVE_POLICY, range: [step.t, step.t] };
       if(!policy.movable) canMove=false;
       t=clamp(t,policy.range[0],policy.range[1]);
       const s=state(t);
+      currentLabelLayout = window.GeometryLabelLayout ? window.GeometryLabelLayout.createLabelLayout({toScreen,padding:4,pointRadius:8}) : null;
       updateProblemAnswers();
       stepSection.textContent=step.section || "";
       stepTitle.textContent=step.title;
       deriveList.innerHTML=step.derive.map(line=>`<div class="derive-line"><strong>${line.mark==="because"?"∵":"∴"}</strong>${esc(line.text)}</div>`).join("");
-      pRange.min=String(policy.range[0]);
-      pRange.max=String(policy.range[1]);
-      pRange.value=String(t);
-      pLabel.textContent=`t=${t.toFixed(3)}`;
-      document.querySelector(".p-control").hidden=!policy.movable;
-      pRange.disabled=!canMove || !policy.movable;
-      moveBtn.disabled=false;
-      moveBtn.classList.toggle("move-on",policy.movable && canMove);
-      moveBtn.classList.toggle("move-off",policy.movable && !canMove);
-      moveBtn.textContent=policy.movable ? (canMove ? "关闭移动" : "打开移动") : "本步锁定";
+      window.InteractiveLessonUI?.applyMoveControls({
+        policy,
+        canMove,
+        t,
+        controlEl: document.querySelector(".p-control"),
+        rangeEl: pRange,
+        labelEl: pLabel,
+        buttonEl: moveBtn
+      });
       renderMiniGallery(step.minis||[]);
       renderMilestones(step,policy);
       renderStepNav();
@@ -566,16 +626,17 @@
       const nearLeftBoundary = Math.abs(t-2/3)<1e-4;
       const nearRightBoundary = Math.abs(t-2)<1e-4;
       const occupiedLabels=[];
+      addDiagramObstacles(s,step);
       const always=[
         {p:BASE.O,label:step1Coincide?"O(P)":"O",color:"#1f2937",dx:step1Coincide?10:8,dy:step1Coincide?22:-8,altDx:-36,altDy:-14},
-        {p:BASE.A,label:"A",color:"#1f2937",dx:8,dy:-8},
-        {p:BASE.B,label:"B",color:"#1f2937",dx:8,dy:-8},
-        {p:BASE.C,label:"C",color:"#1f2937",dx:8,dy:-8},
+        {p:BASE.A,label:"A",color:"#1f2937",dx:-18,dy:-10,altDx:8,altDy:-8},
+        {p:BASE.B,label:"B",color:"#1f2937",dx:-18,dy:-10,altDx:8,altDy:-8},
+        {p:BASE.C,label:"C",color:"#1f2937",dx:-22,dy:20,altDx:8,altDy:-8},
         {p:BASE.D,label:step1Coincide?"D(Q)":"D",color:"#1f2937",dx:step1Coincide?16:8,dy:step1Coincide?-18:-8,altDx:-64,altDy:-18},
-        {p:BASE.G,label:"G",color:"#1f2937",dx:8,dy:-8},
-        ...(!step1Coincide?[{p:s.P,label:"P",color:"#0f766e",dx:8,dy:20},{p:s.Q,label:"Q",color:"#0f766e",dx:8,dy:-12}]:[]),
-        {p:s.A1,label:"A'",color:"#0f766e",dx:8,dy:20,altDx:-24,altDy:24},
-        {p:s.D1,label:"D'",color:"#0f766e",dx:26,dy:-30,altDx:20,altDy:28}
+        {p:BASE.G,label:"G",color:"#1f2937",dx:-18,dy:20,altDx:8,altDy:-8},
+        ...(!step1Coincide?[{p:s.P,label:"P",color:"#0f766e",dx:8,dy:20,altDx:-26,altDy:20},{p:s.Q,label:"Q",color:"#0f766e",dx:10,dy:-20,altDx:-28,altDy:-12}]:[]),
+        {p:s.A1,label:"A'",color:"#0f766e",dx:-28,dy:22,altDx:12,altDy:22},
+        {p:s.D1,label:"D'",color:"#0f766e",dx:20,dy:30,altDx:-34,altDy:18}
       ];
       always.forEach(item=>{ points+=drawLabeledPoint(item.p,item.label,item.color,{dx:item.dx,dy:item.dy,altDx:item.altDx,altDy:item.altDy,occupied:occupiedLabels}).markup; });
 
@@ -687,6 +748,15 @@
             overlays+=helperText(centroid(s.overlap),"S","#dc2626",-4,5);
             overlays+=helperText(centroid(leftCut),"−","#b45309",-4,5);
             overlays+=helperText(centroid(topCut),"−","#b45309",-4,5);
+            overlays+=areaFormulaCard({x:0.45,y:4.68},[
+              {text:"S",kind:"target"},
+              {text:"=",kind:"op"},
+              {text:"梯形QPA'D'",kind:"base"},
+              {text:"−",kind:"op"},
+              {text:"△QGE",kind:"cut"},
+              {text:"−",kind:"op"},
+              {text:"△QFD'",kind:"cut"}
+            ]);
           }
           extras+=drawLine(BASE.D,s.Q,"#64748b",1.8,"5 4");
           extras+=drawLine(s.D1,s.Q,"#64748b",1.8,"5 4");
@@ -707,6 +777,13 @@
             overlays+=filledPoly(s.overlap,"#f3b5aa","#dc2626",2.8,.62);
             overlays+=helperText(centroid(s.overlap),"S","#dc2626",-4,5);
             overlays+=helperText(centroid(cutTriangle),"−","#b45309",-4,5);
+            overlays+=areaFormulaCard({x:1.2,y:4.75},[
+              {text:"S",kind:"target"},
+              {text:"=",kind:"op"},
+              {text:"△TQP",kind:"base"},
+              {text:"−",kind:"op"},
+              {text:"△TCR",kind:"cut"}
+            ]);
           }
           extras+=drawLine(s.P,s.T,"#dc2626",2.4);
           extras+=drawLine(s.T,s.N,"#d97706",2.2,"6 4");
@@ -747,6 +824,7 @@
         ${points}
         ${stepBoxLines(step,s).length?conditionBox(stepBoxLines(step,s)):""}
       `;
+      currentLabelLayout = null;
     }
     function updateProblemToggle(){
       problemToggle.textContent=problemCard.classList.contains("collapsed") ? "展开完整题目" : "收起题目";
@@ -764,7 +842,8 @@
     function setStep(next){
       syncProblemCardForInteraction();
       stepIndex=clamp(next,0,STEPS.length-1);
-      canMove=false;
+      const policy = MOVE_POLICIES[STEPS[stepIndex].id] || { ...DEFAULT_MOVE_POLICY, range: [STEPS[stepIndex].t, STEPS[stepIndex].t] };
+      canMove = window.InteractiveLessonUI?.canMoveForPolicy(policy) ?? Boolean(policy?.movable);
       t=STEPS[stepIndex].t;
       updateProblemToggle();
       draw();
@@ -776,7 +855,7 @@
       setStep(Number(target.dataset.step));
     });
     moveBtn.addEventListener("click",()=>{
-      const policy=movePolicy(STEPS[stepIndex]);
+      const policy = MOVE_POLICIES[STEPS[stepIndex].id] || { ...DEFAULT_MOVE_POLICY, range: [STEPS[stepIndex].t, STEPS[stepIndex].t] };
       if(!policy.movable) return;
       syncProblemCardForInteraction();
       canMove=!canMove;
@@ -785,7 +864,7 @@
       draw();
     });
     pRange.addEventListener("input",()=>{
-      const policy=movePolicy(STEPS[stepIndex]);
+      const policy = MOVE_POLICIES[STEPS[stepIndex].id] || { ...DEFAULT_MOVE_POLICY, range: [STEPS[stepIndex].t, STEPS[stepIndex].t] };
       if(!canMove || !policy.movable) return;
       syncProblemCardForInteraction();
       t=clamp(Number(pRange.value),policy.range[0],policy.range[1]);

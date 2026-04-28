@@ -468,6 +468,34 @@ svg {
   line-height: 1.6;
 }
 
+svg .area-formula-bg {
+  fill: rgba(255, 251, 245, 0.92);
+  stroke: rgba(120, 53, 15, 0.18);
+  stroke-width: 1.4;
+}
+
+svg .area-formula-text {
+  fill: #1f2937;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+svg .area-formula-target {
+  fill: var(--overlap-stroke);
+}
+
+svg .area-formula-base {
+  fill: var(--accent);
+}
+
+svg .area-formula-cut {
+  fill: var(--warn);
+}
+
+svg .area-formula-op {
+  fill: #64748b;
+}
+
 button {
   border: 0;
   cursor: pointer;

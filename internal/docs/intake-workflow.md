@@ -14,6 +14,7 @@
    - 同目录静态资源用带 `problem-id` 前缀的文件名（如 `…-diagram.svg`），避免同题位多题重名
    - 样式使用公共表 `site/assets/css/interactive-geometry-page.css`（与 `internal/templates/interactive_geometry_page_style.css` 说明一致，题页中 `<link rel="stylesheet" href="../../../assets/css/interactive-geometry-page.css" />`）
    - 需要「SVG 点标注避让、线段尺寸线」时，在题页内联脚本**之前**增加公共库：`<script src="../../../assets/js/geometry-label-layout.js"></script>`，在脚本中使用全局 `window.GeometryLabelLayout`（与河东区一模 24 等题一致）
+   - 面积拆分图统一使用公共 CSS 类：`area-formula`、`area-formula-target`、`area-formula-base`、`area-formula-cut`、`area-formula-op`，表达 `目标面积 = 大图形 - 小图形 - 小图形`
 5. 向 `site/data/problems.json` 增加一条元信息
 6. 检查导航页是否能在正确的“地区 -> 题位”下聚合出该题
 

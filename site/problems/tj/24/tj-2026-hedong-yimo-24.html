@@ -240,9 +240,23 @@
       const s=toScreen(p);
       const circle=`<circle cx="${s.x}" cy="${s.y}" r="5" fill="${color}" />`;
       if(window.GeometryLabelLayout && currentLabelLayout){
-        window.GeometryLabelLayout.addPointObstacle(currentLabelLayout,p,8);
+        currentLabelLayout.occupied.push({
+          left:s.x-8,
+          top:s.y-8,
+          right:s.x+8,
+          bottom:s.y+8,
+          kind:"self-point"
+        });
         if(!label) return circle;
-        return circle+window.GeometryLabelLayout.labelSvg(currentLabelLayout,p,label,{color,fontSize:15,fontWeight:900,preferredDx:dx,preferredDy:dy});
+        return circle+window.GeometryLabelLayout.labelSvg(currentLabelLayout,p,label,{
+          color,
+          fontSize:15,
+          fontWeight:900,
+          preferredDx:dx,
+          preferredDy:dy,
+          candidates:window.GeometryLabelLayout.candidateOffsets?.(dx,dy),
+          allowNearPoint:true
+        });
       }
       return circle+(label?`<text x="${s.x+dx}" y="${s.y+dy}" font-size="15" font-weight="900" fill="${color}">${esc(label)}</text>`:"");
     }

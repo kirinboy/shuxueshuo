@@ -60,6 +60,30 @@
     layout.occupied.push(rect);
   }
 
+  function addSegmentObstacle(layout, toScreen, a, b, options){
+    const p = toScreen(a);
+    const q = toScreen(b);
+    const dx = q.x - p.x;
+    const dy = q.y - p.y;
+    const len = Math.hypot(dx, dy);
+    if(len < 1e-6) return;
+    const step = options?.step ?? 22;
+    const radius = options?.radius ?? 6;
+    const count = Math.max(2, Math.ceil(len / step));
+    for(let i = 0; i <= count; i += 1){
+      const ratio = i / count;
+      const x = p.x + dx * ratio;
+      const y = p.y + dy * ratio;
+      layout.occupied.push({
+        left: x - radius,
+        top: y - radius,
+        right: x + radius,
+        bottom: y + radius,
+        kind: options?.kind ?? "segment"
+      });
+    }
+  }
+
   function pointsCoincident(a, b, tolerance){
     const tol = tolerance ?? 1e-6;
     return Math.hypot(a.x - b.x, a.y - b.y) <= tol;
@@ -126,8 +150,13 @@
       const y = anchor.y + candidate.dy;
       const bbox = makeRect(x, y - fontSize, width, height, layout.padding);
       let score = index * 0.01 + Math.abs(candidate.dx - preferredDx) * 0.4 + Math.abs(candidate.dy - preferredDy) * 0.4;
-      score += overlapArea(bbox, pointRect) * 50;
+      if(!options.allowNearPoint){
+        score += overlapArea(bbox, pointRect) * 50;
+      }
       layout.occupied.forEach(rect => {
+        if(options.allowNearPoint && rect.kind === "self-point"){
+          return;
+        }
         score += overlapArea(bbox, rect) * 100;
       });
       if(!best || score < best.score){
@@ -216,6 +245,42 @@
     return `<text x="${midX}" y="${midY}" font-size="${fontSize}" font-weight="${fontWeight}" text-anchor="middle" dominant-baseline="middle" fill="${color}"${transform}>${escapeHtml(text)}</text>`;
   }
 
+  function dimensionMidLabelSvg(layout, p1, p2, text, options){
+    const fontSize = options.fontSize ?? 14;
+    const color = options.color ?? "#1f2937";
+    const fontWeight = options.fontWeight ?? 800;
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const tx = dx / len;
+    const ty = dy / len;
+    const nx = -ty;
+    const ny = tx;
+    const preferredNormal = options.extraNormal ?? 10;
+    const preferredAlong = options.extraAlong ?? 0;
+    const base = {
+      x: (p1.x + p2.x) / 2 + (options.extraX ?? 0),
+      y: (p1.y + p2.y) / 2 + (options.extraY ?? 0)
+    };
+    const candidates = options.candidates ?? [
+      {dx: nx * preferredNormal + tx * preferredAlong, dy: ny * preferredNormal + ty * preferredAlong},
+      {dx: nx * (preferredNormal + 16) + tx * preferredAlong, dy: ny * (preferredNormal + 16) + ty * preferredAlong},
+      {dx: nx * (preferredNormal - 16) + tx * preferredAlong, dy: ny * (preferredNormal - 16) + ty * preferredAlong},
+      {dx: -nx * preferredNormal + tx * preferredAlong, dy: -ny * preferredNormal + ty * preferredAlong},
+      {dx: nx * preferredNormal + tx * (preferredAlong + 18), dy: ny * preferredNormal + ty * (preferredAlong + 18)},
+      {dx: nx * preferredNormal + tx * (preferredAlong - 18), dy: ny * preferredNormal + ty * (preferredAlong - 18)}
+    ];
+    const placed = placeScreenLabel(layout, base, text, {
+      fontSize,
+      preferredDx: candidates[0].dx,
+      preferredDy: candidates[0].dy,
+      candidates
+    });
+    const angle = options.rotateWithLine ? Math.atan2(dy, dx) * 180 / Math.PI : 0;
+    const transform = options.rotateWithLine ? ` transform="rotate(${angle} ${placed.x} ${placed.y})"` : "";
+    return `<text x="${placed.x}" y="${placed.y}" font-size="${fontSize}" font-weight="${fontWeight}" text-anchor="middle" dominant-baseline="middle" fill="${color}"${transform}>${escapeHtml(text)}</text>`;
+  }
+
   function chooseSegmentMeasureStrategy(meta){
     const role = meta?.segmentRole ?? "derived";
     const crowded = Boolean(meta?.crowded);
@@ -278,17 +343,16 @@
       const offsetPx = strategy.offsetPx ?? 18;
       const p1 = {x:p.x + nx * offsetPx, y:p.y + ny * offsetPx};
       const p2 = {x:q.x + nx * offsetPx, y:q.y + ny * offsetPx};
-      const label = lineMidLabelSvg(layout, p1, p2, text, {
+      const label = dimensionMidLabelSvg(layout, p1, p2, text, {
         color,
         fontSize: strategy.fontSize ?? 14,
         fontWeight: strategy.fontWeight ?? 800,
-        nx,
-        ny,
         rotateWithLine: Boolean(strategy.rotateWithLine),
         extraNormal: strategy.extraNormal ?? 10,
         extraAlong: strategy.extraAlong ?? 0,
         extraX: strategy.extraX ?? 0,
-        extraY: strategy.extraY ?? 0
+        extraY: strategy.extraY ?? 0,
+        candidates: strategy.candidates
       });
       return `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${color}" stroke-width="${width}" stroke-dasharray="${dash}" />` +
         `<line x1="${p1.x-nx*tick}" y1="${p1.y-ny*tick}" x2="${p1.x+nx*tick}" y2="${p1.y+ny*tick}" stroke="${color}" stroke-width="${width}" />` +
@@ -318,8 +382,10 @@
     createLabelLayout,
     addPointObstacle,
     addRectObstacle,
+    addSegmentObstacle,
     pointsCoincident,
     mergeCoincidentLabel,
+    candidateOffsets,
     labelSvg,
     placeScreenLabel,
     polarLabelSvg,

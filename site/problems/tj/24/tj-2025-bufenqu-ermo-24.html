@@ -368,15 +368,7 @@
       return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="rgba(255,255,255,.95)" stroke="#475569" stroke-width="1.4" />${text}`;
     }
     function rightAngleCorner(vertex,rayA,rayB,size=10,color="#334155"){
-      const c=toScreen(vertex), a=toScreen(rayA), b=toScreen(rayB);
-      const u1={x:a.x-c.x,y:a.y-c.y}, u2={x:b.x-c.x,y:b.y-c.y};
-      const l1=Math.hypot(u1.x,u1.y), l2=Math.hypot(u2.x,u2.y);
-      if(l1<1e-6 || l2<1e-6) return "";
-      const v1={x:u1.x/l1,y:u1.y/l1}, v2={x:u2.x/l2,y:u2.y/l2};
-      const p1={x:c.x+v1.x*size,y:c.y+v1.y*size};
-      const p2={x:c.x+v2.x*size,y:c.y+v2.y*size};
-      const p3={x:p1.x+v2.x*size,y:p1.y+v2.y*size};
-      return `<path d="M ${p1.x} ${p1.y} L ${p3.x} ${p3.y} L ${p2.x} ${p2.y}" fill="none" stroke="${color}" stroke-width="1.6" />`;
+      return window.GeometryLabelLayout?.rightAngleSvg(currentLabelLayout,toScreen,vertex,rayA,rayB,{size,color,strokeWidth:1.6}) ?? "";
     }
     function angleArc(center,startPoint,endPoint,r=22,color="#b45309"){
       const c=toScreen(center), s=toScreen(startPoint), e=toScreen(endPoint);

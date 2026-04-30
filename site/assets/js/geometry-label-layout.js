@@ -245,6 +245,51 @@
     return `<text x="${midX}" y="${midY}" font-size="${fontSize}" font-weight="${fontWeight}" text-anchor="middle" dominant-baseline="middle" fill="${color}"${transform}>${escapeHtml(text)}</text>`;
   }
 
+  function rightAngleGeometry(toScreen, vertex, rayA, rayB, size){
+    const v = toScreen(vertex);
+    const a = toScreen(rayA);
+    const b = toScreen(rayB);
+    const u = {x:a.x - v.x, y:a.y - v.y};
+    const w = {x:b.x - v.x, y:b.y - v.y};
+    const lu = Math.hypot(u.x, u.y);
+    const lw = Math.hypot(w.x, w.y);
+    if(lu < 1e-6 || lw < 1e-6) return null;
+    const u1 = {x:u.x / lu, y:u.y / lu};
+    const w1 = {x:w.x / lw, y:w.y / lw};
+    const p1 = {x:v.x + u1.x * size, y:v.y + u1.y * size};
+    const p2 = {x:v.x + w1.x * size, y:v.y + w1.y * size};
+    const p3 = {x:p1.x + w1.x * size, y:p1.y + w1.y * size};
+    return {v, p1, p2, p3};
+  }
+
+  function addRightAngleObstacle(layout, toScreen, vertex, rayA, rayB, options){
+    if(!layout) return;
+    const size = options?.size ?? 11;
+    const padding = options?.padding ?? 6;
+    const geometry = rightAngleGeometry(toScreen, vertex, rayA, rayB, size);
+    if(!geometry) return;
+    const corners = [geometry.v, geometry.p1, geometry.p2, geometry.p3];
+    addRectObstacle(layout, {
+      left: Math.min(...corners.map(p => p.x)) - padding,
+      top: Math.min(...corners.map(p => p.y)) - padding,
+      right: Math.max(...corners.map(p => p.x)) + padding,
+      bottom: Math.max(...corners.map(p => p.y)) + padding,
+      kind: "right-angle"
+    });
+  }
+
+  function rightAngleSvg(layout, toScreen, vertex, rayA, rayB, options){
+    const size = options?.size ?? 11;
+    const color = options?.color ?? "#334155";
+    const strokeWidth = options?.strokeWidth ?? 1.8;
+    const geometry = rightAngleGeometry(toScreen, vertex, rayA, rayB, size);
+    if(!geometry) return "";
+    if(options?.registerObstacle !== false){
+      addRightAngleObstacle(layout, toScreen, vertex, rayA, rayB, options);
+    }
+    return `<path d="M ${geometry.p1.x} ${geometry.p1.y} L ${geometry.p3.x} ${geometry.p3.y} L ${geometry.p2.x} ${geometry.p2.y}" fill="none" stroke="${color}" stroke-width="${strokeWidth}" />`;
+  }
+
   function dimensionMidLabelSvg(layout, p1, p2, text, options){
     const fontSize = options.fontSize ?? 14;
     const color = options.color ?? "#1f2937";
@@ -390,6 +435,8 @@
     placeScreenLabel,
     polarLabelSvg,
     lineMidLabelSvg,
+    addRightAngleObstacle,
+    rightAngleSvg,
     chooseSegmentMeasureStrategy,
     segmentMeasureSvg,
     escapeHtml

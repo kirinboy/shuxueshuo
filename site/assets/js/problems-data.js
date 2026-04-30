@@ -38,17 +38,17 @@ window.__PROBLEMS_DATA__ = [
     "path": "../problems/tj/24/tj-2026-hedong-yimo-24.html",
     "status": "published"
   }
-  // {
-  //   "id": "tj-2026-nankai-yimo-24",
-  //   "city": "tianjin",
-  //   "cityLabel": "天津",
-  //   "year": 2026,
-  //   "exam": "nankai-yimo",
-  //   "examLabel": "南开区一模",
-  //   "slot": "24",
-  //   "title": "2026 年天津市南开区一模第 24 题（旋转三角形与重叠面积）",
-  //   "tags": ["geometry", "rotation", "dynamic-point"],
-  //   "path": "../problems/tj/24/tj-2026-nankai-yimo-24.html",
-  //   "status": "published"
-  // }
+  {
+    "id": "tj-2026-nankai-yimo-24",
+    "city": "tianjin",
+    "cityLabel": "天津",
+    "year": 2026,
+    "exam": "nankai-yimo",
+    "examLabel": "南开区一模",
+    "slot": "24",
+    "title": "2026 年天津市南开区一模第 24 题（旋转三角形与重叠面积）",
+    "tags": ["geometry", "rotation", "dynamic-point"],
+    "path": "../problems/tj/24/tj-2026-nankai-yimo-24.html",
+    "status": "published"
+  }
 ];

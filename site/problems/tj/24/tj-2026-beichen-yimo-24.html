@@ -241,13 +241,7 @@
           : `<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="middle" font-size="15" font-weight="800" fill="${color}">${esc(label)}</text>`):"");
     }
     function rightAngle(v,a,b,size=10,color="#334155"){
-      const V=toScreen(v),A=toScreen(a),B=toScreen(b);
-      const u={x:A.x-V.x,y:A.y-V.y}, w={x:B.x-V.x,y:B.y-V.y};
-      const lu=Math.hypot(u.x,u.y), lw=Math.hypot(w.x,w.y);
-      if(lu<1e-6||lw<1e-6) return "";
-      const u1={x:u.x/lu,y:u.y/lu}, w1={x:w.x/lw,y:w.y/lw};
-      const p1={x:V.x+u1.x*size,y:V.y+u1.y*size}, p2={x:V.x+w1.x*size,y:V.y+w1.y*size}, p3={x:p1.x+w1.x*size,y:p1.y+w1.y*size};
-      return `<path d="M ${p1.x} ${p1.y} L ${p3.x} ${p3.y} L ${p2.x} ${p2.y}" fill="none" stroke="${color}" stroke-width="1.8" />`;
+      return window.GeometryLabelLayout?.rightAngleSvg(currentLabelLayout,toScreen,v,a,b,{size,color}) ?? "";
     }
     function dimension(a,b,text,color="#0f766e",offsetPx=18){
       if(window.GeometryLabelLayout && currentLabelLayout){

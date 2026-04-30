@@ -312,7 +312,7 @@
       }
       return "";
     }
-    function rightAngle(v,a,b,size=11,color="#334155"){const V=toScreen(v),A=toScreen(a),B=toScreen(b),u={x:A.x-V.x,y:A.y-V.y},w={x:B.x-V.x,y:B.y-V.y},lu=Math.hypot(u.x,u.y),lw=Math.hypot(w.x,w.y);if(lu<1e-6||lw<1e-6)return"";const u1={x:u.x/lu,y:u.y/lu},w1={x:w.x/lw,y:w.y/lw},p1={x:V.x+u1.x*size,y:V.y+u1.y*size},p2={x:V.x+w1.x*size,y:V.y+w1.y*size},p3={x:p1.x+w1.x*size,y:p1.y+w1.y*size};return `<path d="M ${p1.x} ${p1.y} L ${p3.x} ${p3.y} L ${p2.x} ${p2.y}" fill="none" stroke="${color}" stroke-width="1.8" />`;}
+    function rightAngle(v,a,b,size=11,color="#334155"){return window.GeometryLabelLayout?.rightAngleSvg(currentLabelLayout,toScreen,v,a,b,{size,color}) ?? "";}
     function angleArc(c,a,b,r=25,color="#b45309",label=""){const C=toScreen(c),A=toScreen(a),B=toScreen(b),a1=Math.atan2(A.y-C.y,A.x-C.x),a2=Math.atan2(B.y-C.y,B.x-C.x);let d=a2-a1;while(d<=-Math.PI)d+=2*Math.PI;while(d>Math.PI)d-=2*Math.PI;const sweep=d>0?1:0,end=a1+d,p1={x:C.x+r*Math.cos(a1),y:C.y+r*Math.sin(a1)},p2={x:C.x+r*Math.cos(end),y:C.y+r*Math.sin(end)},mid=a1+d/2;const textSvg=label?(window.GeometryLabelLayout&&currentLabelLayout?window.GeometryLabelLayout.polarLabelSvg(currentLabelLayout,C,label,{radius:r+17,angle:mid,color,fontSize:15,fontWeight:900}):`<text x="${C.x+(r+17)*Math.cos(mid)}" y="${C.y+(r+17)*Math.sin(mid)}" text-anchor="middle" dominant-baseline="middle" font-size="15" font-weight="900" fill="${color}">${esc(label)}</text>`):"";return `<path d="M ${p1.x} ${p1.y} A ${r} ${r} 0 0 ${sweep} ${p2.x} ${p2.y}" fill="none" stroke="${color}" stroke-width="2" />`+textSvg;}
     function state(tt){
       const Op={x:tt,y:0},Cp={x:tt+2,y:2},Dp={x:tt,y:4},Ep={x:tt-2,y:2};

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}} | 数学说</title>
+  <meta name="description" content="{{PAGE_DESCRIPTION}}" />
+  <link rel="stylesheet" href="../../../assets/css/interactive-geometry-page.css" />
+</head>
+<body>
+  <header class="lesson-topbar" role="navigation" aria-label="页面导航">
+    <a href="../../../index.html">首页</a>
+    <span aria-hidden="true">·</span>
+    <a href="../../../nav/index.html">题库导航</a>
+    <span class="lesson-title">{{BREADCRUMB_TITLE}}</span>
+  </header>
+
+  <main class="page page-with-rail" id="main">
+    <div class="lesson-layout">
+      <div class="lesson-flow">
+        <section class="card problem" id="problemCard">
+          <div class="problem-summary">
+            <div class="problem-summary-text">{{PROBLEM_SUMMARY}}</div>
+            <button id="problemToggle" class="problem-toggle" type="button">收起完整题目</button>
+          </div>
+          <div class="problem-full">
+            {{PROBLEM_FULL_HTML}}
+          </div>
+        </section>
+
+        <section class="all-steps" id="stepCards" aria-label="完整解题步骤"></section>
+      </div>
+
+      <aside class="card lesson-rail" aria-label="步骤导航">
+        <div class="rail-kicker">STEP MAP</div>
+        <h2 class="rail-title">步骤导航</h2>
+        <div class="rail-progress">
+          <span id="railProgressText">1 / 1</span>
+          <span class="rail-progress-bar" aria-hidden="true"><span class="rail-progress-fill" id="railProgressFill"></span></span>
+        </div>
+        <div class="step-nav" id="stepNav"></div>
+      </aside>
+    </div>
+
+    <div class="mobile-step-dock" id="mobileStepDock">
+      <div class="mobile-step-current">
+        <span class="mobile-step-count" id="mobileStepCount">步骤 1 / 1</span>
+        <span class="mobile-step-name" id="mobileStepName">步骤</span>
+      </div>
+      <button class="mobile-step-toggle" id="mobileStepToggle" type="button">目录</button>
+    </div>
+
+    <div class="mobile-step-sheet" id="mobileStepSheet" aria-hidden="true">
+      <div class="mobile-step-panel" role="dialog" aria-modal="true" aria-label="快速跳转">
+        <div class="mobile-sheet-handle" aria-hidden="true"></div>
+        <div class="mobile-sheet-head">
+          <h2>快速跳转</h2>
+          <button class="secondary" id="mobileStepClose" type="button">关闭</button>
+        </div>
+        <div class="step-nav" id="mobileStepNav"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../../../assets/js/geometry-label-layout.js"></script>
+  <script src="../../../assets/js/interactive-lesson-ui.js"></script>
+  <script>
+    const STEPS = {{STEPS_JSON}};
+    const STEP_LABELS = {{STEP_LABELS_JSON}};
+    const POLICIES = {{POLICIES_JSON}};
+
+    // Page-specific geometry helpers must provide:
+    // - diagramMarkupFor(index, overrideT): SVG innerHTML for a step.
+    // - drawMini(t): compact SVG for boundary/state thumbnails.
+    // - Optional groupTitle(section): human-readable nav group title.
+    {{GEOMETRY_SCRIPT}}
+
+    let stepIndex = 0;
+    let problemUserPreference = null;
+    let stepObserver = null;
+    const stepCards = document.getElementById("stepCards");
+    const stepNav = document.getElementById("stepNav");
+    const mobileStepNav = document.getElementById("mobileStepNav");
+    const problemCard = document.getElementById("problemCard");
+    const problemToggle = document.getElementById("problemToggle");
+    const railProgressText = document.getElementById("railProgressText");
+    const railProgressFill = document.getElementById("railProgressFill");
+    const mobileStepSheet = document.getElementById("mobileStepSheet");
+    const mobileStepToggle = document.getElementById("mobileStepToggle");
+    const mobileStepClose = document.getElementById("mobileStepClose");
+    const mobileStepCount = document.getElementById("mobileStepCount");
+    const mobileStepName = document.getElementById("mobileStepName");
+
+    function esc(s) {
+      return String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    }
+
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function fmt(v) {
+      return Number(v).toFixed(3).replace(/\.?0+$/, "");
+    }
+
+    function defaultGroupTitle(section) {
+      return section;
+    }
+
+    function renderStepNavMarkup() {
+      const groups = [];
+      STEPS.forEach((step) => {
+        let group = groups.find((item) => item.section === step.section);
+        if (!group) {
+          group = { section: step.section, steps: [] };
+          groups.push(group);
+        }
+        group.steps.push(step);
+      });
+      return groups.map((group) => {
+        const dots = group.steps.map((step, localIndex) => {
+          const index = STEPS.indexOf(step);
+          const dot = `<button class="step-dot ${index < stepIndex ? "done" : ""} ${index === stepIndex ? "active" : ""}" type="button" data-step="${index}" title="${esc(step.title)}">${esc(STEP_LABELS[step.id])}</button>`;
+          return localIndex === 0 ? dot : `<span class="step-connector"></span>${dot}`;
+        }).join("");
+        const title = (typeof groupTitle === "function" ? groupTitle : defaultGroupTitle)(group.section);
+        return `<div class="step-group"><div class="step-group-title">${esc(title)}</div><div class="step-dots">${dots}</div></div>`;
+      }).join("");
+    }
+
+    function renderStepNav() {
+      stepNav.innerHTML = renderStepNavMarkup();
+      mobileStepNav.innerHTML = renderStepNavMarkup();
+      railProgressText.textContent = `${stepIndex + 1} / ${STEPS.length}`;
+      railProgressFill.style.width = `${((stepIndex + 1) / STEPS.length) * 100}%`;
+      mobileStepCount.textContent = `${STEPS[stepIndex].section} · 步骤 ${stepIndex + 1} / ${STEPS.length}`;
+      mobileStepName.textContent = STEP_LABELS[STEPS[stepIndex].id];
+    }
+
+    function renderMinisMarkup(step, activeT) {
+      if (!step.minis) return "";
+      const chips = step.minis.map((item) => `<button class="mini-jump ${Math.abs(activeT - item.t) < .03 ? "active" : ""}" type="button" data-mini-t="${item.t}">${esc(item.title)}</button>`).join("");
+      const cards = step.minis.map((item) => `<div class="mini-card ${Math.abs(activeT - item.t) < .03 ? "active" : ""}" role="button" tabindex="0" data-mini-t="${item.t}" data-mini-card-t="${item.t}"><h3>${esc(item.title)}</h3>${drawMini(item.t)}<p>${esc(item.caption)}</p></div>`).join("");
+      return `<div class="mini-boundaries"><div class="mini-jump-row">${chips}</div><div class="mini-preview-strip">${cards}</div></div>`;
+    }
+
+    function renderAllSteps() {
+      stepCards.innerHTML = STEPS.map((step, index) => {
+        const policy = POLICIES[step.id] || { movable: false, range: [step.t, step.t], reason: "" };
+        const activeT = clamp(step.t, policy.range[0], policy.range[1]);
+        const derive = step.derive.map(([mark, text]) => `<div class="derive-line"><strong>${mark}</strong>${esc(text)}</div>`).join("");
+        const minis = renderMinisMarkup(step, activeT);
+        const tools = policy.movable ? `<div class="step-local-tools" data-step-tools="${index}">
+          <div class="step-slider-row">
+            <label for="stepRange-${step.id}">P 点 · t＝OP</label>
+            <input id="stepRange-${step.id}" type="range" min="${policy.range[0]}" max="${policy.range[1]}" step="${policy.step || 0.001}" value="${activeT}" data-step-range="${index}">
+            <span class="step-t-value" data-step-t-label="${index}">t=${fmt(activeT)}</span>
+          </div>
+          <div class="step-local-note">${esc(policy.reason)}</div>
+        </div>` : "";
+        return `<article class="card lesson-step-card" id="step-${step.id}" data-step-index="${index}">
+          <div class="step-card-head">
+            <div class="step-card-title">
+              <div class="step-section">${esc(step.section)}</div>
+              <h2>${esc(step.title)}</h2>
+            </div>
+            <div class="step-card-index">${index + 1}/${STEPS.length}</div>
+          </div>
+          <div class="step-card-body">
+            <div class="step-card-diagram">
+              <div class="svg-wrap">
+                <svg viewBox="0 0 1080 760" aria-label="${esc(step.title)}">${diagramMarkupFor(index)}</svg>
+              </div>
+              <div class="legend">{{LEGEND_HTML}}</div>
+              ${tools}
+              ${minis}
+            </div>
+            <div class="step-card-panel">
+              <div class="derive-list">${derive}</div>
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+      renderStepNav();
+      observeSteps();
+    }
+
+    function updateProblemToggle() {
+      problemToggle.textContent = problemCard.classList.contains("collapsed") ? "展开完整题目" : "收起完整题目";
+    }
+
+    function syncProblemCardForInteraction() {
+      if (problemUserPreference !== null) return;
+      problemCard.classList.add("collapsed");
+      updateProblemToggle();
+    }
+
+    function setProblemVisibility(collapsed, user = false) {
+      problemCard.classList.toggle("collapsed", collapsed);
+      if (user) problemUserPreference = collapsed ? "collapsed" : "expanded";
+      updateProblemToggle();
+    }
+
+    function setActiveStep(next, options = {}) {
+      stepIndex = clamp(next, 0, STEPS.length - 1);
+      document.querySelectorAll(".lesson-step-card").forEach((card, index) => {
+        card.classList.toggle("active-step", index === stepIndex);
+      });
+      renderStepNav();
+      if (options.scroll) {
+        document.getElementById(`step-${STEPS[stepIndex].id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function setStep(next) {
+      syncProblemCardForInteraction();
+      setActiveStep(next, { scroll: true });
+    }
+
+    function closeMobileStepSheet() {
+      mobileStepSheet.classList.remove("open");
+      mobileStepSheet.setAttribute("aria-hidden", "true");
+    }
+
+    function openMobileStepSheet() {
+      mobileStepSheet.classList.add("open");
+      mobileStepSheet.setAttribute("aria-hidden", "false");
+    }
+
+    function updateStepDiagram(index, value) {
+      const step = STEPS[index];
+      const policy = POLICIES[step.id];
+      if (!policy?.movable) return;
+      const nextT = clamp(Number(value), policy.range[0], policy.range[1]);
+      const card = document.querySelector(`.lesson-step-card[data-step-index="${index}"]`);
+      const svgEl = card?.querySelector("svg");
+      const labelEl = card?.querySelector(`[data-step-t-label="${index}"]`);
+      const rangeEl = card?.querySelector(`[data-step-range="${index}"]`);
+      if (svgEl) svgEl.innerHTML = diagramMarkupFor(index, nextT);
+      if (labelEl) labelEl.textContent = `t=${fmt(nextT)}`;
+      if (rangeEl && Number(rangeEl.value) !== nextT) rangeEl.value = String(nextT);
+      card?.querySelectorAll("[data-mini-t]").forEach((el) => {
+        el.classList.toggle("active", Math.abs(Number(el.dataset.miniT) - nextT) < .03);
+      });
+    }
+
+    function observeSteps() {
+      if (stepObserver) stepObserver.disconnect();
+      stepObserver = new IntersectionObserver((entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        const next = Number(visible.target.dataset.stepIndex);
+        if (Number.isInteger(next) && next !== stepIndex) setActiveStep(next);
+      }, { rootMargin: "-20% 0px -55% 0px", threshold: [.15, .3, .55] });
+      document.querySelectorAll(".lesson-step-card").forEach((card) => stepObserver.observe(card));
+      setActiveStep(stepIndex);
+    }
+
+    stepNav.addEventListener("click", (event) => {
+      const target = event.target.closest("button[data-step]");
+      if (target) setStep(Number(target.dataset.step));
+    });
+    mobileStepNav.addEventListener("click", (event) => {
+      const target = event.target.closest("button[data-step]");
+      if (target) {
+        setStep(Number(target.dataset.step));
+        closeMobileStepSheet();
+      }
+    });
+    mobileStepToggle.addEventListener("click", openMobileStepSheet);
+    mobileStepClose.addEventListener("click", closeMobileStepSheet);
+    mobileStepSheet.addEventListener("click", (event) => {
+      if (event.target === mobileStepSheet) closeMobileStepSheet();
+    });
+    stepCards.addEventListener("input", (event) => {
+      const target = event.target.closest("input[data-step-range]");
+      if (target) updateStepDiagram(Number(target.dataset.stepRange), target.value);
+    });
+    stepCards.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-mini-t]");
+      if (!target) return;
+      const card = target.closest(".lesson-step-card");
+      updateStepDiagram(Number(card?.dataset.stepIndex), target.dataset.miniT);
+    });
+    stepCards.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const target = event.target.closest("[data-mini-t]");
+      if (!target) return;
+      event.preventDefault();
+      const card = target.closest(".lesson-step-card");
+      updateStepDiagram(Number(card?.dataset.stepIndex), target.dataset.miniT);
+    });
+    problemToggle.addEventListener("click", () => setProblemVisibility(!problemCard.classList.contains("collapsed"), true));
+    updateProblemToggle();
+    renderAllSteps();
+  </script>
+</body>
+</html>

@@ -17,60 +17,55 @@
     <a href="../../../nav/index.html">题库导航</a>
     <span class="lesson-title">2025 天津市部分区二模 第 24 题</span>
   </header>
-  <main class="page" id="main">
-    <section class="card problem" id="problemCard">
-      <div class="problem-summary">
-        <div class="problem-summary-text">第 24 题（2025 天津市部分区二模）矩形折叠：求 C、A'，求 A'F 与 t 范围，求 S 范围</div>
-        <button id="problemToggle" class="problem-toggle" type="button">展开完整题目</button>
-      </div>
-      <div class="problem-full" id="problemFull">
-        <div class="problem-line"><span>24．将一个矩形纸片 ABCD 放置在平面直角坐标系中，O（0，0），A（-2，0），B（4，0），D（-2，2√3），点 C 在第一象限，CD 与 y 轴交于点 G，P 为线段 OB 上一点，过点 P 作直线 l 交 CD 于点 Q，∠APQ＝60°。沿直线 PQ 折叠该纸片，折叠后点 A，D 的对应点分别为 A'，D'。</span></div>
-        <div class="problem-line"><span>（I）如图 Z4-21①，当点 P 与点 O 重合时，点 Q 与点 D 重合，则点 C 的坐标为______，A' 的坐标为______。</span><span class="answer-chip" id="answerI">答案：C＝（4，2√3），A'＝（1，√3）</span></div>
-        <div class="problem-line"><span>（II）设折叠后与矩形 OBCG 重叠部分的面积为 S。设 OP＝t。</span></div>
-        <div class="problem-line"><span>① 如图 Z4-21②，当折叠后四边形 A'D'QP 与矩形 OBCG 重叠部分为五边形时，A'D' 与 CG 交于点 F，PQ 与 OG 交于点 E，用含 t 的式子表示线段 A'F 的长，并直接写出 t 的取值范围；</span><span class="answer-chip" id="answerQ1">答案：A'F＝（2-t）√3，2/3&lt;t&lt;2</span></div>
-        <div class="problem-line"><span>② 当 3/2≤t≤7/2 时，求 S 的取值范围（直接写出结果即可）。</span><span class="answer-chip" id="answerQ2">答案：23√3/8 ≤ S ≤ 4√3</span></div>
-      </div>
-    </section>
-
-    <section class="card lesson-nav">
-      <div class="step-nav" id="stepNav"></div>
-    </section>
-
-    <section class="workspace">
-      <article class="card diagram">
-        <div class="svg-wrap">
-          <svg id="diagram" viewBox="0 0 1080 760" aria-label="第 24 题图形"></svg>
-        </div>
-        <div class="legend">
-          <span><i class="sw" style="background:var(--paper)"></i>原矩形纸片</span>
-          <span><i class="sw" style="background:var(--fold)"></i>折叠后四边形 A'D'QP</span>
-          <span><i class="sw" style="background:var(--overlap)"></i>当前重叠区域</span>
-        </div>
-      </article>
-      <article class="card panel">
-        <div class="step-head">
-          <div class="step-section" id="stepSection">第（I）问</div>
-          <h2 id="stepTitle">第1步：利用矩形性质求 C 点坐标</h2>
-        </div>
-        <div class="derive-list" id="deriveList"></div>
-        <div class="mini-boundaries" id="boundaryGallery" hidden></div>
-      </article>
-    </section>
-
-    <section class="card tools">
-      <div class="tool-block">
-        <div class="p-row">
-          <div class="tool-title">P 点交互</div>
-          <div class="p-control">
-            <label for="pRange">P点组件 (t=OP)</label>
-            <input id="pRange" type="range" min="0" max="4" step="0.001" value="1.500">
-            <span id="pLabel">t=1.500</span>
+  <main class="page page-with-rail" id="main">
+    <div class="lesson-layout">
+      <div class="lesson-flow">
+        <section class="card problem" id="problemCard">
+          <div class="problem-summary">
+            <div class="problem-summary-text">第 24 题（2025 天津市部分区二模）矩形折叠：求 C、A'，求 A'F 与 t 范围，求 S 范围</div>
+            <button id="problemToggle" class="problem-toggle" type="button">收起完整题目</button>
           </div>
-          <button id="moveBtn" class="warn" type="button">本步锁定</button>
-        </div>
-        <div class="milestones" id="milestoneBar" hidden></div>
+          <div class="problem-full" id="problemFull">
+            <div class="problem-line"><span>24．将一个矩形纸片 ABCD 放置在平面直角坐标系中，O（0，0），A（-2，0），B（4，0），D（-2，2√3），点 C 在第一象限，CD 与 y 轴交于点 G，P 为线段 OB 上一点，过点 P 作直线 l 交 CD 于点 Q，∠APQ＝60°。沿直线 PQ 折叠该纸片，折叠后点 A，D 的对应点分别为 A'，D'。</span></div>
+            <div class="problem-line"><span>（I）如图 Z4-21①，当点 P 与点 O 重合时，点 Q 与点 D 重合，则点 C 的坐标为______，A' 的坐标为______。</span><span class="answer-chip" id="answerI">答案：C＝（4，2√3），A'＝（1，√3）</span></div>
+            <div class="problem-line"><span>（II）设折叠后与矩形 OBCG 重叠部分的面积为 S。设 OP＝t。</span></div>
+            <div class="problem-line"><span>① 如图 Z4-21②，当折叠后四边形 A'D'QP 与矩形 OBCG 重叠部分为五边形时，A'D' 与 CG 交于点 F，PQ 与 OG 交于点 E，用含 t 的式子表示线段 A'F 的长，并直接写出 t 的取值范围；</span><span class="answer-chip" id="answerQ1">答案：A'F＝（2-t）√3，2/3&lt;t&lt;2</span></div>
+            <div class="problem-line"><span>② 当 3/2≤t≤7/2 时，求 S 的取值范围（直接写出结果即可）。</span><span class="answer-chip" id="answerQ2">答案：23√3/8 ≤ S ≤ 4√3</span></div>
+          </div>
+        </section>
+
+        <section class="all-steps" id="stepCards" aria-label="完整解题步骤"></section>
       </div>
-    </section>
+
+      <aside class="card lesson-rail" aria-label="步骤导航">
+        <div class="rail-kicker">STEP MAP</div>
+        <h2 class="rail-title">步骤导航</h2>
+        <div class="rail-progress">
+          <span id="railProgressText">1 / 1</span>
+          <span class="rail-progress-bar" aria-hidden="true"><span class="rail-progress-fill" id="railProgressFill"></span></span>
+        </div>
+        <div class="step-nav" id="stepNav"></div>
+      </aside>
+    </div>
+
+    <div class="mobile-step-dock" id="mobileStepDock">
+      <div class="mobile-step-current">
+        <span class="mobile-step-count" id="mobileStepCount">步骤 1 / 1</span>
+        <span class="mobile-step-name" id="mobileStepName">步骤</span>
+      </div>
+      <button class="mobile-step-toggle" id="mobileStepToggle" type="button">目录</button>
+    </div>
+
+    <div class="mobile-step-sheet" id="mobileStepSheet" aria-hidden="true">
+      <div class="mobile-step-panel" role="dialog" aria-modal="true" aria-label="快速跳转">
+        <div class="mobile-sheet-handle" aria-hidden="true"></div>
+        <div class="mobile-sheet-head">
+          <h2>快速跳转</h2>
+          <button class="secondary" id="mobileStepClose" type="button">关闭</button>
+        </div>
+        <div class="step-nav" id="mobileStepNav"></div>
+      </div>
+    </div>
   </main>
 
   <script src="../../../assets/js/geometry-label-layout.js"></script>
@@ -130,10 +125,10 @@
         {mark:"so",text:"右边界：Q 与 G 重合"}],
         box:["A'F＝（2-t）√3","左边界：A'D' 与 CG 交于点 G","右边界：Q 与 G 重合"],
         minis:[
-          {title:"状态1：t=2/3",caption:"A'D' 与 CG 交于 G，重叠部分还是四边形。",t:2/3},
-          {title:"状态2：2/3<t<2",caption:"P 向右移动后，重叠部分变成五边形。",t:1.5},
-          {title:"状态3：t=2",caption:"Q 与 G 重合，A' 与 C 重合，重叠部分是三角形。",t:2},
-          {title:"状态4：t>2",caption:"P 再向右移动，重叠部分又变成四边形。",t:2.5}
+          {title:"t=2/3",caption:"A'D' 与 CG 交于 G，重叠部分还是四边形。",t:2/3},
+          {title:"2/3<t<2",caption:"P 向右移动后，重叠部分变成五边形。",t:1.5},
+          {title:"t=2",caption:"Q 与 G 重合，A' 与 C 重合，重叠部分是三角形。",t:2},
+          {title:"t>2",caption:"P 再向右移动，重叠部分又变成四边形。",t:2.5}
         ]},
       {id:"q1s6",section:"第（II）①问",title:"第6步：由左边界求 t 的下界",t:2/3,derive:[
         {mark:"because",text:"左边界时，F 与 G 重合"},
@@ -156,9 +151,9 @@
         {mark:"so",text:"最大值在 t＝2，最小值比较 t＝3/2 和 t＝7/2"}],
         box:["3/2≤t<2：五边形","t＝2：三角形","2<t≤7/2：四边形","最大值在 t＝2","最小值比较 t＝3/2 和 t＝7/2"],
         minis:[
-          {title:"状态1：3/2≤t<2",caption:"五边形，面积随着 t 增大而增大。",t:1.8},
-          {title:"状态2：t=2",caption:"三角形，Q 与 G 重合，面积达到最大。",t:2},
-          {title:"状态3：2<t≤7/2",caption:"四边形，面积随着 t 增大而减小。",t:3.5}
+          {title:"3/2≤t<2",caption:"五边形，面积随着 t 增大而增大。",t:1.8},
+          {title:"t=2",caption:"三角形，Q 与 G 重合，面积达到最大。",t:2},
+          {title:"2<t≤7/2",caption:"四边形，面积随着 t 增大而减小。",t:3.5}
         ]},
       {id:"q2s2",section:"第（II）②问",title:"第2步：当 t＝2 时由三角形面积求最大值",t:2,derive:[
         {mark:"because",text:"t＝2 时，重叠部分是三角形"},
@@ -194,25 +189,24 @@
     ];
 
     let stepIndex=0;
-    let t=STEPS[0].t;
-    let canMove=false;
     let currentLabelLayout=null;
-    const svg=document.getElementById("diagram");
-    const stepSection=document.getElementById("stepSection");
-    const stepTitle=document.getElementById("stepTitle");
-    const deriveList=document.getElementById("deriveList");
-    const boundaryGallery=document.getElementById("boundaryGallery");
+    let problemUserPreference=null;
+    let stepObserver=null;
+    const stepCards=document.getElementById("stepCards");
     const stepNav=document.getElementById("stepNav");
-    const pRange=document.getElementById("pRange");
-    const pLabel=document.getElementById("pLabel");
-    const milestoneBar=document.getElementById("milestoneBar");
-    const moveBtn=document.getElementById("moveBtn");
+    const mobileStepNav=document.getElementById("mobileStepNav");
+    const problemCard=document.getElementById("problemCard");
+    const problemToggle=document.getElementById("problemToggle");
+    const railProgressText=document.getElementById("railProgressText");
+    const railProgressFill=document.getElementById("railProgressFill");
+    const mobileStepSheet=document.getElementById("mobileStepSheet");
+    const mobileStepToggle=document.getElementById("mobileStepToggle");
+    const mobileStepClose=document.getElementById("mobileStepClose");
+    const mobileStepCount=document.getElementById("mobileStepCount");
+    const mobileStepName=document.getElementById("mobileStepName");
     const answerI=document.getElementById("answerI");
     const answerQ1=document.getElementById("answerQ1");
     const answerQ2=document.getElementById("answerQ2");
-    const problemCard=document.getElementById("problemCard");
-    const problemToggle=document.getElementById("problemToggle");
-    let problemUserPreference=null;
     const MOVE_POLICIES={
       i1s1:{movable:false,range:[0,0],reason:"本步只看矩形固定条件，不移动 P。"},
       i1s2:{movable:false,range:[0,0],reason:"本步固定在 P 与 O 重合的状态。"},
@@ -230,32 +224,9 @@
       q2s4:{movable:false,range:[3.5,3.5],reason:"本步固定在 t=7/2 计算最小值候选。"},
       q2s5:{movable:true,range:[1.5,3.5],label:"3/2≤t≤7/2",reason:"本步用于验证 S 的变化、最大值和最小值。"}
     };
-    const MILESTONES={
-      q1s8:[
-        {t:2/3,label:"左边界 t=2/3",note:"五边形开始"},
-        {t:1.5,label:"示例 t=3/2",note:"A'F=√3/2"},
-        {t:2,label:"右边界 t=2",note:"五边形结束"}
-      ],
-      q1s5:[
-        {t:2/3,label:"状态1 t=2/3",note:"左边界"},
-        {t:1.5,label:"状态2 2/3<t<2",note:"五边形"},
-        {t:2,label:"状态3 t=2",note:"三角形"},
-        {t:2.5,label:"状态4 t>2",note:"四边形"}
-      ],
-      q2s1:[
-        {t:1.5,label:"状态1 t=3/2",note:"五边形"},
-        {t:2,label:"状态2 t=2",note:"最大"},
-        {t:3.5,label:"状态3 t=7/2",note:"四边形"}
-      ],
-      q2s5:[
-        {t:1.5,label:"t=3/2",note:"S=15√3/4"},
-        {t:2,label:"t=2 最大",note:"S=4√3"},
-        {t:3.5,label:"t=7/2 最小",note:"S=23√3/8"}
-      ]
-    };
-
     function esc(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}
     function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+    function fmt(v){return Number(v).toFixed(3).replace(/\.?0+$/,"");}
     const DEFAULT_MOVE_POLICY = { movable: false, range: [0, 0], reason: "本步固定在推荐位置。" };
     function navGroupTitle(section){
       if(section==="第（I）问") return "第（I）问 坐标";
@@ -499,12 +470,12 @@
       const R={x:4,y:SQRT3*(4-curT)};
       return {P,Q,A1,D1,moved,overlap,E,F,H,M,T,N,R};
     }
-    function miniSvgMarkup(item){
+    function miniSvgMarkup(item, activeT){
       const s=state(item.t), pad={left:18,right:14,top:10,bottom:14}, w=260,h=128;
-      const active=Math.abs(t-item.t)<0.01;
-      return `<div class="mini-card ${active?"active":""}" data-t="${item.t}">
+      const active=Math.abs(activeT-item.t)<0.01;
+      return `<div class="mini-card ${active?"active":""}" role="button" tabindex="0" data-mini-t="${item.t}" data-mini-card-t="${item.t}">
         <h3>${esc(item.title)}</h3>
-        <svg viewBox="0 0 260 128">
+        <svg viewBox="0 0 260 128" aria-hidden="true">
           <line x1="${toScreen({x:DOMAIN.minX,y:0},w,h,pad).x}" y1="${toScreen({x:DOMAIN.minX,y:0},w,h,pad).y}" x2="${toScreen({x:DOMAIN.maxX,y:0},w,h,pad).x}" y2="${toScreen({x:DOMAIN.maxX,y:0},w,h,pad).y}" stroke="#64748b" stroke-width="1.5" />
           <path d="${path([BASE.A,BASE.B,BASE.C,BASE.D],w,h,pad)}" fill="var(--paper)" stroke="var(--paper-stroke)" stroke-width="1.6" />
           <path d="${path(s.moved,w,h,pad)}" fill="var(--fold)" stroke="var(--fold-stroke)" stroke-width="1.6" />
@@ -513,28 +484,11 @@
         <p>${esc(item.caption)}</p>
       </div>`;
     }
-    function renderMiniGallery(items){
-      if(!items||!items.length){ boundaryGallery.hidden=true; boundaryGallery.innerHTML=""; return; }
-      boundaryGallery.hidden=false;
-      const columns=items.length>=3?2:items.length;
-      boundaryGallery.style.gridTemplateColumns=`repeat(${columns}, minmax(0,1fr))`;
-      boundaryGallery.innerHTML=items.map(miniSvgMarkup).join("");
-    }
-    function jumpToT(rawT){
-      const policy = MOVE_POLICIES[STEPS[stepIndex].id] || { ...DEFAULT_MOVE_POLICY, range: [STEPS[stepIndex].t, STEPS[stepIndex].t] };
-      if(!policy.movable) return;
-      canMove=true;
-      t=clamp(Number(rawT),policy.range[0],policy.range[1]);
-      draw();
-    }
-    function renderMilestones(step,policy){
-      const items=MILESTONES[step.id] || [];
-      if(!items.length){ milestoneBar.hidden=true; milestoneBar.innerHTML=""; return; }
-      milestoneBar.hidden=false;
-      milestoneBar.innerHTML=`<span class="milestone-label">关键点</span>`+items.map(item=>{
-        const active=Math.abs(t-item.t)<0.01;
-        return `<button class="milestone-btn ${active?"active":""}" type="button" data-t="${item.t}">${esc(item.label)} · ${esc(item.note)}</button>`;
-      }).join("");
+    function renderMinisMarkup(step, activeT){
+      if(!step.minis?.length) return "";
+      const chips=step.minis.map(item=>`<button class="mini-jump ${Math.abs(activeT-item.t)<0.01?"active":""}" type="button" data-mini-t="${item.t}">${esc(item.title)}</button>`).join("");
+      const cards=step.minis.map(item=>miniSvgMarkup(item, activeT)).join("");
+      return `<div class="mini-boundaries"><div class="mini-jump-row">${chips}</div><div class="mini-preview-strip">${cards}</div></div>`;
     }
     function exactOrApproxArea(curT,area){
       if(Math.abs(curT-1.5)<0.01) return "S=15√3/4";
@@ -542,35 +496,32 @@
       if(Math.abs(curT-3.5)<0.01) return "S=23√3/8";
       return `S≈${area.toFixed(3)}`;
     }
-    function stepBoxLines(step,s){
+    function stepBoxLines(step,s,localT){
       if(step.id==="q1s8"){
-        const len=(2-t)*SQRT3;
-        const prefix=Math.abs(t-2/3)<0.01 ? "左边界" : Math.abs(t-2)<0.01 ? "右边界" : "五边形内";
-        return [`${prefix}：t=${t.toFixed(3)}`, `A'F≈${len.toFixed(3)}`, "A'F＝（2-t）√3", "2/3<t<2"];
+        const len=(2-localT)*SQRT3;
+        const prefix=Math.abs(localT-2/3)<0.01 ? "左边界" : Math.abs(localT-2)<0.01 ? "右边界" : "五边形内";
+        return [`${prefix}：t=${localT.toFixed(3)}`, `A'F≈${len.toFixed(3)}`, "A'F＝（2-t）√3", "2/3<t<2"];
       }
       if(step.id==="q2s5"){
         const area=polygonArea(s.overlap);
-        const prefix=Math.abs(t-1.5)<0.01 ? "左端候选" : Math.abs(t-2)<0.01 ? "最大值" : Math.abs(t-3.5)<0.01 ? "右端最小值" : "当前";
-        return [`${prefix}：t=${t.toFixed(3)}`, exactOrApproxArea(t,area), "23√3/8 ≤ S ≤ 4√3"];
+        const prefix=Math.abs(localT-1.5)<0.01 ? "左端候选" : Math.abs(localT-2)<0.01 ? "最大值" : Math.abs(localT-3.5)<0.01 ? "右端最小值" : "当前";
+        return [`${prefix}：t=${localT.toFixed(3)}`, exactOrApproxArea(localT,area), "23√3/8 ≤ S ≤ 4√3"];
       }
       return step.box || [];
     }
     function updateProblemAnswers(){
-      const q1Done=STEPS.findIndex(s=>s.id==="i1s2");
-      const q2Done=STEPS.findIndex(s=>s.id==="q1s8");
-      const q3Done=STEPS.findIndex(s=>s.id==="q2s5");
-      answerI.classList.toggle("show",stepIndex>=q1Done);
-      answerQ1.classList.toggle("show",stepIndex>=q2Done);
-      answerQ2.classList.toggle("show",stepIndex>=q3Done);
+      answerI.classList.add("show");
+      answerQ1.classList.add("show");
+      answerQ2.classList.add("show");
     }
-    function renderStepNav(){
+    function renderStepNavMarkup(){
       const groups=[];
       for(const step of STEPS){
         let group=groups.find(item=>item.section===step.section);
         if(!group){ group={section:step.section,steps:[]}; groups.push(group); }
         group.steps.push(step);
       }
-      stepNav.innerHTML=groups.map(group=>{
+      return groups.map(group=>{
         const dots=group.steps.map((step,idx)=>{
           const index=STEPS.indexOf(step);
           const done=index<stepIndex;
@@ -579,44 +530,31 @@
           const dot=`<button class="step-dot ${done?"done":""} ${active?"active":""}" type="button" data-step="${index}" title="${esc(step.title)}">${esc(label)}</button>`;
           return idx===0 ? dot : `<span class="step-connector"></span>${dot}`;
         }).join("");
-        const navBtns=groups.indexOf(group)===0
-          ? `<div class="nav-buttons"><button id="prevBtn" class="secondary" type="button">后退</button><button id="nextBtn" type="button">前进</button></div>`
-          : "";
-        return `<div class="step-group"><div class="step-group-title">${esc(navGroupTitle(group.section))}</div><div class="step-dots">${dots}</div>${navBtns}</div>`;
+        return `<div class="step-group"><div class="step-group-title">${esc(navGroupTitle(group.section))}</div><div class="step-dots">${dots}</div></div>`;
       }).join("");
-      document.getElementById("prevBtn").addEventListener("click",()=>setStep(stepIndex-1));
-      document.getElementById("nextBtn").addEventListener("click",()=>setStep(stepIndex+1));
     }
-    function draw(){
-      const step=STEPS[stepIndex];
+    function renderStepNav(){
+      const markup=renderStepNavMarkup();
+      stepNav.innerHTML=markup;
+      mobileStepNav.innerHTML=markup;
+      railProgressText.textContent=`${stepIndex+1} / ${STEPS.length}`;
+      railProgressFill.style.width=`${((stepIndex+1)/STEPS.length)*100}%`;
+      mobileStepCount.textContent=`${STEPS[stepIndex].section} · 步骤 ${stepIndex+1} / ${STEPS.length}`;
+      mobileStepName.textContent=STEP_LABELS[STEPS[stepIndex].id] || STEPS[stepIndex].title;
+    }
+    function diagramMarkupFor(index, overrideT){
+      const step=STEPS[index];
       const policy = MOVE_POLICIES[step.id] || { ...DEFAULT_MOVE_POLICY, range: [step.t, step.t] };
-      if(!policy.movable) canMove=false;
-      t=clamp(t,policy.range[0],policy.range[1]);
-      const s=state(t);
+      const localT=clamp(overrideT ?? step.t,policy.range[0],policy.range[1]);
+      const s=state(localT);
       currentLabelLayout = window.GeometryLabelLayout ? window.GeometryLabelLayout.createLabelLayout({toScreen,padding:4,pointRadius:8}) : null;
-      updateProblemAnswers();
-      stepSection.textContent=step.section || "";
-      stepTitle.textContent=step.title;
-      deriveList.innerHTML=step.derive.map(line=>`<div class="derive-line"><strong>${line.mark==="because"?"∵":"∴"}</strong>${esc(line.text)}</div>`).join("");
-      window.InteractiveLessonUI?.applyMoveControls({
-        policy,
-        canMove,
-        t,
-        controlEl: document.querySelector(".p-control"),
-        rangeEl: pRange,
-        labelEl: pLabel,
-        buttonEl: moveBtn
-      });
-      renderMiniGallery(step.minis||[]);
-      renderMilestones(step,policy);
-      renderStepNav();
 
       let extras=lineThrough(s.P,s.Q,"#111827",2.2,"9 7");
       let overlays="", points="";
 
-      const step1Coincide = (step.id==="i1s1" || step.id==="i1s2") && Math.abs(t)<1e-6;
-      const nearLeftBoundary = Math.abs(t-2/3)<1e-4;
-      const nearRightBoundary = Math.abs(t-2)<1e-4;
+      const step1Coincide = (step.id==="i1s1" || step.id==="i1s2") && Math.abs(localT)<1e-6;
+      const nearLeftBoundary = Math.abs(localT-2/3)<1e-4;
+      const nearRightBoundary = Math.abs(localT-2)<1e-4;
       const occupiedLabels=[];
       addDiagramObstacles(s,step);
       const always=[
@@ -804,7 +742,7 @@
           break;
       }
 
-      svg.innerHTML=`
+      const markup=`
         <line x1="${toScreen({x:DOMAIN.minX,y:0}).x}" y1="${toScreen({x:DOMAIN.minX,y:0}).y}" x2="${toScreen({x:DOMAIN.maxX,y:0}).x}" y2="${toScreen({x:DOMAIN.maxX,y:0}).y}" stroke="#64748b" stroke-width="2" />
         <line x1="${toScreen({x:0,y:DOMAIN.minY}).x}" y1="${toScreen({x:0,y:DOMAIN.minY}).y}" x2="${toScreen({x:0,y:DOMAIN.maxY}).x}" y2="${toScreen({x:0,y:DOMAIN.maxY}).y}" stroke="#64748b" stroke-width="2" />
         <path d="${path([BASE.A,BASE.B,BASE.C,BASE.D])}" fill="var(--paper)" stroke="var(--paper-stroke)" stroke-width="2.4" />
@@ -814,9 +752,53 @@
         ${extras}
         ${overlays}
         ${points}
-        ${stepBoxLines(step,s).length?conditionBox(stepBoxLines(step,s)):""}
+        ${stepBoxLines(step,s,localT).length?conditionBox(stepBoxLines(step,s,localT)):""}
       `;
       currentLabelLayout = null;
+      return markup;
+    }
+    function renderAllSteps(){
+      updateProblemAnswers();
+      stepCards.innerHTML=STEPS.map((step,index)=>{
+        const policy=MOVE_POLICIES[step.id] || { ...DEFAULT_MOVE_POLICY, range: [step.t, step.t] };
+        const activeT=clamp(step.t,policy.range[0],policy.range[1]);
+        const derive=step.derive.map(line=>`<div class="derive-line"><strong>${line.mark==="because"?"∵":"∴"}</strong>${esc(line.text)}</div>`).join("");
+        const tools=policy.movable?`<div class="step-local-tools" data-step-tools="${index}">
+          <div class="step-slider-row">
+            <label for="stepRange-${step.id}">P 点交互 · t＝OP</label>
+            <input id="stepRange-${step.id}" type="range" min="${policy.range[0]}" max="${policy.range[1]}" step="${policy.step||0.001}" value="${activeT}" data-step-range="${index}">
+            <span class="step-t-value" data-step-t-label="${index}">t=${fmt(activeT)}</span>
+          </div>
+        </div>`:"";
+        return `<article class="card lesson-step-card" id="step-${step.id}" data-step-index="${index}">
+          <div class="step-card-head">
+            <div class="step-card-title">
+              <div class="step-section">${esc(step.section)}</div>
+              <h2>${esc(step.title)}</h2>
+            </div>
+            <div class="step-card-index">${index+1}/${STEPS.length}</div>
+          </div>
+          <div class="step-card-body">
+            <div class="step-card-diagram">
+              <div class="svg-wrap">
+                <svg viewBox="0 0 1080 760" aria-label="${esc(step.title)}">${diagramMarkupFor(index)}</svg>
+              </div>
+              <div class="legend">
+                <span><i class="sw" style="background:var(--paper)"></i>原矩形纸片</span>
+                <span><i class="sw" style="background:var(--fold)"></i>折叠后四边形 A'D'QP</span>
+                <span><i class="sw" style="background:var(--overlap)"></i>当前重叠区域 S</span>
+              </div>
+              ${tools}
+              ${renderMinisMarkup(step,activeT)}
+            </div>
+            <div class="step-card-panel">
+              <div class="derive-list">${derive}</div>
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+      renderStepNav();
+      observeSteps();
     }
     function updateProblemToggle(){
       problemToggle.textContent=problemCard.classList.contains("collapsed") ? "展开完整题目" : "收起题目";
@@ -831,55 +813,78 @@
       if(userInitiated) problemUserPreference=collapsed ? "collapsed" : "expanded";
       updateProblemToggle();
     }
+    function setActiveStep(next,options={}){
+      stepIndex=clamp(next,0,STEPS.length-1);
+      document.querySelectorAll(".lesson-step-card").forEach((card,index)=>card.classList.toggle("active-step",index===stepIndex));
+      renderStepNav();
+      if(options.scroll){
+        document.getElementById(`step-${STEPS[stepIndex].id}`)?.scrollIntoView({behavior:"smooth",block:"start"});
+      }
+    }
     function setStep(next){
       syncProblemCardForInteraction();
-      stepIndex=clamp(next,0,STEPS.length-1);
-      const policy = MOVE_POLICIES[STEPS[stepIndex].id] || { ...DEFAULT_MOVE_POLICY, range: [STEPS[stepIndex].t, STEPS[stepIndex].t] };
-      canMove = window.InteractiveLessonUI?.canMoveForPolicy(policy) ?? Boolean(policy?.movable);
-      t=STEPS[stepIndex].t;
-      updateProblemToggle();
-      draw();
+      setActiveStep(next,{scroll:true});
     }
-    stepNav.addEventListener("click",(event)=>{
+    function closeMobileStepSheet(){mobileStepSheet.classList.remove("open");mobileStepSheet.setAttribute("aria-hidden","true");}
+    function openMobileStepSheet(){mobileStepSheet.classList.add("open");mobileStepSheet.setAttribute("aria-hidden","false");}
+    function updateStepDiagram(index,value){
+      const step=STEPS[index],policy=MOVE_POLICIES[step.id];
+      if(!policy?.movable) return;
+      const nextT=clamp(Number(value),policy.range[0],policy.range[1]);
+      const card=document.querySelector(`.lesson-step-card[data-step-index="${index}"]`);
+      const svgEl=card?.querySelector("svg");
+      const labelEl=card?.querySelector(`[data-step-t-label="${index}"]`);
+      const rangeEl=card?.querySelector(`[data-step-range="${index}"]`);
+      if(svgEl) svgEl.innerHTML=diagramMarkupFor(index,nextT);
+      if(labelEl) labelEl.textContent=`t=${fmt(nextT)}`;
+      if(rangeEl && Number(rangeEl.value)!==nextT) rangeEl.value=nextT;
+      card?.querySelectorAll(".mini-jump,.mini-card").forEach(item=>{
+        const miniT=Number(item.dataset.miniT || item.dataset.miniCardT);
+        item.classList.toggle("active",Math.abs(miniT-nextT)<0.03);
+      });
+    }
+    function observeSteps(){
+      if(stepObserver) stepObserver.disconnect();
+      const cards=[...document.querySelectorAll(".lesson-step-card")];
+      stepObserver=new IntersectionObserver(entries=>{
+        const visible=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+        if(!visible) return;
+        setActiveStep(Number(visible.target.dataset.stepIndex));
+      },{rootMargin:"-18% 0px -58% 0px",threshold:[0.18,0.35,0.55]});
+      cards.forEach(card=>stepObserver.observe(card));
+    }
+    function handleStepNavClick(event){
       const target=event.target.closest("button[data-step]");
       if(!target) return;
       syncProblemCardForInteraction();
       setStep(Number(target.dataset.step));
-    });
-    moveBtn.addEventListener("click",()=>{
-      const policy = MOVE_POLICIES[STEPS[stepIndex].id] || { ...DEFAULT_MOVE_POLICY, range: [STEPS[stepIndex].t, STEPS[stepIndex].t] };
-      if(!policy.movable) return;
-      syncProblemCardForInteraction();
-      canMove=!canMove;
-      if(!canMove) t=STEPS[stepIndex].t;
-      t=clamp(t,policy.range[0],policy.range[1]);
-      draw();
-    });
-    pRange.addEventListener("input",()=>{
-      const policy = MOVE_POLICIES[STEPS[stepIndex].id] || { ...DEFAULT_MOVE_POLICY, range: [STEPS[stepIndex].t, STEPS[stepIndex].t] };
-      if(!canMove || !policy.movable) return;
-      syncProblemCardForInteraction();
-      t=clamp(Number(pRange.value),policy.range[0],policy.range[1]);
-      draw();
-    });
-    milestoneBar.addEventListener("click",(event)=>{
-      const target=event.target.closest("button[data-t]");
+      closeMobileStepSheet();
+    }
+    stepNav.addEventListener("click",handleStepNavClick);
+    mobileStepNav.addEventListener("click",handleStepNavClick);
+    stepCards.addEventListener("input",(event)=>{
+      const target=event.target.closest("input[data-step-range]");
       if(!target) return;
       syncProblemCardForInteraction();
-      jumpToT(target.dataset.t);
+      updateStepDiagram(Number(target.dataset.stepRange),target.value);
     });
-    boundaryGallery.addEventListener("click",(event)=>{
-      const target=event.target.closest(".mini-card[data-t]");
+    stepCards.addEventListener("click",(event)=>{
+      const target=event.target.closest("[data-mini-t]");
       if(!target) return;
+      const card=target.closest(".lesson-step-card");
+      if(!card) return;
       syncProblemCardForInteraction();
-      jumpToT(target.dataset.t);
+      updateStepDiagram(Number(card.dataset.stepIndex),target.dataset.miniT);
     });
+    mobileStepToggle.addEventListener("click",openMobileStepSheet);
+    mobileStepClose.addEventListener("click",closeMobileStepSheet);
+    mobileStepSheet.addEventListener("click",(event)=>{if(event.target===mobileStepSheet) closeMobileStepSheet();});
     problemToggle.addEventListener("click",()=>{
       const nextCollapsed=!problemCard.classList.contains("collapsed");
       setProblemVisibility(nextCollapsed,true);
     });
     updateProblemToggle();
-    draw();
+    renderAllSteps();
   </script>
 </body>
 </html>

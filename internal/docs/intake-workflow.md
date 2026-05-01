@@ -11,6 +11,8 @@
 3. 选择合适的题型 skill
 4. 基于统一题页模板生成单文件题页（并视需要同目录放置静态资源）：
    - `site/problems/<城市>/<题位>/<problem-id>.html`
+   - HTML 生成优先使用 `internal/templates/interactive-problem-page.template.html`
+   - 模板说明见 `internal/templates/interactive-problem-page.md`
    - 同目录静态资源用带 `problem-id` 前缀的文件名（如 `…-diagram.svg`），避免同题位多题重名
    - 样式使用公共表 `site/assets/css/interactive-geometry-page.css`（与 `internal/templates/interactive_geometry_page_style.css` 说明一致，题页中 `<link rel="stylesheet" href="../../../assets/css/interactive-geometry-page.css" />`）
    - 需要「SVG 点标注避让、线段尺寸线」时，在题页内联脚本**之前**增加公共库：`<script src="../../../assets/js/geometry-label-layout.js"></script>`，在脚本中使用全局 `window.GeometryLabelLayout`（与河东区一模 24 等题一致）
@@ -30,7 +32,11 @@
 ## 接入完成后的检查
 
 - 页面路径是否唯一且稳定
-- 页面是否沿用统一题页骨架
+- 页面是否沿用 `interactive-problem-page.template.html` 的全步骤展开骨架
+- 桌面端是否有右侧 sticky 步骤目录
+- 手机端是否有底部步骤 dock，并显示当前小问、步骤进度、步骤名
+- 可移动步骤的滑块是否位于对应步骤图形下方
+- 边界/分段缩略图是否能点击联动当前步骤滑块和图形
 - 标签与考试来源是否正确
 - 导航页是否按题位正确聚合
 - 局部资源是否与该题 HTML 同目录、且命名不与同题位其他题冲突

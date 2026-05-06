@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shuxueshuo.local/schemas/step-decorations.schema.json",
+  "title": "StepDecorations",
+  "type": "object",
+  "required": ["layers", "steps"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "_comment": { "type": "string" },
+    "layers": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/layer" }
+    },
+    "steps": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/stepDecoration" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "layer": {
+      "type": "object",
+      "required": ["elements"],
+      "properties": {
+        "section": { "type": "string" },
+        "sectionNot": { "type": "string" },
+        "stepStartsWith": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "elements": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/decoration" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "stepDecoration": {
+      "type": "object",
+      "properties": {
+        "add": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/decoration" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "pointName": { "type": "string" },
+    "number": { "type": "number" },
+    "stringOrNumber": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "number" }
+      ]
+    },
+    "decoration": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "grid",
+            "basePoly",
+            "movingPoly",
+            "overlap",
+            "point",
+            "derivedPoint",
+            "segment",
+            "dashedLine",
+            "coloredLine",
+            "rightAngle",
+            "angleArc",
+            "coordinateLabel",
+            "coincidentLabel",
+            "cutRegion",
+            "outlineRegion",
+            "areaLabel",
+            "areaFormulaCard"
+          ]
+        },
+        "at": { "$ref": "#/$defs/pointName" },
+        "from": { "$ref": "#/$defs/pointName" },
+        "to": { "$ref": "#/$defs/pointName" },
+        "vertex": { "$ref": "#/$defs/pointName" },
+        "rayA": { "$ref": "#/$defs/pointName" },
+        "rayB": { "$ref": "#/$defs/pointName" },
+        "anchor": { "$ref": "#/$defs/pointName" },
+        "region": { "type": "string" },
+        "vertices": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/pointName" }
+        },
+        "label": { "type": "string" },
+        "text": { "type": "string" },
+        "color": { "type": "string" },
+        "style": { "type": "string" },
+        "kind": { "type": "string" },
+        "centroidLabel": { "type": "string" },
+        "pos": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "$ref": "#/$defs/stringOrNumber" }
+        },
+        "terms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text", "kind"],
+            "properties": {
+              "text": { "type": "string" },
+              "kind": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "dx": { "$ref": "#/$defs/number" },
+        "dy": { "$ref": "#/$defs/number" },
+        "altDx": { "$ref": "#/$defs/number" },
+        "altDy": { "$ref": "#/$defs/number" },
+        "r": { "$ref": "#/$defs/number" },
+        "size": { "$ref": "#/$defs/number" },
+        "width": { "$ref": "#/$defs/number" },
+        "radius": { "$ref": "#/$defs/number" },
+        "fontSize": { "$ref": "#/$defs/number" },
+        "labelRadius": { "$ref": "#/$defs/number" },
+        "offsetPx": { "$ref": "#/$defs/number" },
+        "extraNormal": { "$ref": "#/$defs/number" },
+        "when": { "$ref": "#/$defs/number" },
+        "eps": { "$ref": "#/$defs/number" },
+        "rotateWithLine": { "type": "boolean" },
+        "collinearGroup": { "type": "boolean" },
+        "named": { "type": "boolean" },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "dx": { "$ref": "#/$defs/number" },
+              "dy": { "$ref": "#/$defs/number" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

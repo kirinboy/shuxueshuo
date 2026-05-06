@@ -12,6 +12,20 @@
 - 边界状态或分段状态用缩略图表示，桌面端显示 chip + 缩略图，手机端显示低矮横向缩略图。
 - 模板不内联布局 CSS，统一引用 `site/assets/css/interactive-geometry-page.css`。
 
+## 公共脚本（不要复制到题页）
+
+模板和编译脚本负责按顺序引入公共脚本：
+
+1. `site/assets/js/geometry-label-layout.js` — 点线标注避让。
+2. `site/assets/js/interactive-lesson-ui.js` — 滑块策略小工具。
+3. `site/assets/js/lesson-page-runtime.js` — 步骤导航、滑块、minis、题目折叠、IntersectionObserver。
+4. `site/assets/js/geometry-engine.js` — 表达式求值、多边形裁剪、交点等无 DOM 工具。
+5. `site/assets/js/geometry-lesson-from-spec.js` — 从 `geometry-spec.json` 和 `step-decorations.json` 创建 renderer。
+
+新题不要内联复制 `renderStepNav`、`renderAllSteps`、`diagramMarkupFor`、`drawMini` 或任何确定性绘图逻辑。编译器会根据三份 JSON 自动生成 renderer glue，并调用 `LessonPageRuntime.init({ ... })`。
+
+声明式几何规格示例见 `internal/lesson-specs/tj-2026-nankai-yimo-24/geometry-spec.json`，JSON Schema 见 `internal/schemas/geometry-spec.schema.json`。可用 `node tools/validate-geometry-spec.mjs <path>` 做结构 + 试算校验。
+
 ## 模板占位符
 
 - `{{PAGE_TITLE}}`：浏览器标题。
@@ -22,13 +36,11 @@
 - `{{STEPS_JSON}}`：步骤数组。
 - `{{STEP_LABELS_JSON}}`：步骤短标签映射。
 - `{{POLICIES_JSON}}`：每步交互策略映射。
-- `{{GEOMETRY_SCRIPT}}`：当前题目的几何绘图逻辑。
-- `{{LEGEND_HTML}}`：图例 HTML。
+- `{{GEOMETRY_SCRIPT}}`：由编译器生成的几何数据嵌入和 renderer glue。
 
 ## 样式边界
 
 - 公共页面布局样式放在 `site/assets/css/interactive-geometry-page.css`。
-- `internal/templates/interactive_geometry_page_style.css` 仅作为 skill/reference 的同步副本。
 - 新题页不要复制模板布局 CSS 到 HTML 内部。
 - 只有当前题特有、无法公共化的极少数样式才允许写在题页内联 `<style>` 中。
 
@@ -80,32 +92,19 @@
 - 范围必须与当前步骤的数学条件一致。
 - 手机端会隐藏 `reason`，桌面端可显示简短说明。
 
-## `GEOMETRY_SCRIPT` 约定
+## Renderer Glue 约定
 
-必须提供：
+题目数据只提供三份 JSON：
 
-```js
-function diagramMarkupFor(index, overrideT) {
-  // 返回当前步骤 SVG innerHTML
-}
+- `geometry-spec.json`
+- `step-decorations.json`
+- `lesson-data.json`
 
-function drawMini(t) {
-  // 返回边界/状态缩略图 SVG
-}
-```
+`tools/build-lesson-page.mjs` 会把它们编译进模板，并自动生成：
 
-可选提供：
+- `diagramMarkupFor(index, overrideT)`
+- `drawMini(t)`
+- `groupTitle(section)`
+- `__AFTER_RENDER_ALL_STEPS__`
 
-```js
-function groupTitle(section) {
-  // 返回右侧目录分组标题
-}
-```
-
-绘图规则：
-
-- 题目页必须引用仓库公共脚本 `geometry-label-layout.js`。
-- 点标、角标、直角标识、长度标识优先使用公共 helper。
-- 图中不要标注当前步骤正在求的答案，答案放在右上角结论框或推导区。
-- 面积重叠区域统一标 `S`，不要在图中写 `S=...`。
-- 面积拆分用 `area-formula` 系列 class 表示 `S = 大图形 - 小图形`。
+如果图形、缩略图、导航或滑块行为不正确，应修改 JSON、共享 renderer、runtime 或模板，不要手写题页级补丁。

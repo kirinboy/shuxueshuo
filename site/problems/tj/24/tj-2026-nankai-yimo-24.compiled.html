@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 年天津市南开区一模 第 24 题（旋转三角形与重叠面积） | 数学说</title>
+  <meta name="description" content="2026 天津市南开区一模第 24 题：等边三角形、旋转构造 △MPN、五边形重叠状态、CG 与面积 S 的动态变化。" />
+  <link rel="stylesheet" href="../../../assets/css/interactive-geometry-page.css" />
+</head>
+<body>
+  <header class="lesson-topbar" role="navigation" aria-label="页面导航">
+    <a href="../../../index.html">首页</a>
+    <span aria-hidden="true">·</span>
+    <a href="../../../nav/index.html">题库导航</a>
+    <span class="lesson-title">2026 天津市南开区一模 第 24 题</span>
+  </header>
+
+  <main class="page page-with-rail" id="main">
+    <div class="lesson-layout">
+      <div class="lesson-flow">
+        <section class="card problem" id="problemCard">
+          <div class="problem-summary">
+            <div class="problem-summary-text">第 24 题（2026 天津市南开区一模）旋转三角形：求 C、CD，求 CG 与 t 范围，求 S 范围</div>
+            <button id="problemToggle" class="problem-toggle" type="button">收起完整题目</button>
+          </div>
+          <div class="problem-full">
+            <div class="problem-line"><span>（24）（本题共 10 分）在平面直角坐标系中，O 为原点，等边 △ABC 的顶点 A（0，3√3），B（0，-√3），点 C 在第一象限，BC 边与 x 轴相交于点 D。点 P 为 x 正半轴上一动点，将线段 OP 绕点 P 顺时针旋转 60° 和 120°，分别得到线段 MP 和线段 NP，连接 MN，得到 △MPN。</span></div>
+<div class="problem-line"><span>（I）填空：如图 1，点 C 的坐标为__________，线段 CD 的长为__________；</span><span class="answer-chip" id="answerI">答案：C＝（6，√3），CD＝2√3</span></div>
+<div class="problem-line"><span>（II）设 OP＝t，△MPN 与 △ABC 重合部分面积为 S。</span></div>
+<div class="problem-line"><span>① 如图 2，若边 AC 与边 MN 和 PN 分别相交于点 E 和点 F，边 BC 与边 PM 和 PN 分别相交于点 H 和点 G。当 △MPN 与 △ABC 重叠部分为五边形时，试用含有 t 的式子表示线段 CG 的长，并直接写出 t 的取值范围；</span><span class="answer-chip" id="answerQ1">答案：CG＝（5－t）√3，3＜t＜9/2</span></div>
+<div class="problem-line"><span>② 当 1＜t＜5 时，求 S 的取值范围（直接写出结果即可）。</span><span class="answer-chip" id="answerQ2">答案：√3/4＜S≤45√3/16</span></div>
+<div class="problem-line"><strong>原题图形</strong></div>
+<div class="problem-original-figures" aria-label="原题图 1 和图 2">
+  <figure class="problem-figure">
+    <h3>图 1</h3>
+    <svg id="originalFigure1" viewBox="0 0 1080 760" role="img" aria-label="图 1：等边三角形 ABC 和旋转得到的三角形 MPN"></svg>
+  </figure>
+  <figure class="problem-figure">
+    <h3>图 2</h3>
+    <svg id="originalFigure2" viewBox="0 0 1080 760" role="img" aria-label="图 2：五边形重叠状态中的交点 E、F、H、G"></svg>
+  </figure>
+</div>
+          </div>
+        </section>
+
+        <section class="all-steps" id="stepCards" aria-label="完整解题步骤"></section>
+      </div>
+
+      <aside class="card lesson-rail" aria-label="步骤导航">
+        <div class="rail-kicker">STEP MAP</div>
+        <h2 class="rail-title">步骤导航</h2>
+        <div class="rail-progress">
+          <span id="railProgressText">1 / 1</span>
+          <span class="rail-progress-bar" aria-hidden="true"><span class="rail-progress-fill" id="railProgressFill"></span></span>
+        </div>
+        <div class="step-nav" id="stepNav"></div>
+      </aside>
+    </div>
+
+    <div class="mobile-step-dock" id="mobileStepDock">
+      <div class="mobile-step-current">
+        <span class="mobile-step-count" id="mobileStepCount">步骤 1 / 1</span>
+        <span class="mobile-step-name" id="mobileStepName">步骤</span>
+      </div>
+      <button class="mobile-step-toggle" id="mobileStepToggle" type="button">目录</button>
+    </div>
+
+    <div class="mobile-step-sheet" id="mobileStepSheet" aria-hidden="true">
+      <div class="mobile-step-panel" role="dialog" aria-modal="true" aria-label="快速跳转">
+        <div class="mobile-sheet-handle" aria-hidden="true"></div>
+        <div class="mobile-sheet-head">
+          <h2>快速跳转</h2>
+          <button class="secondary" id="mobileStepClose" type="button">关闭</button>
+        </div>
+        <div class="step-nav" id="mobileStepNav"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../../../assets/js/geometry-label-layout.js"></script>
+  <script src="../../../assets/js/interactive-lesson-ui.js"></script>
+  <script src="../../../assets/js/lesson-page-runtime.js"></script>
+
+  <!-- 第一段：页面数据（var 声明，跨脚本块全局可见） -->
+  <script>
+    var STEPS      = [{"id":"i1s1","section":"第（I）问","title":"第1步：利用等边三角形性质求 C 点坐标","t":2,"derive":[["∵","A（0，3√3），B（0，-√3）"],["∴","AB＝4√3，设 AB 的中点为 I，则 I＝（0，√3）"],["∵","△ABC 是等边三角形，点 C 在第一象限"],["∴","CI⊥AB，CI＝4√3×√3/2＝6"],["∴","C＝（6，√3）"]],"box":["AB＝4√3","I＝（0，√3）","CI＝6","C＝（6，√3）"]},{"id":"i1s2","section":"第（I）问","title":"第2步：由 Rt△OBD 与线段差求 CD","t":2,"derive":[["∵","△ABC 是等边三角形"],["∴","BC＝AB＝4√3"],["∵","OB＝√3，OD⊥OB"],["∵","∠ABC＝60°"],["∵","在 Rt△OBD 中，cos60°＝OB/BD"],["∴","BD＝2√3"],["∴","CD＝BC－BD＝2√3"]],"box":["BC＝4√3","OB＝√3","BD＝2√3","CD＝BC－BD＝2√3"]},{"id":"q1s1","section":"第（II）①问","title":"第1步：由 Rt△DHP 与旋转角求 DG","t":3.75,"derive":[["∵","OP＝t，OD＝3"],["∴","DP＝t－3"],["∵","PM 由 OP 顺时针旋转 60° 得到"],["∴","∠HPD＝60°"],["∵","∠HDP＝∠ODB=30°"],["∴","∠DHP=90° DH＝√3(t－3)/2"],["∵","OP 绕 P 顺时针旋转 120° 得到 NP"],["∴","∠HPG＝∠DPH＝60°"],["∵","PH⊥DG"],["∴","△DGP 为等腰三角形"],["∴","DG＝2DH＝√3(t－3)"]],"box":["DP＝t－3","DH＝√3(t－3)/2","DG＝√3(t－3)"]},{"id":"q1s2","section":"第（II）①问","title":"第2步：由线段差求 CG","t":3.75,"derive":[["∵","第（I）问得 CD＝2√3"],["∵","DG＝√3(t－3)"],["∴","CG＝CD－DG＝（5－t）√3"]],"box":["CD＝2√3","DG＝√3(t－3)","CG＝CD－DG＝（5－t）√3"]},{"id":"q1s3","section":"第（II）①问","title":"第3步：由边界位置判断五边形的 t 范围","t":3.75,"derive":[["∵","t＝3 时，P 与 D 重合，重叠部分为三角形"],["∵","3＜t＜9/2时，重叠部分为五边形"],["∵","t＝9/2时，M 在 AC 上，重叠部分为四边形"],["∴","重叠部分为五边形时，3＜t＜9/2"]],"box":["五边形状态：3＜t＜9/2"],"minis":[{"title":"t＝3","caption":"P 与 D 重合，重叠部分为三角形。","t":3},{"title":"3＜t＜9/2","caption":"红色重叠区域是五边形。","t":3.75},{"title":"t＝9/2","caption":"M 落在 AC 上，重叠部分为四边形。","t":4.5}]},{"id":"q1s4","section":"第（II）①问","title":"第4步：合并答案","t":3.75,"derive":[["∴","CG＝（5－t）√3，3＜t＜9/2"]],"box":["CG＝（5－t）√3","3＜t＜9/2"]},{"id":"q2s1","section":"第（II）②问","title":"第1步：由图形变化判断面积分段","t":3.75,"derive":[["∵","1＜t≤3 时，△MPN 完全在 △ABC 内"],["∴","此时重叠部分是整个 △MPN，随着 t 变大，面积变大"],["∵","3＜t＜9/2 时，重叠部分为五边形"],["∴","此时重叠部分为五边形，面积先变大再变小"],["∵","9/2≤t＜5 时，M 离开 △ABC，重叠部分为四边形并继续缩小"],["∴","此时随着 t 变大，面积变小"],["∴","先按这三种形状分段，再分别求面积范围"]],"box":["1＜t≤3：三角形，面积变大","3＜t＜9/2：五边形，面积先变大再变小","9/2≤t＜5：四边形，面积变小"],"minis":[{"title":"1＜t≤3","caption":"△MPN 完全在 △ABC 内，面积变大。","t":2.2},{"title":"3＜t＜9/2","caption":"重叠部分是五边形，面积先变大再变小。","t":3.75},{"title":"9/2≤t＜5","caption":"重叠部分为四边形并继续缩小。","t":4.75}]},{"id":"q2s2","section":"第（II）②问","title":"第2步：在 1＜t≤3 中由三角形面积求范围","t":2.2,"derive":[["∵","1＜t≤3 时，△MPN 完全在 △ABC 内"],["∵","△MPN 是等边三角形，边长为 OP＝t"],["∴","S＝S△MPN＝√3t²/4"],["∵","1＜t≤3"],["∴","√3/4＜S≤9√3/4"]],"box":["S＝S△MPN＝√3t²/4","1＜t≤3","√3/4＜S≤9√3/4"]},{"id":"q2s3","section":"第（II）②问","title":"第3步：在 3＜t＜9/2 中由五边形面积求范围","t":3.75,"derive":[["∵","3＜t＜9/2 时，S＝S△MPN－S△PHG－S△NEF"],["∵","S△MPN＝√3t²/4"],["∵","上一问已得 DP＝t－3，且 PH⊥DG"],["∴","PH＝(t－3)/2，HG＝√3(t－3)/2"],["∴","S△PHG＝√3(t－3)²/8"],["∵","延长 MN 交 AB 于 K，M＝（t/2，√3t/2）"],["∴","AK＝3√3－√3t/2，KM＝t/2"],["∵","Rt△AKE 中，∠A＝60°"],["∴","KE＝AK·√3＝9－3t/2"],["∴","ME＝KE－KM＝9－2t，EN＝MN－ME＝t－（9－2t）＝3(t－3)"],["∵","△NEF 是直角三角形，∠NEF＝30°"],["∴","NF＝3(t－3)/2，EF＝3√3(t－3)/2"],["∴","S△NEF＝9√3(t－3)²/8"],["∴","S＝√3[t²/4－5(t－3)²/4]"],["∴","S＝-√3(t－15/4)²＋45√3/16"],["∴","9√3/4＜S≤45√3/16"]],"box":["S△PHG＝√3(t－3)²/8","S△NEF＝9√3(t－3)²/8","S＝-√3(t－15/4)²＋45√3/16","Smax＝45√3/16"]},{"id":"q2s4","section":"第（II）②问","title":"第4步：在 9/2≤t＜5 中由四边形面积求范围","t":4.75,"derive":[["∵","9/2≤t＜5 时，重叠部分为四边形并随 t 变大而缩小"],["设","PM 与 AC 交于 R"],["∵","重叠四边形 RFGH＝△RHC－△CGF"],["∵","HG＝√3(t－3)/2，CG＝（5－t）√3"],["∴","CH＝HG＋CG＝√3(7－t)/2"],["∵","△RHC 是直角三角形，∠RCH＝60°"],["∴","RH＝3(7－t)/2，S△RHC＝3√3(7－t)²/8"],["∵","△CGF 是直角三角形，∠CGF＝30°，CG＝（5－t）√3"],["∴","S△CGF＝3√3(5－t)²/8"],["∴","S＝S△RHC－S△CGF＝-3√3t/2＋9√3"],["∴","3√3/2＜S≤9√3/4"]],"box":["CH＝√3(7－t)/2","S＝-3√3t/2＋9√3","3√3/2＜S≤9√3/4"]},{"id":"q2s5","section":"第（II）②问","title":"第5步：合并最终答案","t":3.75,"derive":[["∵","由三角形面积得到 √3/4＜S≤9√3/4"],["∵","由五边形面积得到 9√3/4＜S≤45√3/16"],["∵","由四边形面积得到 3√3/2＜S≤9√3/4"],["∴","√3/4＜S≤45√3/16"]],"box":["√3/4＜S≤45√3/16"]}];
+    var STEP_LABELS = {"i1s1":"1 求C坐标","i1s2":"2 求CD","q1s1":"1 求DG","q1s2":"2 求CG","q1s3":"3 判断边界","q1s4":"4 合并答案","q2s1":"1 判断分段","q2s2":"2 三角形面积","q2s3":"3 五边形面积","q2s4":"4 四边形面积","q2s5":"5 合并答案"};
+    var POLICIES   = {"i1s1":{"movable":false,"range":[2,2]},"i1s2":{"movable":false,"range":[2,2]},"q1s1":{"movable":true,"range":[3.001,4.499]},"q1s2":{"movable":true,"range":[3.001,4.499]},"q1s3":{"movable":true,"range":[2.85,4.65]},"q1s4":{"movable":true,"range":[3.001,4.499]},"q2s1":{"movable":true,"range":[1.001,4.999]},"q2s2":{"movable":true,"range":[1.001,3]},"q2s3":{"movable":true,"range":[3.001,4.499]},"q2s4":{"movable":true,"range":[4.5,4.999]},"q2s5":{"movable":true,"range":[1.001,4.999]}};
+    /** 图例 HTML；由 GEOMETRY_SCRIPT 中的脚本块覆盖赋值，默认空字符串 */
+    var __LESSON_LEGEND_HTML__ = "";
+    /** 步骤渲染后的回调；由 GEOMETRY_SCRIPT 中的脚本块覆盖赋值 */
+    var __AFTER_RENDER_ALL_STEPS__;
+    // diagramMarkupFor / drawMini / groupTitle 由下方 GEOMETRY_SCRIPT 提供
+  </script>
+
+  <!-- 第二段：几何引擎 + 渲染器（可含多个 <script> 标签，不能嵌在上面的块里） -->
+  <script type="application/json" id="geometrySpec">{"version":1,"id":"tj-2026-nankai-yimo-24","domain":{"minX":-0.9,"maxX":7.3,"minY":-1.65,"maxY":6.05},"fixedPoints":{"O":["0","0"],"A":["0","3*S3"],"B":["0","-S3"],"C":["6","S3"],"D":["3","0"],"I":["0","S3"]},"movingParam":"t","movingPoints":{"P":["t","0"],"M":["t/2","S3*t/2"],"N":["3*t/2","S3*t/2"]},"basePolygon":["A","B","C"],"movingPolygon":["M","P","N"],"derivedIntersections":[{"name":"E","a":["A","C"],"b":["M","N"],"fallback":["9-3*t/2","S3*t/2"]},{"name":"F","a":["A","C"],"b":["P","N"],"fallback":["3*(t+3)/4","S3*(9-t)/4"]},{"name":"H","a":["B","C"],"b":["P","M"],"fallback":["3*(t+1)/4","S3*(t-3)/4"]},{"name":"G","a":["B","C"],"b":["P","N"],"fallback":["3*(t-1)/2","S3*(t-3)/2"]},{"name":"K","a":["A","B"],"b":["M","N"],"fallback":["0","S3*t/2"]},{"name":"R","a":["A","C"],"b":["P","M"],"fallback":["3*(t-3)/2","S3*(9-t)/2"]}],"originalFigures":[{"id":"originalFigure1","t":2,"showMoving":true,"showOverlap":false,"showIntersections":false},{"id":"originalFigure2","t":3.75,"showMoving":true,"showOverlap":true,"showIntersections":true}]}</script>
+<script src="../../../assets/js/geometry-engine.js"></script>
+<script src="../../../assets/js/geometry-lesson-from-spec.js"></script>
+
+<script>
+  const __GEOMETRY_SPEC__ = JSON.parse(document.getElementById('geometrySpec').textContent);
+  const __STEP_DECORATIONS__ = {"_comment":"南开 24 题 — 步骤装饰数据。layers 定义全局/分小问图层；steps 定义各步增量装饰。","layers":{"global":{"elements":[{"type":"grid"},{"type":"basePoly"},{"type":"point","at":"A","color":"#1f2937","dx":-28,"dy":-10},{"type":"point","at":"B","color":"#1f2937","dx":-28,"dy":22},{"type":"point","at":"C","color":"#1f2937","dx":10,"dy":4},{"type":"point","at":"D","color":"#1f2937","dx":8,"dy":22}]},"II":{"sectionNot":"第（I）问","elements":[{"type":"movingPoly"},{"type":"overlap"},{"type":"point","at":"P","color":"#0f766e","dx":8,"dy":24,"r":6},{"type":"point","at":"M","color":"#0f766e","dx":-34,"dy":-10},{"type":"point","at":"N","color":"#0f766e","dx":10,"dy":-10},{"type":"segment","from":"O","to":"P","label":"OP=t","color":"#0f766e","offsetPx":-24,"collinearGroup":true}]},"intersections":{"stepStartsWith":["q1","q2"],"elements":[{"type":"derivedPoint","at":"E","color":"#dc2626","dx":10,"dy":-12},{"type":"derivedPoint","at":"F","color":"#dc2626","dx":10,"dy":20},{"type":"derivedPoint","at":"H","color":"#dc2626","dx":-24,"dy":18},{"type":"derivedPoint","at":"G","color":"#dc2626","dx":10,"dy":20}]}},"steps":{"i1s1":{"add":[{"type":"segment","from":"A","to":"B","label":"AB=4√3","color":"#0f766e","offsetPx":38,"collinearGroup":false,"extraNormal":12},{"type":"dashedLine","from":"I","to":"C","color":"#0f766e","width":2.4},{"type":"segment","from":"I","to":"C","label":"CI=6","color":"#0f766e","offsetPx":22,"collinearGroup":false,"named":false},{"type":"rightAngle","vertex":"I","rayA":"A","rayB":"C","size":12,"color":"#0f766e"},{"type":"point","at":"I","color":"#0f766e","dx":-26,"dy":-10,"r":4.8,"altDx":10,"altDy":24},{"type":"coordinateLabel","at":"I","text":"I(0,√3)","dx":12,"dy":28},{"type":"coordinateLabel","at":"A","text":"A(0,3√3)","dx":12,"dy":-18},{"type":"coordinateLabel","at":"B","text":"B(0,-√3)","dx":12,"dy":32}]},"i1s2":{"add":[{"type":"coloredLine","from":"B","to":"C","color":"#dc2626","width":3},{"type":"segment","from":"B","to":"O","label":"OB=√3","color":"#0f766e","offsetPx":-34,"collinearGroup":false,"extraNormal":-10},{"type":"segment","from":"B","to":"D","label":"BD=2√3","color":"#0f766e","offsetPx":-24,"style":"parallel","rotateWithLine":true,"collinearGroup":false},{"type":"angleArc","vertex":"B","rayA":"O","rayB":"D","radius":28,"color":"#b45309","label":"60°","candidates":[{"dx":40,"dy":-34}]},{"type":"rightAngle","vertex":"O","rayA":"B","rayB":"D","size":12,"color":"#0f766e"}]},"q1s1":{"add":[{"type":"segment","from":"D","to":"P","label":"DP=t-3","color":"#0f766e","offsetPx":24,"collinearGroup":true},{"type":"angleArc","vertex":"P","rayA":"D","rayB":"H","radius":22,"color":"#b45309","label":"60°","fontSize":12,"labelRadius":33},{"type":"angleArc","vertex":"P","rayA":"H","rayB":"G","radius":25,"color":"#b45309","label":"60°","fontSize":12,"labelRadius":35,"candidates":[{"dx":16,"dy":-30},{"dx":24,"dy":-18},{"dx":8,"dy":-24}]},{"type":"rightAngle","vertex":"H","rayA":"D","rayB":"P","size":9,"color":"#0f766e"}]},"q1s2":{"add":[{"type":"coloredLine","from":"C","to":"G","color":"#dc2626","width":4.2},{"type":"segment","from":"C","to":"D","label":"CD=2√3","color":"#dc2626","offsetPx":30,"style":"parallel","rotateWithLine":true,"collinearGroup":false},{"type":"segment","from":"D","to":"G","label":"DG=√3(t-3)","color":"#0f766e","offsetPx":-28,"style":"parallel","rotateWithLine":true,"collinearGroup":false}]},"q1s3":{"add":[{"type":"coloredLine","from":"C","to":"G","color":"#dc2626","width":4.2},{"type":"coincidentLabel","anchor":"D","when":3,"eps":0.04,"text":"P=H=G=D","color":"#dc2626","dx":10,"dy":-18},{"type":"coincidentLabel","anchor":"M","when":4.5,"eps":0.04,"text":"M 在 AC 上","color":"#dc2626","dx":12,"dy":-18}]},"q1s4":{"add":[{"type":"coloredLine","from":"C","to":"G","color":"#dc2626","width":4.2}]},"q2s1":{"add":[{"type":"areaLabel","region":"overlap","text":"S","color":"#dc2626","dx":-5,"dy":5,"size":16}]},"q2s2":{"add":[{"type":"areaLabel","region":"overlap","text":"S","color":"#dc2626","dx":-5,"dy":5,"size":16}]},"q2s3":{"add":[{"type":"cutRegion","vertices":["P","H","G"],"style":"subtracted","centroidLabel":"−"},{"type":"cutRegion","vertices":["N","E","F"],"style":"subtracted","centroidLabel":"−"},{"type":"dashedLine","from":"K","to":"N","color":"#0f766e","width":1.8},{"type":"point","at":"K","color":"#0f766e","dx":-26,"dy":-8,"r":4.4},{"type":"areaLabel","region":"overlap","text":"S","color":"#dc2626","dx":-5,"dy":5,"size":16},{"type":"areaFormulaCard","pos":[0.45,5.72],"terms":[{"text":"S","kind":"target"},{"text":"=","kind":"op"},{"text":"△MPN","kind":"base"},{"text":"−","kind":"op"},{"text":"△PHG","kind":"cut"},{"text":"−","kind":"op"},{"text":"△NEF","kind":"cut"}]}]},"q2s4":{"add":[{"type":"outlineRegion","vertices":["R","H","C"]},{"type":"cutRegion","vertices":["C","G","F"],"style":"subtracted"},{"type":"point","at":"R","color":"#dc2626","dx":-24,"dy":-12,"r":4.6},{"type":"areaLabel","region":"overlap","text":"S","color":"#dc2626","dx":-5,"dy":5,"size":16},{"type":"areaFormulaCard","pos":[0.45,5.72],"terms":[{"text":"S","kind":"target"},{"text":"=","kind":"op"},{"text":"△RHC","kind":"base"},{"text":"−","kind":"op"},{"text":"△CGF","kind":"cut"}]}]},"q2s5":{"add":[{"type":"areaLabel","region":"overlap","text":"S","color":"#dc2626","dx":-5,"dy":5,"size":16}]}}};
+  const renderer = GeometryLessonFromSpec.createSpecRenderer(__GEOMETRY_SPEC__, __STEP_DECORATIONS__, STEPS, POLICIES);
+  function groupTitle(section) {
+    const map = {"第（I）问":"第（I）问 坐标和长度","第（II）①问":"第（II）① CG 长度","第（II）②问":"第（II）② S 范围"};
+    return map[section] || section;
+  }
+  var diagramMarkupFor = renderer.diagramMarkupFor;
+  var drawMini = renderer.drawMini;
+  var __LESSON_LEGEND_HTML__ = "<span><i class=\"sw\" style=\"background:var(--paper)\"></i>固定等边 △ABC</span><span><i class=\"sw\" style=\"background:var(--fold)\"></i>旋转得到 △MPN</span><span><i class=\"sw\" style=\"background:var(--overlap)\"></i>当前重叠区域 S</span>";
+  // 原题图形渲染：由 renderer 负责（可选）
+  var __AFTER_RENDER_ALL_STEPS__ = renderer.renderOriginalFigures;
+</script>
+
+  <!-- 第三段：初始化运行时 -->
+  <script>
+    LessonPageRuntime.init({
+      afterRenderAllSteps: typeof __AFTER_RENDER_ALL_STEPS__ === "function" ? __AFTER_RENDER_ALL_STEPS__ : undefined,
+      STEPS,
+      POLICIES,
+      STEP_LABELS,
+      diagramMarkupFor,
+      drawMini,
+      groupTitle: typeof groupTitle === "function" ? groupTitle : undefined,
+      legendHtml: __LESSON_LEGEND_HTML__,
+      sliderLabel: "P 点 · t＝OP",
+      paramLabelPrefix: "t=",
+      goToProblemMode: "doubleScroll"
+    });
+  </script>
+</body>
+</html>

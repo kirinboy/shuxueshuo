@@ -129,25 +129,23 @@ body {
 
 .problem-line {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: baseline;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px 12px;
 }
 
 .problem-line > span:first-child {
-  flex: 1;
+  flex: 1 1 60%;
   min-width: 0;
 }
 
 .answer-chip {
   display: none;
-  flex: 0 1 auto;
-  align-self: flex-start;
+  flex: 0 0 auto;
+  align-self: baseline;
   justify-content: center;
   width: max-content;
   max-width: 100%;
-  margin-left: auto;
   padding: 4px 10px;
   border-radius: 999px;
   background: rgba(15, 118, 110, 0.1);
@@ -748,12 +746,8 @@ button:disabled {
     justify-content: flex-start;
   }
 
-  .problem-line {
-    display: block;
-  }
-
-  .answer-chip {
-    margin-top: 6px;
+  .problem-line > span:first-child {
+    flex-basis: 100%;
   }
 
   .mini-boundaries {

@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shuxueshuo.local/schemas/lesson-data.schema.json",
+  "title": "LessonData",
+  "type": "object",
+  "required": ["meta", "problem", "steps", "policies", "stepLabels"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["id", "outputPath", "pageTitle", "pageDescription", "breadcrumbTitle"],
+      "properties": {
+        "id":              { "type": "string" },
+        "outputPath":      { "type": "string", "description": "相对仓库根目录的 HTML 输出路径" },
+        "pageTitle":       { "type": "string" },
+        "pageDescription": { "type": "string" },
+        "breadcrumbTitle": { "type": "string" }
+      }
+    },
+    "problem": {
+      "type": "object",
+      "required": ["summary", "lines"],
+      "properties": {
+        "summary": { "type": "string", "description": "一行摘要，显示在题目卡片折叠状态" },
+        "lines": {
+          "type": "array",
+          "description": "题目内容列表，由编译脚本拼成 HTML，不要内联 HTML 标签",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "description": "普通题目行",
+                "required": ["text"],
+                "properties": {
+                  "text": { "type": "string" }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "description": "带答案 chip 的题目行",
+                "required": ["text", "answerId", "answer"],
+                "properties": {
+                  "text":     { "type": "string" },
+                  "answerId": { "type": "string", "description": "DOM id，如 answerI" },
+                  "answer":   { "type": "string", "description": "答案文字，如 答案：C＝（6，√3）" }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "description": "粗体小标题行，如 原题图形",
+                "required": ["heading"],
+                "properties": {
+                  "heading": { "type": "string" }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "description": "原题图形组（SVG 占位符列表）",
+                "required": ["figures"],
+                "properties": {
+                  "ariaLabel": { "type": "string" },
+                  "figures": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["id", "title"],
+                      "properties": {
+                        "id":        { "type": "string", "description": "SVG 元素 id，与 geometry-spec.originalFigures 对应" },
+                        "title":     { "type": "string", "description": "图名，如 图 1" },
+                        "ariaLabel": { "type": "string" }
+                      }
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "properties": {
+        "legend": {
+          "type": "array",
+          "description": "图例项，由编译脚本生成 legendHtml，不要写 HTML",
+          "items": {
+            "type": "object",
+            "required": ["colorVar", "label"],
+            "properties": {
+              "colorVar": { "type": "string", "description": "CSS 变量名（不含 -- 前缀），如 paper / fold / overlap" },
+              "label":    { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "sliderLabel":      { "type": "string" },
+        "paramLabelPrefix": { "type": "string" },
+        "goToProblemMode":  { "type": "string", "enum": ["doubleScroll", "smooth"] },
+        "groupTitles":      { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "section", "title", "t", "derive", "box"],
+        "properties": {
+          "id":      { "type": "string" },
+          "section": { "type": "string" },
+          "title":   { "type": "string" },
+          "t":       { "type": "number" },
+          "derive":  { "type": "array" },
+          "box":     { "type": "array", "items": { "type": "string" } },
+          "minis":   { "type": "array" }
+        }
+      }
+    },
+    "policies":   { "type": "object" },
+    "stepLabels": { "type": "object" }
+  }
+}

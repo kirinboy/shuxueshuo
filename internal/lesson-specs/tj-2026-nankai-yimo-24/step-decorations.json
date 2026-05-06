@@ -1,0 +1,128 @@
+{
+  "_comment": "南开 24 题 — 步骤装饰数据。layers 定义全局/分小问图层；steps 定义各步增量装饰。",
+
+  "layers": {
+    "global": {
+      "elements": [
+        { "type": "grid" },
+        { "type": "basePoly" },
+        { "type": "point", "at": "A", "color": "#1f2937", "dx": -28, "dy": -10 },
+        { "type": "point", "at": "B", "color": "#1f2937", "dx": -28, "dy": 22 },
+        { "type": "point", "at": "C", "color": "#1f2937", "dx": 10, "dy": 4 },
+        { "type": "point", "at": "D", "color": "#1f2937", "dx": 8, "dy": 22 }
+      ]
+    },
+    "II": {
+      "sectionNot": "第（I）问",
+      "elements": [
+        { "type": "movingPoly" },
+        { "type": "overlap" },
+        { "type": "point", "at": "P", "color": "#0f766e", "dx": 8, "dy": 24, "r": 6 },
+        { "type": "point", "at": "M", "color": "#0f766e", "dx": -34, "dy": -10 },
+        { "type": "point", "at": "N", "color": "#0f766e", "dx": 10, "dy": -10 },
+        { "type": "segment", "from": "O", "to": "P", "label": "OP=t", "color": "#0f766e", "offsetPx": -24, "collinearGroup": true }
+      ]
+    },
+    "intersections": {
+      "stepStartsWith": ["q1", "q2"],
+      "elements": [
+        { "type": "derivedPoint", "at": "E", "color": "#dc2626", "dx": 10, "dy": -12 },
+        { "type": "derivedPoint", "at": "F", "color": "#dc2626", "dx": 10, "dy": 20 },
+        { "type": "derivedPoint", "at": "H", "color": "#dc2626", "dx": -24, "dy": 18 },
+        { "type": "derivedPoint", "at": "G", "color": "#dc2626", "dx": 10, "dy": 20 }
+      ]
+    }
+  },
+
+  "steps": {
+    "i1s1": {
+      "add": [
+        { "type": "segment", "from": "A", "to": "B", "label": "AB=4√3", "color": "#0f766e", "offsetPx": 38, "collinearGroup": false, "extraNormal": 12 },
+        { "type": "dashedLine", "from": "I", "to": "C", "color": "#0f766e", "width": 2.4 },
+        { "type": "segment", "from": "I", "to": "C", "label": "CI=6", "color": "#0f766e", "offsetPx": 22, "collinearGroup": false, "named": false },
+        { "type": "rightAngle", "vertex": "I", "rayA": "A", "rayB": "C", "size": 12, "color": "#0f766e" },
+        { "type": "point", "at": "I", "color": "#0f766e", "dx": -26, "dy": -10, "r": 4.8, "altDx": 10, "altDy": 24 },
+        { "type": "coordinateLabel", "at": "I", "text": "I(0,√3)",  "dx": 12, "dy": 28 },
+        { "type": "coordinateLabel", "at": "A", "text": "A(0,3√3)", "dx": 12, "dy": -18 },
+        { "type": "coordinateLabel", "at": "B", "text": "B(0,-√3)", "dx": 12, "dy": 32 }
+      ]
+    },
+    "i1s2": {
+      "add": [
+        { "type": "coloredLine", "from": "B", "to": "C", "color": "#dc2626", "width": 3 },
+        { "type": "segment", "from": "B", "to": "O", "label": "OB=√3",  "color": "#0f766e", "offsetPx": -34, "collinearGroup": false, "extraNormal": -10 },
+        { "type": "segment", "from": "B", "to": "D", "label": "BD=2√3", "color": "#0f766e", "offsetPx": -24, "style": "parallel", "rotateWithLine": true, "collinearGroup": false },
+        { "type": "angleArc",   "vertex": "B", "rayA": "O", "rayB": "D", "radius": 28, "color": "#b45309", "label": "60°", "candidates": [{ "dx": 40, "dy": -34 }] },
+        { "type": "rightAngle", "vertex": "O", "rayA": "B", "rayB": "D", "size": 12, "color": "#0f766e" }
+      ]
+    },
+    "q1s1": {
+      "add": [
+        { "type": "segment", "from": "D", "to": "P", "label": "DP=t-3", "color": "#0f766e", "offsetPx": 24, "collinearGroup": true },
+        { "type": "angleArc", "vertex": "P", "rayA": "D", "rayB": "H", "radius": 22, "color": "#b45309", "label": "60°", "fontSize": 12, "labelRadius": 33 },
+        { "type": "angleArc", "vertex": "P", "rayA": "H", "rayB": "G", "radius": 25, "color": "#b45309", "label": "60°", "fontSize": 12, "labelRadius": 35, "candidates": [{ "dx": 16, "dy": -30 }, { "dx": 24, "dy": -18 }, { "dx": 8, "dy": -24 }] },
+        { "type": "rightAngle", "vertex": "H", "rayA": "D", "rayB": "P", "size": 9, "color": "#0f766e" }
+      ]
+    },
+    "q1s2": {
+      "add": [
+        { "type": "coloredLine", "from": "C", "to": "G", "color": "#dc2626", "width": 4.2 },
+        { "type": "segment", "from": "C", "to": "D", "label": "CD=2√3",     "color": "#dc2626", "offsetPx": 30,  "style": "parallel", "rotateWithLine": true, "collinearGroup": false },
+        { "type": "segment", "from": "D", "to": "G", "label": "DG=√3(t-3)", "color": "#0f766e", "offsetPx": -28, "style": "parallel", "rotateWithLine": true, "collinearGroup": false }
+      ]
+    },
+    "q1s3": {
+      "add": [
+        { "type": "coloredLine", "from": "C", "to": "G", "color": "#dc2626", "width": 4.2 },
+        { "type": "coincidentLabel", "anchor": "D", "when": 3,   "eps": 0.04, "text": "P=H=G=D",  "color": "#dc2626", "dx": 10, "dy": -18 },
+        { "type": "coincidentLabel", "anchor": "M", "when": 4.5, "eps": 0.04, "text": "M 在 AC 上", "color": "#dc2626", "dx": 12, "dy": -18 }
+      ]
+    },
+    "q1s4": {
+      "add": [
+        { "type": "coloredLine", "from": "C", "to": "G", "color": "#dc2626", "width": 4.2 }
+      ]
+    },
+    "q2s1": {
+      "add": [
+        { "type": "areaLabel", "region": "overlap", "text": "S", "color": "#dc2626", "dx": -5, "dy": 5, "size": 16 }
+      ]
+    },
+    "q2s2": {
+      "add": [
+        { "type": "areaLabel", "region": "overlap", "text": "S", "color": "#dc2626", "dx": -5, "dy": 5, "size": 16 }
+      ]
+    },
+    "q2s3": {
+      "add": [
+        { "type": "cutRegion", "vertices": ["P", "H", "G"], "style": "subtracted", "centroidLabel": "−" },
+        { "type": "cutRegion", "vertices": ["N", "E", "F"], "style": "subtracted", "centroidLabel": "−" },
+        { "type": "dashedLine", "from": "K", "to": "N", "color": "#0f766e", "width": 1.8 },
+        { "type": "point", "at": "K", "color": "#0f766e", "dx": -26, "dy": -8, "r": 4.4 },
+        { "type": "areaLabel", "region": "overlap", "text": "S", "color": "#dc2626", "dx": -5, "dy": 5, "size": 16 },
+        { "type": "areaFormulaCard", "pos": [0.45, 5.72], "terms": [
+          { "text": "S", "kind": "target" }, { "text": "=", "kind": "op" }, { "text": "△MPN", "kind": "base" },
+          { "text": "−", "kind": "op" }, { "text": "△PHG", "kind": "cut" },
+          { "text": "−", "kind": "op" }, { "text": "△NEF", "kind": "cut" }
+        ]}
+      ]
+    },
+    "q2s4": {
+      "add": [
+        { "type": "outlineRegion", "vertices": ["R", "H", "C"] },
+        { "type": "cutRegion",     "vertices": ["C", "G", "F"], "style": "subtracted" },
+        { "type": "point", "at": "R", "color": "#dc2626", "dx": -24, "dy": -12, "r": 4.6 },
+        { "type": "areaLabel", "region": "overlap", "text": "S", "color": "#dc2626", "dx": -5, "dy": 5, "size": 16 },
+        { "type": "areaFormulaCard", "pos": [0.45, 5.72], "terms": [
+          { "text": "S", "kind": "target" }, { "text": "=", "kind": "op" }, { "text": "△RHC", "kind": "base" },
+          { "text": "−", "kind": "op" }, { "text": "△CGF", "kind": "cut" }
+        ]}
+      ]
+    },
+    "q2s5": {
+      "add": [
+        { "type": "areaLabel", "region": "overlap", "text": "S", "color": "#dc2626", "dx": -5, "dy": 5, "size": 16 }
+      ]
+    }
+  }
+}

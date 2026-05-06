@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shuxueshuo.local/schemas/geometry-spec.schema.json",
+  "title": "GeometrySpec",
+  "type": "object",
+  "required": ["version", "domain", "fixedPoints", "movingParam", "movingPoints", "basePolygon", "movingPolygon"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "integer", "minimum": 1 },
+    "id": { "type": "string" },
+    "domain": {
+      "type": "object",
+      "required": ["minX", "maxX", "minY", "maxY"],
+      "properties": {
+        "minX": { "type": "number" },
+        "maxX": { "type": "number" },
+        "minY": { "type": "number" },
+        "maxY": { "type": "number" }
+      }
+    },
+    "fixedPoints": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": { "type": "string" }
+      }
+    },
+    "movingParam": { "type": "string" },
+    "movingPoints": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": { "type": "string" }
+      }
+    },
+    "basePolygon": { "type": "array", "items": { "type": "string" } },
+    "movingPolygon": { "type": "array", "items": { "type": "string" } },
+    "derivedIntersections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "a", "b"],
+        "properties": {
+          "name": { "type": "string" },
+          "a": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string" } },
+          "b": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string" } },
+          "fallback": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

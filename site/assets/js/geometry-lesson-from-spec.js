@@ -395,31 +395,49 @@
       }
 
       var out = gridSvg();
+      function renderLabelList(list, defaults) {
+        var labels = Array.isArray(list) ? list : defaults;
+        labels.forEach(function (item) {
+          var key = item.at || item.k;
+          var p = pts[key];
+          if (!p || !Number.isFinite(p.x) || !Number.isFinite(p.y)) return;
+          out += pointSvg(p, item.label || key, item.color || "#1f2937", item.dx, item.dy, {
+            r: item.r || 6.6,
+            fontSize: item.fontSize || 20
+          });
+        });
+      }
+
       // base poly
       out += state.base.length ? '<path d="' + pathD(state.base) + '" fill="var(--paper)" stroke="var(--paper-stroke)" stroke-width="3" />' : "";
-      // fixed points with larger size
-      var fixedLabels = [
-        { k: "A", dx: -28, dy: -10 }, { k: "B", dx: -28, dy: 22 },
-        { k: "C", dx: 10, dy: 4 }, { k: "D", dx: 8, dy: 22 }
-      ];
-      fixedLabels.forEach(function (fl) {
-        var p = pts[fl.k];
-        if (p) out += pointSvg(p, fl.k, "#1f2937", fl.dx, fl.dy, { r: 6.6, fontSize: 20 });
+      (figConfig.segments || []).forEach(function (seg) {
+        var a = pts[seg.from], b = pts[seg.to];
+        if (!a || !b) return;
+        out += lineSvg(a, b, seg.color || "#0f766e", seg.width || 2.4, seg.dash || "");
       });
+      // fixed points with larger size
+      renderLabelList(figConfig.fixedLabels, [
+        { at: "A", dx: -28, dy: -10 }, { at: "B", dx: -28, dy: 22 },
+        { at: "C", dx: 10, dy: 4 }, { at: "D", dx: 8, dy: 22 }
+      ]);
       if (figConfig.showMoving !== false && state.moving.length) {
         out += '<path d="' + pathD(state.moving) + '" fill="var(--fold)" stroke="var(--fold-stroke)" stroke-width="3" />';
         if (figConfig.showOverlap && state.overlap.length) {
           out += '<path d="' + pathD(state.overlap) + '" fill="var(--overlap)" stroke="var(--overlap-stroke)" stroke-width="3" />';
         }
-        out += pointSvg(pts.P, "P", "#0f766e", 8, 26, { r: 7, fontSize: 20 });
-        out += pointSvg(pts.M, "M", "#0f766e", -40, -12, { r: 6.6, fontSize: 20 });
-        out += pointSvg(pts.N, "N", "#0f766e", 12, -12, { r: 6.6, fontSize: 20 });
+        renderLabelList(figConfig.movingLabels, [
+          { at: "P", dx: 8, dy: 26, color: "#0f766e", r: 7 },
+          { at: "M", dx: -40, dy: -12, color: "#0f766e" },
+          { at: "N", dx: 12, dy: -12, color: "#0f766e" }
+        ]);
       }
       if (figConfig.showIntersections) {
-        [["E", 10, -12], ["F", 10, 20], ["H", -24, 18], ["G", 10, 20]].forEach(function (it) {
-          var p = pts[it[0]];
-          if (inBounds(p)) out += pointSvg(p, it[0], "#dc2626", it[1], it[2], { r: 6, fontSize: 19 });
-        });
+        renderLabelList(figConfig.intersectionLabels, [
+          { at: "E", dx: 10, dy: -12, color: "#dc2626", r: 6, fontSize: 19 },
+          { at: "F", dx: 10, dy: 20, color: "#dc2626", r: 6, fontSize: 19 },
+          { at: "H", dx: -24, dy: 18, color: "#dc2626", r: 6, fontSize: 19 },
+          { at: "G", dx: 10, dy: 20, color: "#dc2626", r: 6, fontSize: 19 }
+        ]);
       }
 
       _layout = null;

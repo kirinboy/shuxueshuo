@@ -92,6 +92,7 @@
           "items": { "$ref": "#/$defs/pointName" }
         },
         "label": { "type": "string" },
+        "labelText": { "type": "string" },
         "text": { "type": "string" },
         "color": { "type": "string" },
         "style": { "type": "string" },
@@ -130,6 +131,7 @@
         "when": { "$ref": "#/$defs/number" },
         "eps": { "$ref": "#/$defs/number" },
         "rotateWithLine": { "type": "boolean" },
+        "showLabel": { "type": "boolean" },
         "collinearGroup": { "type": "boolean" },
         "named": { "type": "boolean" },
         "candidates": {

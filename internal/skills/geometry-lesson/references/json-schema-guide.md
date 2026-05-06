@@ -96,6 +96,7 @@ Rules:
 - Put stable context in `layers`, not repeated step additions.
 - Put only current-step helper/highlight elements in `steps[stepId].add`.
 - Every `lesson-data.steps[].id` must have a matching `step-decorations.steps[id]`.
+- When point `O` is also the coordinate origin, avoid duplicate `O` labels. Prefer `{ "type": "point", "at": "O", "showLabel": false }` if the grid already labels the origin.
 
 ## `lesson-data.json`
 
@@ -136,3 +137,4 @@ Step alignment:
 - An original figure id appears in `lesson-data` but not in `geometry-spec.originalFigures`.
 - A decoration `type` is misspelled.
 - A point id in a segment or polygon is not declared in fixed, moving, or derived points.
+- The grid labels the origin `O` and a separate point decoration or original-figure label also writes `O`, causing duplicate origin text.

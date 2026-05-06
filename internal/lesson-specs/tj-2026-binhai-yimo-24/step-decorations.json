@@ -1,0 +1,132 @@
+{
+  "_comment": "2026 天津市滨海新区一模 24 题 — 平移菱形与矩形重叠面积。",
+  "layers": {
+    "global": {
+      "elements": [
+        { "type": "grid" },
+        { "type": "basePoly" },
+        { "type": "point", "at": "O", "color": "#1f2937", "showLabel": false, "r": 5.2 },
+        { "type": "point", "at": "A", "color": "#1f2937", "dx": -28, "dy": 24, "r": 5.2 },
+        { "type": "point", "at": "B", "color": "#1f2937", "dx": 10, "dy": 4, "r": 5.2 },
+        { "type": "point", "at": "C", "color": "#1f2937", "dx": -28, "dy": 4, "r": 5.2 }
+      ]
+    },
+    "moving": {
+      "stepStartsWith": ["q2"],
+      "elements": [
+        { "type": "movingPoly" },
+        { "type": "overlap" },
+        { "type": "point", "at": "Ep", "labelText": "E′", "color": "#0f766e", "dx": 10, "dy": 6, "r": 5.8 },
+        { "type": "point", "at": "Fp", "labelText": "F′", "color": "#0f766e", "dx": -8, "dy": 24, "r": 5.8 },
+        { "type": "point", "at": "Gp", "labelText": "G′", "color": "#0f766e", "dx": -34, "dy": 8, "r": 5.8 },
+        { "type": "point", "at": "Hp", "labelText": "H′", "color": "#0f766e", "dx": -10, "dy": -12, "r": 5.8 },
+        { "type": "areaLabel", "region": "overlap", "text": "S", "color": "#dc2626", "dx": -4, "dy": 5, "size": 16 }
+      ]
+    }
+  },
+  "steps": {
+    "q1s1": {
+      "add": [
+        { "type": "movingPoly" },
+        { "type": "point", "at": "Ep", "labelText": "E", "color": "#0f766e", "dx": 10, "dy": 6, "r": 5.8 },
+        { "type": "point", "at": "Fp", "labelText": "F", "color": "#0f766e", "dx": -8, "dy": 24, "r": 5.8 },
+        { "type": "point", "at": "Gp", "labelText": "G", "color": "#0f766e", "dx": -34, "dy": 8, "r": 5.8 },
+        { "type": "point", "at": "Hp", "labelText": "H", "color": "#0f766e", "dx": -10, "dy": -12, "r": 5.8 },
+        { "type": "coloredLine", "from": "Ep", "to": "Gp", "color": "#0f766e", "width": 2.6 },
+        { "type": "coordinateLabel", "at": "B", "text": "B(8,6)", "dx": 18, "dy": -16 },
+        { "type": "coordinateLabel", "at": "Hp", "text": "H(-3,3+√3)", "dx": 14, "dy": -24 }
+      ]
+    },
+    "q2a1": {
+      "add": [
+        { "type": "coloredLine", "from": "Gp", "to": "Fp", "color": "#0f766e", "width": 3.2 },
+        { "type": "coloredLine", "from": "Gp", "to": "Hp", "color": "#0f766e", "width": 3.2 },
+        { "type": "coloredLine", "from": "Fp", "to": "Hp", "color": "#0f766e", "width": 3.2 },
+        { "type": "segment", "from": "Gp", "to": "Fp", "label": "2√3", "color": "#0f766e", "offsetPx": 22, "collinearGroup": false },
+        { "type": "segment", "from": "Gp", "to": "Hp", "label": "2√3", "color": "#0f766e", "offsetPx": -22, "collinearGroup": false },
+        { "type": "segment", "from": "Fp", "to": "Hp", "label": "2√3", "color": "#0f766e", "offsetPx": 30, "collinearGroup": false }
+      ]
+    },
+    "q2a2": {
+      "add": [
+        { "type": "coloredLine", "from": "O", "to": "C", "color": "#dc2626", "width": 3 },
+        { "type": "coloredLine", "from": "Gp", "to": "Fp", "color": "#0f766e", "width": 3 },
+        { "type": "coloredLine", "from": "Gp", "to": "Hp", "color": "#0f766e", "width": 3 },
+        { "type": "coloredLine", "from": "Fp", "to": "Hp", "color": "#0f766e", "width": 2.4 },
+        { "type": "point", "at": "M", "color": "#dc2626", "dx": -32, "dy": 22, "r": 5.2 },
+        { "type": "point", "at": "N", "color": "#dc2626", "dx": -32, "dy": -10, "r": 5.2 },
+        { "type": "segment", "from": "M", "to": "N", "label": "MN∥F′H′", "color": "#dc2626", "offsetPx": -36, "collinearGroup": false }
+      ]
+    },
+    "q2a3": {
+      "add": [
+        { "type": "cutRegion", "vertices": ["Gp", "M", "N"], "style": "subtracted", "centroidLabel": "−" },
+        { "type": "point", "at": "M", "color": "#dc2626", "dx": -32, "dy": 22, "r": 5.2 },
+        { "type": "point", "at": "N", "color": "#dc2626", "dx": -32, "dy": -10, "r": 5.2 },
+        { "type": "point", "at": "E0", "labelText": "E", "color": "#dc2626", "dx": 12, "dy": 4, "r": 5.2 },
+        { "type": "coloredLine", "from": "Gp", "to": "E0", "color": "#dc2626", "width": 3 },
+        { "type": "segment", "from": "Gp", "to": "E0", "label": "G′E=6-t", "color": "#dc2626", "offsetPx": -24, "collinearGroup": false }
+      ]
+    },
+    "q2a4": {
+      "add": [
+        { "type": "coloredLine", "from": "O", "to": "C", "color": "#dc2626", "width": 3 },
+        { "type": "point", "at": "M", "color": "#dc2626", "dx": -32, "dy": 22, "r": 5.2 },
+        { "type": "point", "at": "N", "color": "#dc2626", "dx": -32, "dy": -10, "r": 5.2 },
+        { "type": "cutRegion", "vertices": ["Gp", "M", "N"], "style": "subtracted", "centroidLabel": "−" },
+        { "type": "areaFormulaCard", "pos": [-6.2, 6.25], "terms": [
+          { "text": "S", "kind": "target" },
+          { "text": "=", "kind": "op" },
+          { "text": "菱形", "kind": "base" },
+          { "text": "−", "kind": "op" },
+          { "text": "△G′MN", "kind": "cut" }
+        ]}
+      ]
+    },
+    "q2b1": {
+      "add": [
+        { "type": "areaLabel", "region": "overlap", "text": "S", "color": "#dc2626", "dx": -4, "dy": 5, "size": 16 }
+      ]
+    },
+    "q2b2": {
+      "add": [
+        { "type": "cutRegion", "vertices": ["Gp", "M", "N"], "style": "subtracted", "centroidLabel": "−" },
+        { "type": "areaFormulaCard", "pos": [-6.2, 6.25], "terms": [
+          { "text": "S", "kind": "target" },
+          { "text": "=", "kind": "op" },
+          { "text": "菱形", "kind": "base" },
+          { "text": "−", "kind": "op" },
+          { "text": "△G′MN", "kind": "cut" }
+        ]}
+      ]
+    },
+    "q2b3": {
+      "add": [
+        { "type": "areaLabel", "region": "moving", "text": "S=6√3", "color": "#dc2626", "dx": -34, "dy": 5, "size": 15 }
+      ]
+    },
+    "q2b4": {
+      "add": [
+        { "type": "coloredLine", "from": "A", "to": "B", "color": "#dc2626", "width": 3 },
+        { "type": "cutRegion", "vertices": ["Ep", "U", "V"], "style": "subtracted", "centroidLabel": "−" },
+        { "type": "point", "at": "U", "color": "#dc2626", "dx": 12, "dy": 22, "r": 5.2 },
+        { "type": "point", "at": "V", "color": "#dc2626", "dx": 12, "dy": -10, "r": 5.2 },
+        { "type": "point", "at": "R", "color": "#dc2626", "showLabel": false, "r": 4.6 },
+        { "type": "coloredLine", "from": "Ep", "to": "R", "color": "#dc2626", "width": 3 },
+        { "type": "segment", "from": "Ep", "to": "R", "label": "E′到AB距离=t-8", "color": "#dc2626", "offsetPx": -28, "collinearGroup": false },
+        { "type": "areaFormulaCard", "pos": [-6.2, 6.25], "terms": [
+          { "text": "S", "kind": "target" },
+          { "text": "=", "kind": "op" },
+          { "text": "菱形", "kind": "base" },
+          { "text": "−", "kind": "op" },
+          { "text": "△E′UV", "kind": "cut" }
+        ]}
+      ]
+    },
+    "q2b5": {
+      "add": [
+        { "type": "areaLabel", "region": "overlap", "text": "S", "color": "#dc2626", "dx": -4, "dy": 5, "size": 16 }
+      ]
+    }
+  }
+}

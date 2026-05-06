@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "id": "tj-2026-dongli-yimo-24",
+  "domain": { "minX": -2.8, "maxX": 2.8, "minY": -0.9, "maxY": 3.9 },
+  "fixedPoints": {
+    "O": ["0", "0"],
+    "A": ["1.5", "1"],
+    "B": ["1.5", "3"],
+    "C": ["0", "1.5"],
+    "D": ["0", "-0.5"],
+    "H": ["1.5", "1.5"],
+    "M": ["0.5", "0"],
+    "E": ["-2", "0"],
+    "F": ["-2", "2"]
+  },
+  "movingParam": "t",
+  "movingPoints": {
+    "Op": ["t", "0"],
+    "Ep": ["t-2", "0"],
+    "Fp": ["t-2", "2"],
+    "K": ["t-2", "1.5"]
+  },
+  "basePolygon": ["D", "A", "B", "C"],
+  "movingPolygon": ["Op", "Fp", "Ep"],
+  "derivedIntersections": [
+    { "name": "G", "a": ["Op", "Fp"], "b": ["C", "D"], "fallback": ["0", "t"] },
+    { "name": "N", "a": ["Op", "Fp"], "b": ["A", "D"], "fallback": ["(t+0.5)/2", "(t-0.5)/2"] },
+    { "name": "Q", "a": ["Op", "Fp"], "b": ["B", "C"], "fallback": ["(t-1.5)/2", "(t+1.5)/2"] },
+    { "name": "R", "a": ["Ep", "Fp"], "b": ["B", "C"], "fallback": ["t-2", "t-0.5"] }
+  ],
+  "originalFigures": [
+    {
+      "id": "originalFigure1",
+      "t": 0,
+      "showMoving": true,
+      "showOverlap": false,
+      "showIntersections": false,
+      "fixedLabels": [
+        { "at": "A", "label": "A", "dx": 10, "dy": -8 },
+        { "at": "B", "label": "B", "dx": -28, "dy": -6 },
+        { "at": "C", "label": "C", "dx": -28, "dy": 4 },
+        { "at": "D", "label": "D", "dx": 8, "dy": 22 },
+        { "at": "E", "label": "E", "color": "#0f766e", "dx": -12, "dy": 20 },
+        { "at": "F", "label": "F", "color": "#0f766e", "dx": -12, "dy": -12 }
+      ],
+      "movingLabels": []
+    },
+    {
+      "id": "originalFigure2",
+      "t": 1,
+      "showMoving": true,
+      "showOverlap": true,
+      "showIntersections": true,
+      "fixedLabels": [
+        { "at": "A", "label": "A", "dx": 10, "dy": -8 },
+        { "at": "B", "label": "B", "dx": -28, "dy": -6 },
+        { "at": "C", "label": "C", "dx": -28, "dy": 4 },
+        { "at": "D", "label": "D", "dx": 8, "dy": 22 },
+        { "at": "M", "label": "M", "dx": 8, "dy": 20 }
+      ],
+      "movingLabels": [
+        { "at": "Op", "label": "O′", "color": "#0f766e", "dx": 10, "dy": 18 },
+        { "at": "Ep", "label": "E′", "color": "#0f766e", "dx": -18, "dy": 20 },
+        { "at": "Fp", "label": "F′", "color": "#0f766e", "dx": -18, "dy": -12 }
+      ],
+      "intersectionLabels": [
+        { "at": "G", "label": "G", "color": "#dc2626", "dx": -28, "dy": -8 },
+        { "at": "N", "label": "N", "color": "#dc2626", "dx": 10, "dy": -14 }
+      ]
+    }
+  ]
+}

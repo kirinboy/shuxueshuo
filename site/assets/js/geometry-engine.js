@@ -166,6 +166,10 @@
       if (id === "t") return T;
       if (id === "S3" || id === "sqrt3") return S3;
       if (id === "pi") return Math.PI;
+      if (Object.prototype.hasOwnProperty.call(env, id)) {
+        var vv = env[id];
+        if (typeof vv === "number") return vv;
+      }
       throw new Error("unknown ident: " + id);
     }
     function mulDiv() {
@@ -345,6 +349,77 @@
     };
   }
 
+  /**
+   * 抛物线 y = ax² + bx + c 在 [xMin,xMax] 上均匀采样（数学坐标）
+   */
+  function sampleParabola(a, b, c, xMin, xMax, numPoints) {
+    var n = Math.max(2, numPoints || 80);
+    var pts = [];
+    var dx = (xMax - xMin) / (n - 1);
+    for (var i = 0; i < n; i++) {
+      var x = xMin + i * dx;
+      var y = a * x * x + b * x + c;
+      pts.push({ x: x, y: y });
+    }
+    return pts;
+  }
+
+  /**
+   * 将数学坐标点列转为开放折线路径 d（不含 Z），用于抛物线等曲线。
+   * toScreen: {x,y} -> {x,y} 像素坐标
+   */
+  function svgOpenPathFromMathPoints(points, toScreen) {
+    if (!points || !points.length || typeof toScreen !== "function") return "";
+    var first = toScreen(points[0]);
+    var d = "M " + first.x + " " + first.y;
+    for (var i = 1; i < points.length; i++) {
+      var q = toScreen(points[i]);
+      d += " L " + q.x + " " + q.y;
+    }
+    return d;
+  }
+
+  /**
+   * 线段 AB 与抛物线 y = ax²+bx+c 的交点（仅保留在线段上的点）
+   */
+  function segmentParabolaIntersections(a, b, c, p1, p2) {
+    var out = [];
+    var x1 = p1.x,
+      y1 = p1.y,
+      x2 = p2.x,
+      y2 = p2.y;
+    var tol = 1e-9;
+    if (Math.abs(x2 - x1) < tol) {
+      var xv = (x1 + x2) / 2;
+      var yp = a * xv * xv + b * xv + c;
+      var hitV = { x: xv, y: yp };
+      if (onSegment(hitV, p1, p2, 1e-5)) out.push(hitV);
+      return out;
+    }
+    var m = (y2 - y1) / (x2 - x1);
+    var k = y1 - m * x1;
+    var A = a,
+      B = b - m,
+      Ccoef = c - k;
+    if (Math.abs(A) < tol) {
+      if (Math.abs(B) < tol) return out;
+      var xs = -Ccoef / B;
+      var pt = { x: xs, y: m * xs + k };
+      if (onSegment(pt, p1, p2, 1e-5)) out.push(pt);
+      return out;
+    }
+    var disc = B * B - 4 * A * Ccoef;
+    if (disc < -1e-12) return out;
+    var sd = Math.sqrt(Math.max(0, disc));
+    var xa = (-B - sd) / (2 * A),
+      xb = (-B + sd) / (2 * A);
+    [xa, xb].forEach(function (xv) {
+      var pt = { x: xv, y: m * xv + k };
+      if (onSegment(pt, p1, p2, 1e-5)) out.push(pt);
+    });
+    return out;
+  }
+
   /** 面积拆分公式卡片（CSS class area-formula-* 由页面 CSS 定义） */
   function svgAreaFormulaCard(sx, sy, terms) {
     function charW(ch) { return /[\u0000-\u00ff]/.test(ch) ? 8.5 : 17; }
@@ -389,6 +464,9 @@
     svgConclusionBox,
     svgMini,
     svgAngleArcPath,
-    svgAreaFormulaCard
+    svgAreaFormulaCard,
+    sampleParabola,
+    svgOpenPathFromMathPoints,
+    segmentParabolaIntersections
   };
 })(window);

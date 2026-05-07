@@ -12,6 +12,10 @@ Use these rules for moving-figure overlap problems that ask for an area range, m
 
 Do not assign one boundary value to two different shape intervals unless the same geometric shape truly continues across that boundary. If the shape changes at `t=c`, either make `t=c` a separate state or include it on only one side.
 
+Boundary values where the overlap shape changes must not be casually absorbed into a neighboring interval. For example, write `t=2` as a triangle boundary state, `2<t≤4` as the trapezoid phase, `4<t<6` as the pentagon phase, and `6≤t<12` as the next triangle phase when those are the actual shapes. Keep this exact boundary ownership in solution text, visual steps, `policies.range`, minis, and final unions.
+
+For folding pages, distinguish the folded figure shape from the overlap region shape. A vertical fold can produce a triangular folded piece before the fold reaches one side, a quadrilateral/trapezoid in the middle, and a pentagonal folded figure after the fold passes another vertex, even when the overlap region is triangular. Use dynamic folded-polygon rendering and phase-scoped labels rather than forcing one static moving polygon through every interval.
+
 ## Trend Step Pattern
 
 Use this compact structure when there are two or three major shape phases:

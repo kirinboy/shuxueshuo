@@ -30,7 +30,6 @@ Optional common fields:
 
 - `expressionEnv`: ordered `{ "name": "a", "expr": "2" }[]`，逐项写入求解 env，便于点在表达式里引用系数（如 `["0","c"]`）。
 - `curves`: 抛物线等，`[{ "id": "parabolaMain", "type": "parabola", "a": "a", "b": "b", "c": "c" }]`（系数也可用 `"params": { "a","b","c" }`）。
-- `foldedPolygon`: vertical-fold problems where the folded shape changes vertex count across phases. Use `{ "x": "t", "side": "left" }` to fold the portion of `basePolygon` left of `x=t`; the runtime clips the base polygon then reflects it. Do this instead of hard-coding one `movingPolygon` such as `["P","Q","C′","O′"]` across all phases.
 - `derivedIntersections`: declare intersections by two point-pair lines: `{ "name": "E", "a": ["A", "C"], "b": ["M", "N"] }`
 - `originalFigures`: problem-card figures, each with an `id` that must match `lesson-data.problem.lines[].figures[].id`
 
@@ -40,22 +39,6 @@ Rules:
 - `movingParam` names the slider-driven unknown (`t`、`m` 等)，表达式里用同名变量；`expressionEnv` 可再加入任意常量名（如系数）。
 - Do not hand-write dynamic intersection formulas; use `derivedIntersections`.
 - `fallback` may be used for original/static figure rendering.
-- 原题图点标识必须写成对象数组，不能写成字符串数组。正确格式：
-
-```json
-"fixedLabels": [
-  { "at": "A", "label": "A", "dx": 10, "dy": 26 },
-  { "at": "B", "label": "B", "dx": 10, "dy": -10 }
-],
-"movingLabels": [
-  { "at": "Cp", "label": "C′", "color": "#0f766e", "dx": 12, "dy": -12 }
-],
-"intersectionLabels": [
-  { "at": "D", "label": "D", "color": "#dc2626", "dx": 12, "dy": -12 }
-]
-```
-
-  `at` 必须是 `fixedPoints`、`movingPoints` 或 `derivedIntersections[].name` 中已经声明的点；`label` 是图上显示的文字。若原点 O 已由坐标网格显示，通常不要再放进 `fixedLabels`，避免重复。
 
 ## `step-decorations.json`
 
@@ -117,7 +100,12 @@ Rules:
 - Put only current-step helper/highlight elements in `steps[stepId].add`.
 - Every `lesson-data.steps[].id` must have a matching `step-decorations.steps[id]`.
 - When point `O` is also the coordinate origin, avoid duplicate `O` labels. Prefer `{ "type": "point", "at": "O", "showLabel": false }` if the grid already labels the origin.
-- Decorations may use `minT` / `maxT` when a named point only exists in part of the folding process. For example, `Q` on `BC` should not be shown before the fold line reaches `C`, and a fixed four-vertex folded polygon should not be used when `t<2` or `t>6` changes the folded shape.
+- Avoid duplicate point labeling. If a context layer already draws a point, use `showLabel: false` there and add either a point-name label or a coordinate label in the current step, not both.
+- Use `coordinateLabel` only in coordinate-computation steps. In transformation or shortest-path steps, prefer plain point names and key segments.
+- Keep step diagrams aligned with the derivation focus:
+  - proving `EG = DG`: draw `DG`, helper perpendiculars, and label helper feet such as `H`/`K`;
+  - applying reflection/将军饮马: draw `D'`, `MD'`, `ND'`, `DG`, and `D'F`; remove distracting `EG` if it is no longer the target segment.
+- If a step uses a point, the point must be declared in `fixedPoints`, `movingPoints`, or `derivedIntersections`. For auxiliary points that are explicit formulas, add them to `movingPoints` or `fixedPoints` rather than using ad hoc SVG.
 
 ## `lesson-data.json`
 
@@ -138,6 +126,8 @@ Required top-level fields:
 { "ariaLabel": "原题图 1 和图 2", "figures": [{ "id": "originalFigure1", "title": "图 1" }] }
 ```
 
+If a sub-question asks students to "直接写出" or the lesson is meant to reveal final answers in the problem card, add `answerId` and `answer` for every answered sub-question, including Part I. Do not only add answer badges for later sub-questions.
+
 `ui.legend` supports only:
 
 ```json
@@ -149,6 +139,13 @@ Step alignment:
 - Each `steps[].id` must exist in `policies`.
 - Each `steps[].id` must exist in `stepLabels`.
 - Each `steps[].id` must exist in `step-decorations.steps`.
+
+Derivation text rules:
+
+- Use `∵`, `∴`, and `作` as the left-hand labels in `derive` whenever possible.
+- Keep derived state synchronized. If an earlier row solved `m=3`, subsequent rows should use `M(3,1)` and `N(2,−2)` rather than generic expressions.
+- Do not include unasked extras in `box` or `derive`; if the problem does not ask for a vertex, do not add it.
+- Avoid HTML and avoid long prose inside derive rows; split a dense argument into short mathematical rows.
 
 ## Common Validation Errors
 

@@ -1,0 +1,126 @@
+{
+  "_comment": "南开 2026 一模第 25 题 — 二次函数综合",
+
+  "layers": {
+    "global": {
+      "elements": [
+        { "type": "grid" },
+        { "type": "point", "at": "O", "color": "#1f2937", "showLabel": false }
+      ]
+    },
+    "partI": {
+      "stepStartsWith": ["i1"],
+      "elements": [
+        { "type": "parabola", "curveId": "parabolaPart1", "color": "#2563eb", "width": 2.9 },
+        { "type": "axisOfSymmetry", "curveId": "parabolaPart1", "color": "#94a3b8", "width": 1.4, "dash": "8 6" },
+        { "type": "point", "at": "D",  "color": "#1f2937", "dx": 12, "dy": 22 }
+      ]
+    },
+    "partII": {
+      "stepStartsWith": ["q1", "q2"],
+      "elements": [
+        { "type": "parabola", "curveId": "parabolaMain", "color": "#2563eb", "width": 2.9 },
+        { "type": "axisOfSymmetry", "curveId": "parabolaMain", "color": "#94a3b8", "width": 1.4, "dash": "8 6" },
+        { "type": "point", "at": "D",  "color": "#1f2937",  "dx": -22, "dy": 22 },
+        { "type": "point", "at": "M",  "color": "#0f766e",  "showLabel": false },
+        { "type": "point", "at": "N",  "color": "#0f766e",  "showLabel": false },
+        { "type": "coloredLine", "from": "D", "to": "M", "color": "#0f766e", "width": 2 },
+        { "type": "coloredLine", "from": "D", "to": "N", "color": "#0f766e", "width": 2 }
+      ]
+    },
+    "EFG": {
+      "stepStartsWith": ["q1s3", "q1s4", "q2"],
+      "elements": [
+        { "type": "point",       "at": "F",  "color": "#7c3aed", "dx": 14, "dy": 8 },
+        { "type": "point",       "at": "E",  "color": "#dc2626",  "dx": 14, "dy": -14 },
+        { "type": "point",       "at": "G",  "color": "#dc2626",  "dx": 14, "dy": 14 },
+        { "type": "coloredLine", "from": "D", "to": "G",  "color": "#dc2626", "width": 2.2 },
+        { "type": "coloredLine", "from": "F", "to": "G",  "color": "#7c3aed", "width": 2.2 },
+        { "type": "coloredLine", "from": "M", "to": "N",  "color": "#94a3b8", "width": 1.8 }
+      ]
+    }
+  },
+
+  "steps": {
+    "i1s1": {
+      "add": [
+        { "type": "coordinateLabel", "at": "D", "text": "D(1, 0)",  "dx": 14, "dy": -26 }
+      ]
+    },
+    "i1s2": {
+      "add": [
+        { "type": "coordinateLabel", "at": "D", "text": "D(1, 0)",  "dx": 14, "dy": -26 }
+      ]
+    },
+    "q1s1": {
+      "add": [
+        { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
+        { "type": "coordinateLabel", "at": "D", "text": "D(1, 0)", "dx": -48, "dy": 18 },
+        { "type": "coordinateLabel", "at": "M", "text": "M(m, 1)",   "dx": 14, "dy": -24 },
+        { "type": "coordinateLabel", "at": "N", "text": "N(2, 1−m)", "dx": 14, "dy": 22 },
+        { "type": "dashedLine", "from": "M", "to": "U", "color": "#64748b", "width": 1.5, "dash": "5 5" },
+        { "type": "dashedLine", "from": "N", "to": "V", "color": "#64748b", "width": 1.5, "dash": "5 5" },
+        { "type": "point", "at": "U", "labelText": "U", "color": "#64748b", "dx": 10, "dy": 18 },
+        { "type": "point", "at": "V", "labelText": "V", "color": "#64748b", "dx": 10, "dy": 18 }
+      ]
+    },
+    "q1s2": {
+      "add": [
+        { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
+        { "type": "coordinateLabel", "at": "D", "text": "D(1, 0)", "dx": -48, "dy": 18 },
+        { "type": "coloredLine", "from": "M", "to": "N", "color": "#94a3b8", "width": 1.8 },
+        { "type": "coordinateLabel", "at": "M", "text": "M(3, 1)",   "dx": 14,  "dy": -24 },
+        { "type": "coordinateLabel", "at": "N", "text": "N(2, −2)",  "dx": 14,  "dy": 22 }
+      ]
+    },
+    "q1s3": {
+      "add": [
+        { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
+        { "type": "coordinateLabel", "at": "M", "text": "M", "dx": 14, "dy": -16 },
+        { "type": "coordinateLabel", "at": "N", "text": "N", "dx": 14, "dy": 14 },
+        { "type": "coloredLine", "from": "E", "to": "G", "color": "#dc2626", "width": 2.2 },
+        { "type": "dashedLine", "from": "G", "to": "H", "color": "#64748b", "width": 1.5, "dash": "5 5" },
+        { "type": "dashedLine", "from": "G", "to": "K", "color": "#64748b", "width": 1.5, "dash": "5 5" },
+        { "type": "rightAngle", "vertex": "H", "rayA": "G", "rayB": "N", "size": 9, "color": "#64748b" },
+        { "type": "rightAngle", "vertex": "K", "rayA": "G", "rayB": "M", "size": 9, "color": "#64748b" },
+        { "type": "point", "at": "H", "labelText": "H", "color": "#64748b", "dx": 20, "dy": 30 },
+        { "type": "point", "at": "K", "labelText": "K", "color": "#64748b", "dx": 10, "dy": -10 }
+      ]
+    },
+    "q1s4": {
+      "add": [
+        { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
+        { "type": "coordinateLabel", "at": "M", "text": "M", "dx": 14, "dy": -16 },
+        { "type": "coordinateLabel", "at": "N", "text": "N", "dx": 14, "dy": 14 },
+        { "type": "point", "at": "Dprime", "labelText": "D′", "color": "#b45309", "dx": 14, "dy": -12 },
+        { "type": "dashedLine", "from": "D", "to": "Dprime", "color": "#b45309", "width": 1.8, "dash": "7 6" },
+        { "type": "coloredLine", "from": "M", "to": "Dprime", "color": "#b45309", "width": 2 },
+        { "type": "coloredLine", "from": "N", "to": "Dprime", "color": "#b45309", "width": 2 },
+        { "type": "coloredLine", "from": "Dprime", "to": "F", "color": "#b45309", "width": 2.3 }
+      ]
+    },
+    "q2s1": {
+      "add": [
+        { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
+        { "type": "coordinateLabel", "at": "D", "text": "D(1, 0)", "dx": -48, "dy": 18 },
+        { "type": "point", "at": "Dprime", "labelText": "D′", "color": "#b45309", "dx": 14, "dy": -12 },
+        { "type": "dashedLine", "from": "D", "to": "Dprime", "color": "#b45309", "width": 1.8, "dash": "7 6" },
+        { "type": "coloredLine", "from": "M", "to": "Dprime", "color": "#b45309", "width": 2 },
+        { "type": "coloredLine", "from": "N", "to": "Dprime", "color": "#b45309", "width": 2 },
+        { "type": "coloredLine", "from": "Dprime", "to": "F", "color": "#b45309", "width": 2.3 },
+        { "type": "coordinateLabel", "at": "M", "text": "M(8, 1)",    "dx": 14,  "dy": -24 },
+        { "type": "coordinateLabel", "at": "N", "text": "N(2, −7)",   "dx": 14,  "dy": 22 }
+      ]
+    },
+    "q2s2": {
+      "add": [
+        { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
+        { "type": "coordinateLabel", "at": "M", "text": "M(8, 1)",       "dx": 14,  "dy": -24 },
+        { "type": "coordinateLabel", "at": "N", "text": "N(2, −7)",      "dx": 14,  "dy": 22 },
+        { "type": "coordinateLabel", "at": "E", "text": "E",             "dx": 8,   "dy": -18 },
+        { "type": "coordinateLabel", "at": "G", "text": "G(4, −13/3)",  "dx": 14,  "dy": 18 },
+        { "type": "coordinateLabel", "at": "F", "text": "F",             "dx": 14,  "dy": 10 }
+      ]
+    }
+  }
+}

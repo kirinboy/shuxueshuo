@@ -117,6 +117,19 @@
     "status": "published"
   },
   {
+    "id": "tj-2026-nankai-ermo-24",
+    "city": "tianjin",
+    "cityLabel": "天津",
+    "year": 2026,
+    "exam": "nankai-ermo",
+    "examLabel": "南开区二模",
+    "slot": "24",
+    "title": "2026 年天津市南开区二模第 24 题（四边形折叠与重叠面积）",
+    "tags": ["geometry", "folding", "dynamic-point"],
+    "path": "../problems/tj/24/tj-2026-nankai-ermo-24.html",
+    "status": "published"
+  },
+  {
     "id": "tj-2026-nankai-yimo-24",
     "city": "tianjin",
     "cityLabel": "天津",
@@ -127,6 +140,19 @@
     "title": "2026 年天津市南开区一模第 24 题（旋转三角形与重叠面积）",
     "tags": ["geometry", "rotation", "dynamic-point"],
     "path": "../problems/tj/24/tj-2026-nankai-yimo-24.html",
+    "status": "published"
+  },
+  {
+    "id": "tj-2026-nankai-yimo-25",
+    "city": "tianjin",
+    "cityLabel": "天津",
+    "year": 2026,
+    "exam": "nankai-yimo",
+    "examLabel": "南开区一模",
+    "slot": "25",
+    "title": "2026 年天津市南开区一模第 25 题（二次函数综合）",
+    "tags": ["algebra", "quadratic-function", "coordinate-plane"],
+    "path": "../problems/tj/25/tj-2026-nankai-yimo-25.html",
     "status": "published"
   },
   {

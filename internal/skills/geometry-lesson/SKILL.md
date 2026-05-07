@@ -17,9 +17,9 @@ Work in this order:
 2. Create or update `internal/lesson-specs/<problem-id>/02_solution.md`.
 3. Create or update `internal/lesson-specs/<problem-id>/03_visual_steps.md`.
 4. Create or update the compiled-page input JSON files:
-   - `geometry-spec.json`
-   - `step-decorations.json`
-   - `lesson-data.json`
+  - `geometry-spec.json`
+  - `step-decorations.json`
+  - `lesson-data.json`
 5. Run validation and compilation:
 
 ```bash
@@ -231,5 +231,7 @@ If validation or rendering fails, fix the JSON spec or the shared compiler/runti
 - Intersections are declared through `derivedIntersections`.
 - Step ids are aligned across `steps`, `policies`, `stepLabels`, and `step-decorations`.
 - Original figure ids align between `lesson-data.problem.lines` and `geometry-spec.originalFigures`.
+- Original figure point labels use object entries such as `{ "at": "A", "label": "A", "dx": 10, "dy": 26 }`; never use string arrays such as `["A", "B"]`.
+- Same-point coordinate labels and point-name labels are not both shown in one snapshot; avoid duplicate labels such as two `B` or two `C` near the same vertex.
 - Boundary inclusiveness matches everywhere.
 - Validation and compilation both pass.

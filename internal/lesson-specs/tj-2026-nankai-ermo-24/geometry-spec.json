@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "id": "tj-2026-nankai-ermo-24",
+  "domain": { "minX": -0.9, "maxX": 12.9, "minY": -0.9, "maxY": 4.8 },
+  "fixedPoints": {
+    "O": ["0", "0"],
+    "A": ["12", "0"],
+    "C": ["2", "2*S3"],
+    "B": ["6", "2*S3"],
+    "H": ["6", "0"],
+    "Hc": ["2", "0"]
+  },
+  "movingParam": "t",
+  "movingPoints": {
+    "P": ["t", "0"],
+    "Q": ["t", "2*S3"],
+    "Op": ["2*t", "0"],
+    "Cp": ["2*t-2", "2*S3"]
+  },
+  "basePolygon": ["O", "A", "B", "C"],
+  "movingPolygon": ["P", "Q", "Cp", "Op"],
+  "foldedPolygon": { "x": "t", "side": "left" },
+  "derivedIntersections": [
+    { "name": "D", "a": ["Cp", "Op"], "b": ["A", "B"], "fallback": ["3*t-6", "S3*(6-t)"] },
+    { "name": "R", "a": ["P", "Q"], "b": ["A", "B"], "fallback": ["t", "S3*(12-t)/3"] }
+  ],
+  "originalFigures": [
+    {
+      "id": "originalFigure1",
+      "t": 5,
+      "showMoving": false,
+      "showOverlap": false,
+      "showIntersections": false,
+      "fixedLabels": [
+        { "at": "A", "label": "A", "dx": 10, "dy": 26 },
+        { "at": "B", "label": "B", "dx": 10, "dy": -10 },
+        { "at": "C", "label": "C", "dx": -30, "dy": -10 }
+      ]
+    },
+    {
+      "id": "originalFigure2",
+      "t": 5,
+      "showMoving": true,
+      "showOverlap": true,
+      "showIntersections": true,
+      "fixedLabels": [
+        { "at": "A", "label": "A", "dx": 10, "dy": 26 },
+        { "at": "B", "label": "B", "dx": 10, "dy": -10 },
+        { "at": "C", "label": "C", "dx": -30, "dy": -10 }
+      ],
+      "movingLabels": [
+        { "at": "P", "label": "P", "color": "#0f766e", "dx": -8, "dy": 26 },
+        { "at": "Q", "label": "Q", "color": "#0f766e", "dx": -30, "dy": -12 },
+        { "at": "Cp", "label": "C′", "color": "#0f766e", "dx": 12, "dy": -12 },
+        { "at": "Op", "label": "O′", "color": "#0f766e", "dx": -8, "dy": 26 }
+      ],
+      "intersectionLabels": [
+        { "at": "D", "label": "D", "color": "#dc2626", "dx": 12, "dy": -12 }
+      ]
+    }
+  ]
+}

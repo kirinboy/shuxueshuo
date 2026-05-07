@@ -123,6 +123,8 @@ This file is the compact teaching-quality reference. It should preserve the high
 - Put current-step conclusions in `lesson-data.steps[].box`.
 - Choose box contents by dependency, not recency: show prior conclusions the current derivation actually uses plus the new conclusion.
 - If a reused conclusion has strong spatial meaning, such as a segment length actively used in the step, it may also appear on the diagram.
+- Avoid showing both a point-name label and a coordinate label for the same point in the same snapshot. If the coordinate is needed, put the coordinate in the conclusion box or let the coordinate label suppress the ordinary point label; do not create duplicate `B`/`C` text near the same vertex.
+- Do not redraw a named line when it is already exactly an edge of the moving/fixed polygon, such as drawing `l` again on top of `PQ`. Label the existing edge only when the label is essential and does not obscure the construction.
 - Do not show live values for quantities outside the current sub-question.
 - Keep diagram text minimal; use the derivation panel for explanations.
 - When a local diagram area is crowded, keep only the label that directly supports the current calculation; move secondary facts such as parallel relations into the derivation panel or conclusion box.

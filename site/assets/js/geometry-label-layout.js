@@ -208,6 +208,14 @@
     const fontWeight = options.fontWeight ?? 900;
     const preferredDx = Math.cos(angle) * radius;
     const preferredDy = Math.sin(angle) * radius;
+    if(options.lockLabel){
+      const width = estimateTextWidth(text, fontSize);
+      const height = fontSize + 4;
+      const x = centerScreen.x + preferredDx;
+      const y = centerScreen.y + preferredDy;
+      layout.occupied.push(makeRect(x - width / 2, y - fontSize / 2, width, height, 4));
+      return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="${fontSize}" font-weight="${fontWeight}" fill="${color}">${escapeHtml(text)}</text>`;
+    }
     const placed = placeScreenLabel(layout, centerScreen, text, {
       fontSize,
       preferredDx,

@@ -11,8 +11,16 @@
   function resolveClipOverlap(spec, t) {
     var GE = global.GeometryEngine;
     if (!GE) throw new Error("GeometryEngine is required");
-    var env = { t: Number(t), S3: GE.SQRT3 };
+    var paramName = spec.movingParam || "t";
+    var tv = Number(t);
+    var env = { S3: GE.SQRT3, t: tv };
+    env[paramName] = tv;
     var pts = {};
+
+    (spec.expressionEnv || []).forEach(function (item) {
+      if (!item || !item.name) return;
+      env[item.name] = GE.evalExpr(String(item.expr != null ? item.expr : ""), env);
+    });
 
     var fp = spec.fixedPoints || {};
     Object.keys(fp).forEach(function (k) { pts[k] = GE.evalPoint(fp[k], env); });
@@ -35,11 +43,73 @@
       }
     }
 
-    var base = (spec.basePolygon || []).map(function (n) { return pts[n]; });
-    var moving = (spec.movingPolygon || []).map(function (n) { return pts[n]; });
-    var overlap = GE.clipPolygon(moving, base);
+    var curves = {};
+    (spec.curves || []).forEach(function (c) {
+      if (!c || !c.id) return;
+      if (c.type === "parabola") {
+        var pa = c.a != null ? c.a : (c.params && c.params.a);
+        var pb = c.b != null ? c.b : (c.params && c.params.b);
+        var pc = c.c != null ? c.c : (c.params && c.params.c);
+        if (pa == null || pb == null || pc == null) {
+          throw new Error("parabola curve missing a/b/c: " + c.id);
+        }
+        curves[c.id] = {
+          type: "parabola",
+          a: GE.evalExpr(String(pa), env),
+          b: GE.evalExpr(String(pb), env),
+          c: GE.evalExpr(String(pc), env)
+        };
+      }
+    });
 
-    return { points: pts, base: base, moving: moving, overlap: overlap, area: GE.polygonArea(overlap), t: env.t };
+    function verticalFoldPolygon(source, xFold, side) {
+      if (!source || source.length < 3) return [];
+      var keepLeft = side !== "right";
+      var output = [];
+      function inside(p) {
+        return keepLeft ? p.x <= xFold + 1e-9 : p.x >= xFold - 1e-9;
+      }
+      function intersect(a, b) {
+        var u = (xFold - a.x) / (b.x - a.x);
+        return { x: xFold, y: a.y + u * (b.y - a.y) };
+      }
+      for (var ci = 0; ci < source.length; ci += 1) {
+        var a0 = source[(ci + source.length - 1) % source.length];
+        var b0 = source[ci];
+        var ia = inside(a0);
+        var ib = inside(b0);
+        if (ib) {
+          if (!ia) output.push(intersect(a0, b0));
+          output.push(b0);
+        } else if (ia) {
+          output.push(intersect(a0, b0));
+        }
+      }
+      return output.map(function (p) { return { x: 2 * xFold - p.x, y: p.y }; });
+    }
+
+    var base = (spec.basePolygon || []).map(function (n) { return pts[n]; }).filter(Boolean);
+    var moving = [];
+    if (spec.foldedPolygon && base.length >= 3) {
+      moving = verticalFoldPolygon(base, GE.evalExpr(String(spec.foldedPolygon.x || paramName), env), spec.foldedPolygon.side || "left");
+    } else {
+      moving = (spec.movingPolygon || []).map(function (n) { return pts[n]; }).filter(Boolean);
+    }
+    var overlap = [];
+    if (base.length >= 3 && moving.length >= 3) {
+      overlap = GE.clipPolygon(moving, base);
+    }
+
+    return {
+      points: pts,
+      base: base,
+      moving: moving,
+      overlap: overlap,
+      area: GE.polygonArea(overlap),
+      t: tv,
+      env: env,
+      curves: curves
+    };
   }
 
   /** 将 resolveClipOverlap 结果适配成南开页旧字段名（兼容现存代码）。 */
@@ -77,6 +147,7 @@
     var stepDecos = decoData.steps || {};
 
     var _layout = null; // 当前 label layout（每次 render 开始时创建，结束时清空）
+    var _coordinateLabelPoints = null; // 当前步骤中已显示坐标标签的点，避免重复点名
 
     // ── 内部 SVG 工具 ────────────────────────────────────────────────────
 
@@ -157,7 +228,8 @@
           radius: aopts.labelRadius || (r + 18),
           angle: aopts.labelAngle || arc.midAngle,
           color: color, fontSize: aopts.fontSize || 14, fontWeight: 900,
-          candidates: aopts.candidates
+          candidates: aopts.candidates,
+          lockLabel: aopts.lockLabel
         });
       }
       return out;
@@ -210,15 +282,26 @@
       });
     }
 
-    /** 检查派生点是否在可见区域内 */
+    /** 检查派生点是否在可见区域内（使用当前 domain） */
     function inBounds(p) {
-      return p && !isNaN(p.x) && !isNaN(p.y) && p.x > -0.3 && p.x < 6.3 && p.y > -0.6 && p.y < 5.4;
+      var pad = 0.35;
+      return (
+        p &&
+        !isNaN(p.x) &&
+        !isNaN(p.y) &&
+        p.x > domain.minX - pad &&
+        p.x < domain.maxX + pad &&
+        p.y > domain.minY - pad &&
+        p.y < domain.maxY + pad
+      );
     }
 
     // ── 单个装饰元素渲染 ────────────────────────────────────────────────
 
     function renderElem(elem, pts, state) {
       if (!elem || !elem.type) return "";
+      if (elem.minT != null && state.t < elem.minT) return "";
+      if (elem.maxT != null && state.t > elem.maxT) return "";
       var a, b, v;
       switch (elem.type) {
         case "grid":
@@ -238,14 +321,17 @@
         case "point": {
           var at = pts[elem.at];
           if (!at) return "";
-          var lbl = elem.showLabel === false ? null : (elem.labelText || elem.at);
+          var lbl = elem.showLabel === false || (_coordinateLabelPoints && _coordinateLabelPoints[elem.at])
+            ? null
+            : (elem.labelText || elem.at);
           return pointSvg(at, lbl, elem.color || "#1f2937", elem.dx || 8, elem.dy || -8,
             { r: elem.r, fontSize: elem.fontSize, altDx: elem.altDx, altDy: elem.altDy });
         }
         case "derivedPoint": {
           var dp = pts[elem.at];
           if (!inBounds(dp)) return "";
-          return pointSvg(dp, elem.at, elem.color || "#dc2626", elem.dx || 8, elem.dy || -8, { r: elem.r || 4.6 });
+          var dLabel = (_coordinateLabelPoints && _coordinateLabelPoints[elem.at]) ? null : elem.at;
+          return pointSvg(dp, dLabel, elem.color || "#dc2626", elem.dx || 8, elem.dy || -8, { r: elem.r || 4.6 });
         }
         case "segment": {
           a = pts[elem.from]; b = pts[elem.to];
@@ -314,6 +400,64 @@
           if (!anchor) return "";
           return textAtSvg(anchor, elem.text || "", elem.color || "#dc2626", elem.dx || 10, elem.dy || -18, elem.size || 14);
         }
+        case "parabola": {
+          var cid = elem.curveId || elem.curve;
+          var cv = state.curves && cid ? state.curves[cid] : null;
+          if (!cv || cv.type !== "parabola") return "";
+          var samples = elem.samples || 96;
+          var band = elem.yBand != null ? elem.yBand : 14;
+          var curvePts = GE.sampleParabola(cv.a, cv.b, cv.c, domain.minX, domain.maxX, samples);
+          curvePts = curvePts.filter(function (pt) {
+            return Number.isFinite(pt.x) && Number.isFinite(pt.y) && pt.y >= domain.minY - band && pt.y <= domain.maxY + band;
+          });
+          if (curvePts.length < 2) return "";
+          var dPar = GE.svgOpenPathFromMathPoints(curvePts, toScreen);
+          return (
+            '<path d="' +
+            dPar +
+            '" fill="none" stroke="' +
+            (elem.color || "#2563eb") +
+            '" stroke-width="' +
+            (elem.width != null ? elem.width : 2.8) +
+            '" />'
+          );
+        }
+        case "axisOfSymmetry": {
+          var cidAx = elem.curveId || elem.curve;
+          var cvAx = state.curves && cidAx ? state.curves[cidAx] : null;
+          if (!cvAx || cvAx.type !== "parabola" || Math.abs(cvAx.a) < 1e-12) return "";
+          var xSym = -cvAx.b / (2 * cvAx.a);
+          var pLo = { x: xSym, y: domain.minY };
+          var pHi = { x: xSym, y: domain.maxY };
+          return lineSvg(pLo, pHi, elem.color || "#64748b", elem.width != null ? elem.width : 1.6, elem.dash || "10 7");
+        }
+        case "vertex": {
+          var cidV = elem.curveId || elem.curve;
+          var cvV = state.curves && cidV ? state.curves[cidV] : null;
+          if (!cvV || cvV.type !== "parabola" || Math.abs(cvV.a) < 1e-12) return "";
+          var xv = -cvV.b / (2 * cvV.a);
+          var yv = cvV.a * xv * xv + cvV.b * xv + cvV.c;
+          var vPt = { x: xv, y: yv };
+          var vLbl = elem.showLabel === false ? null : (elem.labelText != null ? elem.labelText : elem.label || "顶点");
+          return pointSvg(vPt, vLbl, elem.color || "#7c3aed", elem.dx || 10, elem.dy || -12, {
+            r: elem.r || 5.5,
+            fontSize: elem.fontSize
+          });
+        }
+        case "curvePoint": {
+          var cidCp = elem.curveId || elem.curve;
+          var cvCp = state.curves && cidCp ? state.curves[cidCp] : null;
+          if (!cvCp || cvCp.type !== "parabola") return "";
+          var envCurve = state.env || {};
+          var x0 = GE.evalExpr(String(elem.xExpr != null ? elem.xExpr : "0"), envCurve);
+          var y0 = cvCp.a * x0 * x0 + cvCp.b * x0 + cvCp.c;
+          var cPt = { x: x0, y: y0 };
+          var cLbl = elem.showLabel === false ? null : (elem.labelText != null ? elem.labelText : elem.label || "");
+          return pointSvg(cPt, cLbl || null, elem.color || "#0f766e", elem.dx || 8, elem.dy || 8, {
+            r: elem.r || 5.2,
+            fontSize: elem.fontSize
+          });
+        }
         default:
           return "";
       }
@@ -327,6 +471,29 @@
         return layerDef.stepStartsWith.some(function (prefix) { return stepId.indexOf(prefix) === 0; });
       }
       return true;
+    }
+
+    function curveIdFromElem(elem) {
+      if (!elem || !elem.type) return null;
+      if (elem.type !== "parabola" && elem.type !== "axisOfSymmetry" && elem.type !== "vertex" && elem.type !== "curvePoint") return null;
+      return elem.curveId || elem.curve || null;
+    }
+
+    function curveIdsForStep(step) {
+      if (!step) return [];
+      var ids = [];
+      function addId(id) {
+        if (id && ids.indexOf(id) < 0) ids.push(id);
+      }
+      Object.keys(layers).forEach(function (layerName) {
+        var layerDef = layers[layerName];
+        var active = (layerName === "global") ? true : isLayerActive(layerDef, step.id, step.section);
+        if (!active) return;
+        (layerDef.elements || []).forEach(function (elem) { addId(curveIdFromElem(elem)); });
+      });
+      var deco = stepDecos[step.id] || {};
+      (deco.add || []).forEach(function (elem) { addId(curveIdFromElem(elem)); });
+      return ids;
     }
 
     function renderLayers(stepId, section, pts, state) {
@@ -344,6 +511,22 @@
       return out;
     }
 
+    function coordinateLabelPointsForStep(stepId, section) {
+      var points = {};
+      function collect(elem) {
+        if (elem && elem.type === "coordinateLabel" && elem.at) points[elem.at] = true;
+      }
+      Object.keys(layers).forEach(function (layerName) {
+        var layerDef = layers[layerName];
+        var active = (layerName === "global") ? true : isLayerActive(layerDef, stepId, section);
+        if (!active) return;
+        (layerDef.elements || []).forEach(collect);
+      });
+      var deco = stepDecos[stepId] || {};
+      (deco.add || []).forEach(collect);
+      return points;
+    }
+
     // ── 完整步骤 SVG ─────────────────────────────────────────────────────
 
     function diagramMarkupFor(index, overrideT) {
@@ -358,6 +541,7 @@
         _layout = GLL.createLabelLayout({ toScreen: toScreen, padding: 4, pointRadius: 8 });
         addObstacles(state);
       }
+      _coordinateLabelPoints = coordinateLabelPointsForStep(step.id, step.section);
 
       var out = renderLayers(step.id, step.section, pts, state);
 
@@ -370,14 +554,73 @@
       out += GE.svgConclusionBox(liveBox);
 
       _layout = null;
+      _coordinateLabelPoints = null;
       return out;
     }
 
     // ── 缩略图 SVG ───────────────────────────────────────────────────────
 
-    function drawMini(t) {
+    function drawMini(t, miniItem, step) {
       var s = resolveClipOverlap(spec, t);
-      return GE.svgMini(s.base, s.moving, s.overlap, domain);
+      var curveKeys = Object.keys(s.curves || {});
+      if (!curveKeys.length) {
+        return GE.svgMini(s.base, s.moving, s.overlap, domain);
+      }
+      var preferred = [];
+      if (miniItem && (miniItem.curveId || miniItem.curve)) preferred.push(miniItem.curveId || miniItem.curve);
+      preferred = preferred.concat(curveIdsForStep(step));
+      var cid = preferred.find(function (id) { return curveKeys.indexOf(id) >= 0; }) || curveKeys[0];
+      var cv = s.curves[cid];
+      if (!cv || cv.type !== "parabola") {
+        return GE.svgMini(s.base, s.moving, s.overlap, domain);
+      }
+      var w = 220,
+        h = 150;
+      var padM = { left: 20, right: 12, top: 12, bottom: 22 };
+      var innerW = w - padM.left - padM.right;
+      var innerH = h - padM.top - padM.bottom;
+      var scale = Math.min(
+        innerW / (domain.maxX - domain.minX),
+        innerH / (domain.maxY - domain.minY)
+      );
+      var ox = padM.left + (innerW - (domain.maxX - domain.minX) * scale) / 2;
+      var oy = padM.top + (innerH - (domain.maxY - domain.minY) * scale) / 2;
+      function tsMini(p) {
+        return { x: ox + (p.x - domain.minX) * scale, y: h - oy - (p.y - domain.minY) * scale };
+      }
+      var miniPts = GE.sampleParabola(cv.a, cv.b, cv.c, domain.minX, domain.maxX, 52);
+      miniPts = miniPts.filter(function (pt) {
+        return Number.isFinite(pt.x) && Number.isFinite(pt.y) && pt.y >= domain.minY - 18 && pt.y <= domain.maxY + 18;
+      });
+      var dMini = GE.svgOpenPathFromMathPoints(miniPts, tsMini);
+      var svgM = '<svg viewBox="0 0 ' + w + " " + h + '" aria-hidden="true">';
+      var ax1m = tsMini({ x: domain.minX, y: 0 }),
+        ax2m = tsMini({ x: domain.maxX, y: 0 });
+      var ay1m = tsMini({ x: 0, y: domain.minY }),
+        ay2m = tsMini({ x: 0, y: domain.maxY });
+      svgM +=
+        '<line x1="' +
+        ax1m.x +
+        '" y1="' +
+        ax1m.y +
+        '" x2="' +
+        ax2m.x +
+        '" y2="' +
+        ax2m.y +
+        '" stroke="#94a3b8" stroke-width="1.2" />';
+      svgM +=
+        '<line x1="' +
+        ay1m.x +
+        '" y1="' +
+        ay1m.y +
+        '" x2="' +
+        ay2m.x +
+        '" y2="' +
+        ay2m.y +
+        '" stroke="#94a3b8" stroke-width="1.2" />';
+      svgM += '<path d="' + dMini + '" fill="none" stroke="#2563eb" stroke-width="2.2" />';
+      svgM += "</svg>";
+      return svgM;
     }
 
     // ── 原题图形渲染 ─────────────────────────────────────────────────────
@@ -395,6 +638,25 @@
       }
 
       var out = gridSvg();
+      (spec.curves || []).forEach(function (cr) {
+        if (!cr || cr.type !== "parabola" || !cr.id) return;
+        var cvFig = state.curves && state.curves[cr.id];
+        if (!cvFig) return;
+        var samp = GE.sampleParabola(cvFig.a, cvFig.b, cvFig.c, domain.minX, domain.maxX, 72);
+        samp = samp.filter(function (pt) {
+          return Number.isFinite(pt.x) && Number.isFinite(pt.y) && pt.y >= domain.minY - 14 && pt.y <= domain.maxY + 14;
+        });
+        if (samp.length < 2) return;
+        var dFig = GE.svgOpenPathFromMathPoints(samp, toScreen);
+        out +=
+          '<path d="' +
+          dFig +
+          '" fill="none" stroke="' +
+          (figConfig.parabolaStroke || "#2563eb") +
+          '" stroke-width="' +
+          (figConfig.parabolaStrokeWidth != null ? figConfig.parabolaStrokeWidth : 3) +
+          '" />';
+      });
       function renderLabelList(list, defaults) {
         var labels = Array.isArray(list) ? list : defaults;
         labels.forEach(function (item) {

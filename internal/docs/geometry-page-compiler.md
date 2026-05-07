@@ -9,6 +9,7 @@
 ### 旧方式的问题
 
 早期每道题对应一个由 LLM 手写的 HTML 文件（约 500 行），其中包含：
+
 - 图形渲染逻辑（`toScreen`、多边形裁剪、SVG path 拼接）
 - 步骤导航、滑块、缩略图等 UI 代码
 - 题目文字和答案 HTML 片段
@@ -17,13 +18,15 @@
 
 ### 新方式的目标
 
-| 职责 | 承担者 |
-|---|---|
-| 数学计算（多边形裁剪、交点、坐标变换） | `geometry-engine.js`（一次实现，持续复用） |
-| SVG 渲染与图层编排 | `geometry-lesson-from-spec.js` |
-| UI 交互（步骤导航、滑块、缩略图、折叠） | `lesson-page-runtime.js` |
-| **页面数据** | 三份声明式 JSON（LLM 只写这里） |
-| **HTML 组装** | `build-lesson-page.mjs`（编译脚本） |
+
+| 职责                    | 承担者                             |
+| --------------------- | ------------------------------- |
+| 数学计算（多边形裁剪、交点、坐标变换）   | `geometry-engine.js`（一次实现，持续复用） |
+| SVG 渲染与图层编排           | `geometry-lesson-from-spec.js`  |
+| UI 交互（步骤导航、滑块、缩略图、折叠） | `lesson-page-runtime.js`        |
+| **页面数据**              | 三份声明式 JSON（LLM 只写这里）            |
+| **HTML 组装**           | `build-lesson-page.mjs`（编译脚本）   |
+
 
 LLM 只需填写**纯数据 JSON**，不写任何 HTML 标签或命令式 JS。
 
@@ -85,6 +88,7 @@ site/assets/js/interactive-lesson-ui.js        ← 通用 UI 组件
 ```
 
 **关键约定：**
+
 - 坐标用字符串表达式：`S3` = √3，支持 `t`、`t/2`、`3*S3` 等
 - 交点一律用 `derivedIntersections` 声明两条线段，引擎负责计算，**不要手推公式**
 - `fallback` 用于原题图（静态渲染）时的替代坐标
@@ -125,24 +129,28 @@ site/assets/js/interactive-lesson-ui.js        ← 通用 UI 组件
 
 **图层可见性条件：**
 
-| 字段 | 含义 |
-|---|---|
-| _(无)_ | 全局始终可见 |
-| `"section": "第（I）问"` | 仅当步骤属于该小问 |
-| `"sectionNot": "第（I）问"` | 不属于该小问时 |
+
+| 字段                              | 含义         |
+| ------------------------------- | ---------- |
+| *(无)*                           | 全局始终可见     |
+| `"section": "第（I）问"`            | 仅当步骤属于该小问  |
+| `"sectionNot": "第（I）问"`         | 不属于该小问时    |
 | `"stepStartsWith": ["q1","q2"]` | 步骤 id 前缀匹配 |
+
 
 **装饰类型速查（共 ~14 种）：**
 
-| type | 说明 |
-|---|---|
-| `grid` / `basePoly` / `movingPoly` / `overlap` | 基础图层元素 |
-| `point` / `derivedPoint` | 点与交点 |
-| `segment` / `dashedLine` / `coloredLine` | 线段 |
-| `rightAngle` / `angleArc` | 角度标记 |
-| `coordinateLabel` / `coincidentLabel` | 坐标标注 / 重合标注 |
-| `cutRegion` / `outlineRegion` | 面积拆分辅助区域 |
-| `areaLabel` / `areaFormulaCard` | 面积标注与公式卡片 |
+
+| type                                           | 说明          |
+| ---------------------------------------------- | ----------- |
+| `grid` / `basePoly` / `movingPoly` / `overlap` | 基础图层元素      |
+| `point` / `derivedPoint`                       | 点与交点        |
+| `segment` / `dashedLine` / `coloredLine`       | 线段          |
+| `rightAngle` / `angleArc`                      | 角度标记        |
+| `coordinateLabel` / `coincidentLabel`          | 坐标标注 / 重合标注 |
+| `cutRegion` / `outlineRegion`                  | 面积拆分辅助区域    |
+| `areaLabel` / `areaFormulaCard`                | 面积标注与公式卡片   |
+
 
 ### 3.3 `lesson-data.json` — 题目与步骤数据
 
@@ -204,14 +212,16 @@ site/assets/js/interactive-lesson-ui.js        ← 通用 UI 组件
 }
 ```
 
-**`problem.lines` 四种行类型：**
+`**problem.lines` 四种行类型：**
 
-| 结构 | 渲染效果 |
-|---|---|
-| `{ "text": "…" }` | 普通文字行 |
-| `{ "text": "…", "answerId": "answerX", "answer": "答案：…" }` | 文字行 + 答案 chip |
-| `{ "heading": "原题图形" }` | 粗体小标题行 |
-| `{ "ariaLabel": "…", "figures": [{id, title}] }` | 原题图形区域（SVG 占位符） |
+
+| 结构                                                         | 渲染效果            |
+| ---------------------------------------------------------- | --------------- |
+| `{ "text": "…" }`                                          | 普通文字行           |
+| `{ "text": "…", "answerId": "answerX", "answer": "答案：…" }` | 文字行 + 答案 chip   |
+| `{ "heading": "原题图形" }`                                    | 粗体小标题行          |
+| `{ "ariaLabel": "…", "figures": [{id, title}] }`           | 原题图形区域（SVG 占位符） |
+
 
 ---
 
@@ -300,8 +310,11 @@ node tools/validate-geometry-spec.mjs internal/lesson-specs/<problem-id>/
 - Sutherland–Hodgman 多边形裁剪（计算重叠区域）
 - 表达式求值（`3*S3`、`t/2` 等字符串 → 浮点数）
 - 线段求交点
+- **抛物线**：`sampleParabola`、`svgOpenPathFromMathPoints`、`segmentParabolaIntersections`
 - 坐标系变换（`domain` → SVG 像素）
 - SVG 辅助函数：`svgConclusionBox`、`svgMini`、`svgAngleArcPath`、`svgAreaFormulaCard`
+
+表达式环境与几何规格：`geometry-spec.expressionEnv` 写入的名称、`movingParam` 对应的字母（如 `m`）以及内置 `t`/`S3` 可作为 `evalExpr` / `evalPoint` 中的变量。
 
 ### `geometry-lesson-from-spec.js`
 
@@ -315,7 +328,7 @@ GeometryLessonFromSpec.createSpecRenderer(spec, decoData, STEPS, POLICIES)
 // - renderOriginalFigures() → 填充原题图 SVG（afterRenderAllSteps 回调）
 ```
 
-图层可见性逻辑、装饰类型分发、标注避让调用都在此模块。
+图层可见性逻辑、装饰类型分发、标注避让调用都在此模块；另有抛物线相关装饰：`parabola`、`axisOfSymmetry`、`vertex`、`curvePoint`。
 
 ### `geometry-label-layout.js`
 
@@ -347,11 +360,13 @@ GeometryLessonFromSpec.createSpecRenderer(spec, decoData, STEPS, POLICIES)
 
 位于 `internal/schemas/`：
 
-| 文件 | 校验目标 |
-|---|---|
-| `geometry-spec.schema.json` | `geometry-spec.json` |
+
+| 文件                             | 校验目标                    |
+| ------------------------------ | ----------------------- |
+| `geometry-spec.schema.json`    | `geometry-spec.json`    |
 | `step-decorations.schema.json` | `step-decorations.json` |
-| `lesson-data.schema.json` | `lesson-data.json` |
+| `lesson-data.schema.json`      | `lesson-data.json`      |
+
 
 Schema 遵循 JSON Schema Draft 2020-12。
 
@@ -370,17 +385,19 @@ Schema 遵循 JSON Schema Draft 2020-12。
 
 模板占位符：
 
-| 占位符 | 内容 |
-|---|---|
-| `{{PAGE_TITLE}}` | meta.pageTitle |
-| `{{PAGE_DESCRIPTION}}` | meta.pageDescription |
-| `{{BREADCRUMB_TITLE}}` | meta.breadcrumbTitle |
-| `{{PROBLEM_SUMMARY}}` | problem.summary |
+
+| 占位符                     | 内容                   |
+| ----------------------- | -------------------- |
+| `{{PAGE_TITLE}}`        | meta.pageTitle       |
+| `{{PAGE_DESCRIPTION}}`  | meta.pageDescription |
+| `{{BREADCRUMB_TITLE}}`  | meta.breadcrumbTitle |
+| `{{PROBLEM_SUMMARY}}`   | problem.summary      |
 | `{{PROBLEM_FULL_HTML}}` | 由 problem.lines 编译生成 |
-| `{{STEPS_JSON}}` | steps 数组 |
-| `{{POLICIES_JSON}}` | policies 对象 |
-| `{{STEP_LABELS_JSON}}` | stepLabels 对象 |
-| `{{GEOMETRY_SCRIPT}}` | 几何段三个 `<script>` 块 |
+| `{{STEPS_JSON}}`        | steps 数组             |
+| `{{POLICIES_JSON}}`     | policies 对象          |
+| `{{STEP_LABELS_JSON}}`  | stepLabels 对象        |
+| `{{GEOMETRY_SCRIPT}}`   | 几何段三个 `<script>` 块   |
+
 
 ---
 
@@ -400,7 +417,7 @@ cp <原题截图> internal/source-images/<problem-id>/
 
 ### 3. 运行 Skill 生成三份 JSON
 
-调用 `geometry-lesson` skill（见 `internal/skills/geometry-lesson/SKILL.md`），产出：
+按题型选用 skill：`geometry-lesson`（`internal/skills/geometry-lesson/SKILL.md`）或二次函数页 `quadratic-lesson`（`internal/skills/quadratic-lesson/SKILL.md`），产出：
 
 ```
 internal/lesson-specs/<problem-id>/
@@ -410,6 +427,7 @@ internal/lesson-specs/<problem-id>/
 ```
 
 **规则提醒：三份 JSON 里不能有任何 HTML 字符串。**
+
 - `problem.lines` 只写纯文字行数据
 - `ui.legend` 只写 `colorVar` 和 `label`
 - 坐标用字符串表达式（`S3` = √3）
@@ -470,13 +488,16 @@ Skill 的规范源存放在仓库内：
 
 ```
 internal/skills/
-└── geometry-lesson/
-    ├── SKILL.md                           ← 主 skill 文件（流程与硬约束）
-    └── references/
-        ├── geometry-solving-principles.md ← 解题与分步原则
-        ├── json-schema-guide.md           ← 三份 JSON 填写手册
-        ├── nankai-24-fewshot.md           ← 南开 24 题 compact few-shot
-        └── piecewise-area-trends.md       ← 分段面积趋势规则
+├── geometry-lesson/
+│   ├── SKILL.md                           ← 几何综合题（折叠/旋转等）
+│   └── references/
+│       ├── geometry-solving-principles.md
+│       ├── json-schema-guide.md
+│       ├── nankai-24-fewshot.md
+│       └── piecewise-area-trends.md
+└── quadratic-lesson/
+    ├── SKILL.md                           ← 二次函数综合题（共用同一套 JSON + 编译链）
+    └── references → ../geometry-lesson/references
 ```
 
 `references/` 只放 agent 写规格需要阅读的文档，不放 JS/CSS 实现文件。渲染能力由 `site/assets/js/` 下的引擎、渲染器和运行时提供。
@@ -486,7 +507,8 @@ internal/skills/
 Cursor 从 `~/.codex/skills/` 目录加载 skill。通过将该目录下的条目指向仓库路径，让 agent 读到的始终是仓库里的版本：
 
 ```
-~/.codex/skills/geometry-lesson  →  <repo>/internal/skills/geometry-lesson
+~/.codex/skills/geometry-lesson   →  <repo>/internal/skills/geometry-lesson
+~/.codex/skills/quadratic-lesson →  <repo>/internal/skills/quadratic-lesson
 ```
 
 ### 首次设置（clone 后执行一次）
@@ -532,3 +554,4 @@ bash tools/setup-skills.sh
 4. **三段脚本有序执行**——数据段 → 几何段（含多个 `<script>` 标签）→ 初始化段，不可混用
 5. **Schema 护栏**——提交前用 `validate-geometry-spec.mjs` 校验，比浏览器调试更早发现问题
 6. **渲染错误改 JSON 或引擎**——不允许在题页内补丁式覆盖引擎行为
+

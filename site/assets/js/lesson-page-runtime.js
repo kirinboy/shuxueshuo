@@ -209,7 +209,7 @@
             "><h3>" +
             esc(item.title) +
             "</h3>" +
-            drawMini(item.t) +
+            drawMini(item.t, item, step) +
             "<p>" +
             esc(item.caption) +
             "</p></div>"

@@ -117,6 +117,30 @@ function validateSchemaFile(value, schemaName, label) {
   if (schema && value) validateAgainstSchema(value, schema, schema, label);
 }
 
+function validateOriginalFigureRefs(spec) {
+  const knownPoints = new Set([
+    ...Object.keys(spec.fixedPoints ?? {}),
+    ...Object.keys(spec.movingPoints ?? {}),
+    ...(spec.derivedIntersections ?? []).map((item) => item.name).filter(Boolean)
+  ]);
+  for (const fig of spec.originalFigures ?? []) {
+    const figLabel = "originalFigures." + (fig.id || "(missing id)");
+    for (const listName of ["fixedLabels", "movingLabels", "intersectionLabels"]) {
+      for (const [index, label] of (fig[listName] ?? []).entries()) {
+        if (label && typeof label === "object" && !Array.isArray(label)) {
+          need(knownPoints.has(label.at), figLabel + "." + listName + "[" + index + "].at 未声明点: " + label.at);
+        }
+      }
+    }
+    for (const [index, segment] of (fig.segments ?? []).entries()) {
+      if (segment && typeof segment === "object" && !Array.isArray(segment)) {
+        need(knownPoints.has(segment.from), figLabel + ".segments[" + index + "].from 未声明点: " + segment.from);
+        need(knownPoints.has(segment.to), figLabel + ".segments[" + index + "].to 未声明点: " + segment.to);
+      }
+    }
+  }
+}
+
 function collectStrings(value, out = []) {
   if (typeof value === "string") out.push(value);
   else if (Array.isArray(value)) value.forEach(item => collectStrings(item, out));
@@ -208,27 +232,77 @@ if (spec) {
   const GE = sandbox.window.GeometryEngine;
   const GLS = sandbox.window.GeometryLessonFromSpec;
 
-  const env = { t: 2, S3: Math.sqrt(3) };
-  for (const [name, pair] of Object.entries(spec.fixedPoints ?? {})) {
-    try {
-      GE.evalPoint(pair, env);
-    } catch (e) {
-      errors.push("fixedPoints." + name + ": " + e.message);
+  function buildTrialEnv(specObj, tVal) {
+    const paramName = specObj.movingParam || "t";
+    const tv = Number(tVal);
+    const envTrial = { S3: Math.sqrt(3), t: tv };
+    envTrial[paramName] = tv;
+    for (const item of specObj.expressionEnv ?? []) {
+      if (!item?.name) continue;
+      envTrial[item.name] = GE.evalExpr(String(item.expr ?? ""), envTrial);
+    }
+    return envTrial;
+  }
+
+  function uniqueFinite(values) {
+    return [...new Set(values.map(Number).filter(Number.isFinite))];
+  }
+
+  function collectTrialValues(specObj, lessonDataObj) {
+    const values = [];
+    for (const step of lessonDataObj?.steps ?? []) {
+      if (Number.isFinite(Number(step.t))) values.push(Number(step.t));
+      const range = lessonDataObj?.policies?.[step.id]?.range;
+      if (Array.isArray(range) && range.length >= 2) {
+        const lo = Number(range[0]);
+        const hi = Number(range[1]);
+        if (Number.isFinite(lo)) values.push(lo);
+        if (Number.isFinite(hi)) values.push(hi);
+        if (Number.isFinite(lo) && Number.isFinite(hi)) values.push((lo + hi) / 2);
+      }
+    }
+    if (!values.length) values.push(specObj.movingParam === "m" ? 3 : 2);
+    return uniqueFinite(values);
+  }
+
+  function needFinitePoint(p, label) {
+    need(p && Number.isFinite(p.x) && Number.isFinite(p.y), label + " 应计算为有限坐标");
+  }
+
+  function needFiniteCurves(state, tVal) {
+    for (const [curveId, curve] of Object.entries(state.curves ?? {})) {
+      for (const key of ["a", "b", "c"]) {
+        need(Number.isFinite(curve[key]), "curves." + curveId + "." + key + " 在 " + (spec.movingParam || "t") + "=" + tVal + " 时应为有限数");
+      }
     }
   }
-  for (const [name, pair] of Object.entries(spec.movingPoints ?? {})) {
-    try {
-      GE.evalPoint(pair, env);
-    } catch (e) {
-      errors.push("movingPoints." + name + ": " + e.message);
+
+  const trialValues = collectTrialValues(spec, lessonData);
+  validateOriginalFigureRefs(spec);
+  for (const trialValue of trialValues) {
+    const trialEnv = buildTrialEnv(spec, trialValue);
+    for (const [name, pair] of Object.entries(spec.fixedPoints ?? {})) {
+      try {
+        needFinitePoint(GE.evalPoint(pair, trialEnv), "fixedPoints." + name + " 在 " + (spec.movingParam || "t") + "=" + trialValue + " 时");
+      } catch (e) {
+        errors.push("fixedPoints." + name + ": " + e.message);
+      }
     }
-  }
-  try {
-    const st = GLS.resolveClipOverlap(spec, 2);
-    need(st.overlap.length >= 0, "overlap 计算异常");
-    need(Number.isFinite(st.area), "area 应为有限数");
-  } catch (e) {
-    errors.push("resolveClipOverlap: " + e.message);
+    for (const [name, pair] of Object.entries(spec.movingPoints ?? {})) {
+      try {
+        needFinitePoint(GE.evalPoint(pair, trialEnv), "movingPoints." + name + " 在 " + (spec.movingParam || "t") + "=" + trialValue + " 时");
+      } catch (e) {
+        errors.push("movingPoints." + name + ": " + e.message);
+      }
+    }
+    try {
+      const st = GLS.resolveClipOverlap(spec, trialValue);
+      need(st.overlap.length >= 0, "overlap 计算异常");
+      need(Number.isFinite(st.area), "area 应为有限数");
+      needFiniteCurves(st, trialValue);
+    } catch (e) {
+      errors.push("resolveClipOverlap(" + (spec.movingParam || "t") + "=" + trialValue + "): " + e.message);
+    }
   }
 
   if (deco && lessonData) {
@@ -260,7 +334,8 @@ if (spec) {
       const renderer = GLS.createSpecRenderer(spec, deco, lessonData.steps, lessonData.policies);
       const svg0 = renderer.diagramMarkupFor(0);
       need(typeof svg0 === "string" && svg0.includes("<"), "diagramMarkupFor(0) 应输出 SVG 字符串");
-      const mini = renderer.drawMini(lessonData.steps?.[0]?.t ?? 2);
+      const firstStep = lessonData.steps?.[0];
+      const mini = renderer.drawMini(firstStep?.t ?? trialValues[0] ?? 2, null, firstStep);
       need(typeof mini === "string" && mini.includes("<svg"), "drawMini(t) 应输出 <svg>");
     } catch (e) {
       errors.push("createSpecRenderer/diagramMarkupFor: " + e.message);

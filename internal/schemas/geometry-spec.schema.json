@@ -3,7 +3,7 @@
   "$id": "https://shuxueshuo.local/schemas/geometry-spec.schema.json",
   "title": "GeometrySpec",
   "type": "object",
-  "required": ["version", "domain", "fixedPoints", "movingParam", "movingPoints", "basePolygon", "movingPolygon"],
+  "required": ["version", "domain", "fixedPoints", "movingParam", "movingPoints"],
   "properties": {
     "$schema": { "type": "string" },
     "version": { "type": "integer", "minimum": 1 },
@@ -16,6 +16,19 @@
         "maxX": { "type": "number" },
         "minY": { "type": "number" },
         "maxY": { "type": "number" }
+      }
+    },
+    "expressionEnv": {
+      "type": "array",
+      "description": "按顺序求值的常量/参数表达式，写入求解 env（供点坐标与 curves 使用）",
+      "items": {
+        "type": "object",
+        "required": ["name", "expr"],
+        "properties": {
+          "name": { "type": "string" },
+          "expr": { "type": "string" }
+        },
+        "additionalProperties": false
       }
     },
     "fixedPoints": {
@@ -39,6 +52,44 @@
     },
     "basePolygon": { "type": "array", "items": { "type": "string" } },
     "movingPolygon": { "type": "array", "items": { "type": "string" } },
+    "foldedPolygon": {
+      "type": "object",
+      "required": ["x"],
+      "properties": {
+        "x": { "type": "string" },
+        "side": { "enum": ["left", "right"] }
+      },
+      "additionalProperties": false
+    },
+    "curves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type"],
+        "oneOf": [
+          { "required": ["a", "b", "c"] },
+          { "required": ["params"] }
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "enum": ["parabola"] },
+          "a": { "type": "string" },
+          "b": { "type": "string" },
+          "c": { "type": "string" },
+          "params": {
+            "type": "object",
+            "required": ["a", "b", "c"],
+            "properties": {
+              "a": { "type": "string" },
+              "b": { "type": "string" },
+              "c": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "derivedIntersections": {
       "type": "array",
       "items": {
@@ -49,8 +100,70 @@
           "a": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string" } },
           "b": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string" } },
           "fallback": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string" } }
-        }
+        },
+        "additionalProperties": false
       }
+    },
+    "originalFigures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "t"],
+        "properties": {
+          "id": { "type": "string" },
+          "t": { "type": "number" },
+          "showMoving": { "type": "boolean" },
+          "showOverlap": { "type": "boolean" },
+          "showIntersections": { "type": "boolean" },
+          "segments": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/originalFigureSegment" }
+          },
+          "fixedLabels": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/originalFigureLabel" }
+          },
+          "movingLabels": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/originalFigureLabel" }
+          },
+          "intersectionLabels": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/originalFigureLabel" }
+          },
+          "parabolaStroke": { "type": "string" },
+          "parabolaStrokeWidth": { "type": "number" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "originalFigureLabel": {
+      "type": "object",
+      "required": ["at", "label"],
+      "properties": {
+        "at": { "type": "string" },
+        "label": { "type": "string" },
+        "color": { "type": "string" },
+        "dx": { "type": "number" },
+        "dy": { "type": "number" },
+        "r": { "type": "number" },
+        "fontSize": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "originalFigureSegment": {
+      "type": "object",
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "color": { "type": "string" },
+        "width": { "type": "number" },
+        "dash": { "type": "string" }
+      },
+      "additionalProperties": false
     }
   }
 }

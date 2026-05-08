@@ -197,6 +197,81 @@ function validatePointRefs(spec, deco) {
   }
 }
 
+function keyForEdge(a, b) {
+  return [a, b].sort().join("\u0000");
+}
+
+function basePolygonEdges(spec) {
+  const edges = new Set();
+  const base = spec.basePolygon ?? [];
+  for (let i = 0; i < base.length; i++) {
+    const a = base[i];
+    const b = base[(i + 1) % base.length];
+    if (a && b) edges.add(keyForEdge(a, b));
+  }
+  return edges;
+}
+
+function visitDecorations(deco, visitor) {
+  for (const [layerName, layer] of Object.entries(deco.layers ?? {})) {
+    (layer.elements ?? []).forEach((item, i) => visitor(item, "layers." + layerName + ".elements[" + i + "]", { layerName }));
+  }
+  for (const [stepId, step] of Object.entries(deco.steps ?? {})) {
+    (step.add ?? []).forEach((item, i) => visitor(item, "steps." + stepId + ".add[" + i + "]", { stepId }));
+  }
+}
+
+function validateDecorationGeometryStyle(spec, deco) {
+  const baseEdges = basePolygonEdges(spec);
+  visitDecorations(deco, (item, label, ctx) => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) return;
+    if (item.type === "segment" && !item.label && !item.labelText && !item.text) {
+      errors.push(label + " 是无标签 segment；需要可见辅助线请改用 coloredLine/dashedLine/dottedLine，需要测量线段请填写 label");
+    }
+    if (item.type === "segment" && item.from && item.to && baseEdges.has(keyForEdge(item.from, item.to)) && ctx.layerName) {
+      errors.push(label + " 在图层中重复绘制 basePolygon 边 " + item.from + item.to + "；除非当前步骤正在计算该边，否则不要重画/标注已有边界");
+    }
+  });
+}
+
+function distance(a, b) {
+  return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function originalNameForFoldedPoint(name) {
+  return /^[A-Z]p$/.test(name) ? name.slice(0, -1) : null;
+}
+
+function validateDerivedIntersectionsFinite(specObj, state, tVal) {
+  for (const item of specObj.derivedIntersections ?? []) {
+    if (!item?.name) continue;
+    const p = state.points?.[item.name];
+    need(
+      p && Number.isFinite(p.x) && Number.isFinite(p.y),
+      "derivedIntersections." + item.name + " 在 " + (specObj.movingParam || "t") + "=" + tVal + " 时应计算为有限坐标"
+    );
+  }
+}
+
+function validateFoldLengthPreservation(specObj, state, tVal) {
+  const points = state.points ?? {};
+  const anchor = points.D;
+  if (!anchor || !(specObj.movingPolygon ?? []).includes("D")) return;
+  for (const name of Object.keys(specObj.movingPoints ?? {})) {
+    const originalName = originalNameForFoldedPoint(name);
+    if (!originalName || !points[originalName] || !points[name]) continue;
+    const originalDistance = distance(anchor, points[originalName]);
+    const foldedDistance = distance(anchor, points[name]);
+    if (Math.abs(originalDistance - foldedDistance) > 1e-6) {
+      errors.push(
+        "movingPoints." + name + " 在 " + (specObj.movingParam || "t") + "=" + tVal +
+          " 时不满足折叠保距: D" + originalName + "=" + originalDistance.toFixed(6) +
+          ", D" + name + "=" + foldedDistance.toFixed(6)
+      );
+    }
+  }
+}
+
 const resolvedInput = path.resolve(input);
 const stat = fs.existsSync(resolvedInput) ? fs.statSync(resolvedInput) : null;
 if (!stat) {
@@ -306,6 +381,8 @@ if (spec) {
       const st = GLS.resolveClipOverlap(spec, trialValue);
       need(st.overlap.length >= 0, "overlap 计算异常");
       need(Number.isFinite(st.area), "area 应为有限数");
+      validateDerivedIntersectionsFinite(spec, st, trialValue);
+      validateFoldLengthPreservation(spec, st, trialValue);
       needFiniteCurves(st, trialValue);
     } catch (e) {
       errors.push("resolveClipOverlap(" + (spec.movingParam || "t") + "=" + trialValue + "): " + e.message);
@@ -336,6 +413,7 @@ if (spec) {
     need(!hasHtmlString(lessonData.problem?.lines ?? []), "lesson-data.problem.lines 不能包含 HTML 字符串");
     need(!hasHtmlString(lessonData.ui?.legend ?? []), "lesson-data.ui.legend 不能包含 HTML 或 style 字符串");
     validatePointRefs(spec, deco);
+    validateDecorationGeometryStyle(spec, deco);
 
     try {
       const renderer = GLS.createSpecRenderer(spec, deco, lessonData.steps, lessonData.policies);

@@ -113,7 +113,7 @@ Quality requirements:
 - Step titles should use `方法 + 目标量`, such as `由直角三角形求 DG`.
 - Reuse named points and earlier conclusions instead of re-deriving them.
 - Keep endpoint inclusiveness identical across solution text, visual steps, JSON policies, answer chips, and final answers.
-- When a fold/rotation gives 30°、45°、60° right triangles, prefer special-right-triangle lengths and visible line-segment differences before coordinate-intersection algebra. For example, derive `CG` and `HB` from local `30°` right triangles, then use `GH=BC-CG-HB`, instead of solving coordinates for `G` and `H` directly.
+- Follow the unified reasoning and visual principles below when choosing the route and diagram contents.
 
 For detailed reasoning rules, use `references/geometry-solving-principles.md`.
 
@@ -157,18 +157,34 @@ Layering rules:
 - Put one-step helpers and highlights in the step layer.
 - Put previously derived values in `lesson-data.steps[].box`, not as extra diagram text unless the value has spatial meaning in the current inference.
 
-## Step 4: JSON Specs
+## Reasoning And Visual Principles
 
-Write the three JSON files in `internal/lesson-specs/<problem-id>/`.
+Keep these principles together when revising a lesson. Do not solve one local visual problem by adding ad hoc labels or duplicate elements that contradict the overall model.
 
-Before inventing a visual workaround, check the shared renderer/schema and a nearby few-shot:
+### Reasoning Route
+
+- When a fold/rotation gives 30°、45°、60° right triangles, prefer special-right-triangle lengths and visible line-segment differences before coordinate-intersection algebra. For example, derive `CG` and `HB` from local `30°` right triangles, then use `GH=BC-CG-HB`, instead of solving coordinates for `G` and `H` directly.
+- For piecewise overlap or area problems, first name every phase and boundary value, then choose the simplest phase that can produce the requested value. Use interval thumbnails only for phase comparison; put formula-specific helper lines in the later calculation step that actually uses them.
+- For folds, the displayed folded polygon must be the actual image of the current paper piece for that interval. If the fold line cuts different original sides in different intervals, use interval-specific `movingPolygons` instead of extending a later-stage polygon backward.
+
+### Layer And When Scoping
+
+- Section layers must not leak objects into unrelated steps. Use `section`, `sectionNot`, or `stepStartsWith` conditions that exactly match the intended scope.
+- A boundary-only label (e.g. a `when`-gated annotation for a phase boundary) must not appear at non-boundary parameter values; verify every `when` condition covers exactly the intended parameter range.
+
+### Public Renderer First
 
 - Use existing public decoration fields first, such as `originLabel` / `showOriginLabel` on `grid`, `labelRadius` / `lockLabel` on `angleArc`, `offsetPx` / `rotateWithLine` on `segment`, and `showLabel:false` on `point`.
 - If two named points coincide, prefer one merged label such as `O(D)` through grid/origin-label configuration or a single point label. Do not show both the coordinate grid's `O` and a separate nearby `D` label.
+- Place angle text with the angle arc: use `angleArc` label controls such as `labelRadius` and `lockLabel` before adding separate text. The numeric angle label should sit near the middle of the arc, slightly outside it.
 - Use `coloredLine`, `dashedLine`, or `dottedLine` for actual auxiliary segments that must be visibly connected, especially perpendiculars and construction lines. Use `segment` for measured/labelled line segments; do not rely on an unlabeled `segment` as a visible helper line.
 - Do not redraw or label a boundary such as `CB` when it is already an edge of `basePoly`, unless that exact boundary length is the current object being calculated.
 - If the required behavior is generally useful but not available declaratively, update the shared renderer/schema in `site/assets/js/geometry-lesson-from-spec.js` and `internal/schemas/step-decorations.schema.json`, then use the new JSON field. Do not fake it with duplicated labels, extra text, or generated-HTML edits.
 - Use `references/nankai-24-fewshot.md` for id alignment and layer shape, but do not rely on few-shots alone for renderer behavior; the real public runtime and schema are authoritative.
+
+## Step 4: JSON Specs
+
+Write the three JSON files in `internal/lesson-specs/<problem-id>/`.
 
 ### `geometry-spec.json`
 
@@ -243,10 +259,7 @@ If validation or rendering fails, fix the JSON spec or the shared compiler/runti
 - Step ids are aligned across `steps`, `policies`, `stepLabels`, and `step-decorations`.
 - Original figure ids align between `lesson-data.problem.lines` and `geometry-spec.originalFigures`.
 - Original figure point labels use object entries such as `{ "at": "A", "label": "A", "dx": 10, "dy": 26 }`; never use string arrays such as `["A", "B"]`.
-- Same-point coordinate labels and point-name labels are not both shown in one snapshot; avoid duplicate labels such as two `B` or two `C` near the same vertex.
-- Section layers and `when` labels are scoped tightly: no section layer leaks objects into unrelated steps, and no boundary-only label appears at a non-boundary parameter value.
-- Trend/classification steps for area ranges contain no formula-specific helpers such as small triangles, heights, cut regions, or candidate-only points; those appear only in the later calculation step that uses them.
-- Folding trend/classification steps use the true folded polygon for the current interval. If the fold line cuts different original sides in different intervals, use interval-specific moving polygons and verify thumbnails share that model.
+- The unified reasoning and visual principles above are satisfied: no duplicate same-point labels, no unlabeled measured segments, no unnecessary boundary redraws, no phase helpers in trend-only snapshots, and no false folded polygon for the interval.
 - Extremum reasoning compares every included endpoint candidate that the trend step identifies; do not discard a candidate endpoint without a comparison.
 - Boundary inclusiveness matches everywhere.
 - Validation and compilation both pass.

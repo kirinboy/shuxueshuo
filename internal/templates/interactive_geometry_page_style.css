@@ -318,6 +318,24 @@ svg {
   margin-right: 8px;
 }
 
+.derive-ref {
+  margin-left: 10px;
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--accent);
+  font: 700 12px/1.2 var(--sans);
+  padding: 3px 8px;
+  cursor: pointer;
+  vertical-align: 1px;
+}
+
+.derive-ref:hover,
+.derive-ref:focus-visible {
+  background: rgba(37, 99, 235, 0.14);
+  outline: none;
+}
+
 .mini-boundaries {
   display: grid;
   grid-template-columns: 1fr 1fr;

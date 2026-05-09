@@ -428,7 +428,12 @@
         case "outlineRegion": {
           var verts2 = (elem.vertices || []).map(function (n) { return pts[n]; }).filter(Boolean);
           if (verts2.length < 3) return "";
-          return '<path d="' + pathD(verts2) + '" fill="none" stroke="#b45309" stroke-width="2.2" stroke-dasharray="6 5" />';
+          var isHorseTriangle = elem.style === "horseTriangle";
+          var fill2 = elem.fill || (isHorseTriangle ? "rgba(37,99,235,.12)" : "none");
+          var stroke2 = elem.color || (isHorseTriangle ? "#2563eb" : "#b45309");
+          var width2 = elem.width || (isHorseTriangle ? 2.2 : 2.2);
+          var dash2 = elem.dash == null ? (isHorseTriangle ? "" : "6 5") : elem.dash;
+          return '<path d="' + pathD(verts2) + '" fill="' + fill2 + '" stroke="' + stroke2 + '" stroke-width="' + width2 + '"' + (dash2 ? ' stroke-dasharray="' + dash2 + '"' : "") + ' />';
         }
         case "areaFormulaCard": {
           var pos = elem.pos;

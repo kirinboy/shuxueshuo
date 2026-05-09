@@ -165,6 +165,7 @@ Step alignment:
 Derivation text rules:
 
 - Use `∵`, `∴`, and `作` as the left-hand labels in `derive` whenever possible.
+- A derive row may include a third declarative reference object, e.g. `["∵", "由上一步全等直角三角形思路", { "refStep": "q1s2", "refLabel": "回看第（II）①第2步" }]`. The runtime renders this as a small jump button; do not write HTML links in JSON.
 - Keep derived state synchronized. If an earlier row solved `m=3`, subsequent rows should use `M(3,1)` and `N(2,−2)` rather than generic expressions.
 - Do not include unasked extras in `box` or `derive`; if the problem does not ask for a vertex, do not add it.
 - Avoid HTML and avoid long prose inside derive rows; split a dense argument into short mathematical rows.

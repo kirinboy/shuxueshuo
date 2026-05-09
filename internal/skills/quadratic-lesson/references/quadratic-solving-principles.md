@@ -24,9 +24,15 @@ Write `lesson-data.steps[].derive` as board-style mathematical reasoning:
 - Prefer left labels `∵`, `∴`, and `作`.
 - Avoid lecture-style labels such as `关键观察`, `计算`, `解析式`, `一般结论`, `由...`, or `又...` unless the line would be unclear without a construction verb.
 - Split mixed lines into separate cause/effect rows. For example, use `["∵", "m＞2"]` then `["∴", "m＝3"]`, not `["∵ m＞2", "∴ m＝3"]`.
+- If a sub-question gives a numerical value such as `m=3` or `n=6`, substitute it at the first step of that sub-question. Do not derive a fully symbolic result and only plug in the value at the end unless the exam explicitly asks for a general conclusion.
 - Once a value is solved, later steps must use the solved state. If a step already has `m = 3`, use `N(2,−2)` rather than the earlier general form `N(2,1−m)`.
 - Keep `02_solution.md`, `lesson-data.json`, and `step-decorations.json` in the same mathematical state. Do not let JSON fall back to a generic template after the markdown has specialized the problem.
 - Do not answer what the problem did not ask. If Part I asks only for `D` and the equation, do not add `C` or vertex conclusions to the solution, box, or diagram.
+- Diagrams should label only quantities that the current derivation uses or has just obtained. Do not label unrelated coordinates, and do not reveal coordinates or values before the step's reasoning has established them.
+- For local transformation or optimization steps, narrow both the `domain` and the active layers. Do not let broad context layers such as the full parabola, construction quadrilateral, or earlier helper segments remain visible when the step only needs a local triangle or a few comparison segments.
+- Keep a prior construction visible if the current derivation still depends on it. For example, if a distance-optimization step first uses parallelogram `MFDB` to get `M`, retain the four vertices and the parallelogram edges while still removing unrelated objects such as the full parabola or rotation auxiliaries.
+- Do not label a segment with just its endpoint name, such as `PB`, `PM`, or `PA`, when the segment is already visibly drawn between labeled endpoints. Such labels add no mathematical information. Reserve segment labels for new facts like `EF=6`, ratios, equality markers, or a length value that is being computed in the current step.
+- When a step cites a prior derivation, add a declarative step reference in the derive row instead of repeating the whole proof or embedding HTML. Use the third derive item: `{ "refStep": "previousStepId", "refLabel": "回看..." }`.
 
 ---
 
@@ -64,9 +70,23 @@ The most common construction: M is on the parabola, D is fixed (often the axis�
 
 This is preferred over vector rotation in student-facing solution text because it stays on the original diagram and uses familiar congruent-triangle reasoning.
 
+### Segment Rotation Around a Coordinate-Axis Point
+
+When a segment such as `AC` is rotated 90° around a point on an axis, do not use vectors in the student-facing solution. Middle-school pages should construct a right triangle and prove congruence.
+
+Preferred pattern:
+
+1. If the sub-question gives `m` or another parameter value, substitute it immediately.
+2. Draw the rotated segment endpoint `D`, then drop a perpendicular from `D` to the relevant axis or known line. For example, if `C` is on the `y` axis, draw `DG ⟂ OC` with `G` on `OC`.
+3. Compare the original right triangle and the new right triangle, such as `△AOC` and `△CDG`.
+4. Use rotation to state the equal hypotenuse/angle relation, then prove the two right triangles congruent.
+5. Transfer leg lengths to obtain the coordinate of `D`.
+
+For example, with `A(-3,0)` and `C(0,9)`, draw `DG ⟂ OC`. From `△AOC≌△CDG`, get `CG=3` and `DG=9`, so `G(0,6)` and `D(9,6)`.
+
 **Optional agent-side check (not the main student explanation):**
 
-- You may use the 90° rotation of `DM` internally to verify the coordinates quickly.
+- You may use coordinate rotation or vectors internally to verify coordinates quickly.
 - Do not present the vector method as the primary solution for a middle-school page unless the source problem or user explicitly asks for coordinate-vector reasoning.
 - Never guess `N`'s coordinates; always show either the congruent-triangle leg transfer or another visible geometric justification.
 
@@ -79,6 +99,27 @@ After establishing N's coordinates, substitute both M and N into `y = ax² + bx 
 3. Then b and c follow.
 
 Show each substitution step separately. Do not skip from "N on parabola" to "a = 1/(m−2)" in one line.
+
+### Axis Symmetry + Difference Maximum Pattern
+
+When `P` lies on the parabola's axis of symmetry and the target is a difference such as `PB - PM`, first check whether `A` and `B` are symmetric about that axis.
+
+Preferred middle-school path:
+
+1. Use roots `A` and `B` to state the axis is the perpendicular bisector of `AB`.
+2. Since `P` lies on the axis, convert `PB` to `PA`.
+3. Then `PB - PM = PA - PM`.
+4. Apply the triangle inequality in `△APM`: `PA - PM ≤ AM`.
+5. The maximum occurs when `A, P, M` are collinear and `P` lies on the correct side so that `PA = PM + AM`.
+6. Compute `AM` from the coordinates, then use the given maximum to solve the parameter.
+
+Do not expand both distances into nested radicals unless the symmetry route is unavailable. The symmetry route is shorter, more visual, and closer to a 将军饮马 transformation.
+
+Diagram style for this pattern:
+
+- Fill the target triangle, usually `△APM`, with `outlineRegion` and `style: "horseTriangle"`.
+- Draw the comparison segments `PA`, `PB`, `PM`, and the bound segment `AM`, but do not label them with endpoint-only names.
+- Keep necessary source context, such as parallelogram `MFDB` when it determines `M`, in a quieter color than the target triangle.
 
 ---
 

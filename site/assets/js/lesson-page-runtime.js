@@ -299,6 +299,21 @@
       );
     }
 
+    function renderDeriveLine(pair) {
+      const ref = pair && pair[2];
+      const refMarkup =
+        ref && ref.refStep
+          ? '<button class="derive-ref" type="button" data-step-ref="' +
+            esc(String(ref.refStep)) +
+            '" title="' +
+            esc(ref.title || "跳转到引用步骤") +
+            '">' +
+            esc(ref.refLabel || "回看") +
+            "</button>"
+          : "";
+      return '<div class="derive-line"><strong>' + esc(pair[0]) + "</strong>" + esc(pair[1]) + refMarkup + "</div>";
+    }
+
     function renderAllSteps() {
       if (typeof config.beforeRenderAllSteps === "function") config.beforeRenderAllSteps();
       stepCards.innerHTML = STEPS.map(function (step, index) {
@@ -308,9 +323,7 @@
         const localVars = localVarsForStep(index, step);
         const derive = step.derive
           .map(function (pair) {
-            return (
-              '<div class="derive-line"><strong>' + esc(pair[0]) + "</strong>" + esc(pair[1]) + "</div>"
-            );
+            return renderDeriveLine(pair);
           })
           .join("");
         const minis = renderMinisMarkup(step, activeT);
@@ -584,6 +597,14 @@
       if (target) updateStepDiagram(Number(target.dataset.stepRange), target.value);
     });
     stepCards.addEventListener("click", function (event) {
+      const refTarget = event.target.closest("[data-step-ref]");
+      if (refTarget) {
+        const targetIndex = STEPS.findIndex(function (step) {
+          return String(step[policyStepKey]) === String(refTarget.dataset.stepRef);
+        });
+        if (targetIndex >= 0) setStep(targetIndex);
+        return;
+      }
       const target = event.target.closest("[data-mini-t]");
       if (!target) return;
       const card = target.closest(".lesson-step-card");

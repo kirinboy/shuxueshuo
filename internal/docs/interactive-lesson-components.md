@@ -136,6 +136,35 @@ They can coexist in one step, but only do that when the math meaning is clear. I
 - main slider for broad parameter exploration;
 - local point controls for focused auxiliary construction or shortest-path observation.
 
+## Derivation Step References
+
+Use derivation step references when a later step cites a previous proof or result and students may need to jump back briefly.
+
+Declaration:
+
+```json
+["∵", "由上一步全等直角三角形思路", { "refStep": "q1s2", "refLabel": "回看第（II）①第2步" }]
+```
+
+Runtime behavior:
+
+- Rendered by `site/assets/js/lesson-page-runtime.js`.
+- Uses `button[data-step-ref]`.
+- Calls the same step navigation path as the sidebar step dots.
+- Does not change the diagram math state by itself; it only jumps to the referenced step.
+
+Use it for:
+
+- citing a prior construction or congruence proof;
+- reusing an earlier algebraic conclusion such as `a=-3/n`;
+- keeping a later step concise without hiding where a result came from.
+
+Avoid it when:
+
+- the cited fact is only one short line away;
+- the later step needs the full reasoning repeated for clarity;
+- the target step id is not stable across `steps`, `policies`, `stepLabels`, and `step-decorations`.
+
 ## Design Principles
 
 - Keep controls faithful to the math constraint. Do not let students move constrained points independently.
@@ -144,6 +173,7 @@ They can coexist in one step, but only do that when the math meaning is clear. I
 - Keep local controls out of algebra-only steps.
 - If a local control changes a helper foot or dependent point, override those dependent points too.
 - Do not use visible instructional paragraphs to explain the UI. A short `note` is acceptable when it names the invariant or observation.
+- Use derivation step references instead of embedding HTML links in JSON.
 
 ## Validation
 

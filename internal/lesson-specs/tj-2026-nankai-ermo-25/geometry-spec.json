@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "id": "tj-2026-nankai-ermo-25",
+  "domain": { "minX": -3.8, "maxX": 9.8, "minY": -1.2, "maxY": 10.4 },
+  "movingParam": "m",
+  "expressionEnv": [
+    { "name": "a1",    "expr": "-1"       },
+    { "name": "b1",    "expr": "2"        },
+    { "name": "c1",    "expr": "3"        },
+    { "name": "n",     "expr": "2*m"      },
+    { "name": "a",     "expr": "-3/(2*m)" },
+    { "name": "b",     "expr": "3/2"      },
+    { "name": "c",     "expr": "3*m"      },
+    { "name": "axisX", "expr": "m/2"      },
+    { "name": "pY",    "expr": "3*m/2"    }
+  ],
+  "fixedPoints": {
+    "O":  ["0",  "0"],
+    "A1": ["-1", "0"],
+    "B1": ["3",  "0"],
+    "C1": ["0",  "3"]
+  },
+  "movingPoints": {
+    "A": ["-m",      "0"     ],
+    "B": ["n",       "0"     ],
+    "C": ["0",       "c"     ],
+    "D": ["3*m",     "2*m"   ],
+    "Gfoot": ["0",   "2*m"   ],
+    "E": ["m",       "m"     ],
+    "F": ["m",       "3*m"   ],
+    "M": ["0",       "m"     ],
+    "P": ["axisX",   "pY"    ],
+    "S": ["axisX",   "0"     ],
+    "Q": ["axisX",   "m"     ],
+    "R": ["axisX",   "3*m/2" ]
+  },
+  "curves": [
+    { "id": "parabolaPart1", "type": "parabola", "a": "a1", "b": "b1", "c": "c1" },
+    { "id": "parabolaMain",  "type": "parabola", "a": "a",  "b": "b",  "c": "c"  }
+  ],
+  "derivedIntersections": []
+}

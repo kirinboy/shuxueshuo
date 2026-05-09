@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 年天津市南开区二模 第 25 题（二次函数综合） | 数学说</title>
+  <meta name="description" content="2026 天津市南开区二模第 25 题：由抛物线与坐标轴交点、绕点 C 旋转、线段中点和平行四边形条件，求 a、EF 以及距离差最大时的解析式和点 P。" />
+  <link rel="stylesheet" href="../../../assets/css/interactive-geometry-page.css" />
+</head>
+<body>
+  <header class="lesson-topbar" role="navigation" aria-label="页面导航">
+    <a href="../../../index.html">首页</a>
+    <span aria-hidden="true">·</span>
+    <a href="../../../nav/index.html">题库导航</a>
+    <span class="lesson-title">2026 天津市南开区二模 第 25 题</span>
+  </header>
+
+  <main class="page page-with-rail" id="main">
+    <div class="lesson-layout">
+      <div class="lesson-flow">
+        <section class="card problem" id="problemCard">
+          <div class="problem-summary">
+            <div class="problem-summary-text">第 25 题（2026 天津市南开区二模）二次函数综合：旋转得到 D，中点确定 E，平行四边形推出参数关系，再用距离差最大值求解析式。</div>
+            <button id="problemToggle" class="problem-toggle" type="button">收起完整题目</button>
+          </div>
+          <div class="problem-full">
+            <div class="problem-line"><span>（25）（本题共 10 分）已知抛物线 y＝ax²＋bx＋c（a，b，c 为常数，a＜0，b＞0）与 x 轴相交于 A，B 两点（点 A 在点 B 左侧），点 C 为抛物线与 y 轴的交点。</span></div>
+<div class="problem-line"><span>（I）当 a＝−1，b＝2，c＝3 时，直接写出点 A，点 B，点 C 的坐标；</span><span class="answer-chip" id="answerI">A(−1,0)，B(3,0)，C(0,3)</span></div>
+<div class="problem-line"><span>（II）若点 A(−m,0)，点 C(0,3m)，其中 m＞0，将线段 AC 绕点 C 逆时针旋转 90° 得到线段 DC，点 E 为 AD 中点，点 F 为抛物线上一点，且 EF∥y 轴，点 B(n,0)。</span></div>
+<div class="problem-line"><span>① 若 m＝3，且 n＝6，求 a 的值和线段 EF 的长；</span><span class="answer-chip" id="answerQ1">a＝−1/2，EF＝6</span></div>
+<div class="problem-line"><span>② 点 M 在 y 轴上，点 P 在抛物线对称轴上，若以 FD 为边的四边形 MFDB 是平行四边形，当 PB−PM 取得最大值为 3√2/4 时，直接写出此时抛物线的解析式和点 P 的坐标。</span><span class="answer-chip" id="answerQ2">y＝−2x²＋(3/2)x＋9/4；P(3/8, 9/8)</span></div>
+          </div>
+        </section>
+
+        <section class="all-steps" id="stepCards" aria-label="完整解题步骤"></section>
+      </div>
+
+      <aside class="card lesson-rail" aria-label="步骤导航">
+        <div class="rail-kicker">STEP MAP</div>
+        <h2 class="rail-title">步骤导航</h2>
+        <div class="rail-progress">
+          <span id="railProgressText">1 / 1</span>
+          <span class="rail-progress-bar" aria-hidden="true"><span class="rail-progress-fill" id="railProgressFill"></span></span>
+        </div>
+        <div class="step-nav" id="stepNav"></div>
+      </aside>
+    </div>
+
+    <div class="mobile-step-dock" id="mobileStepDock">
+      <div class="mobile-step-current">
+        <span class="mobile-step-count" id="mobileStepCount">步骤 1 / 1</span>
+        <span class="mobile-step-name" id="mobileStepName">步骤</span>
+      </div>
+      <button class="mobile-step-toggle" id="mobileStepToggle" type="button">目录</button>
+    </div>
+
+    <div class="mobile-step-sheet" id="mobileStepSheet" aria-hidden="true">
+      <div class="mobile-step-panel" role="dialog" aria-modal="true" aria-label="快速跳转">
+        <div class="mobile-sheet-handle" aria-hidden="true"></div>
+        <div class="mobile-sheet-head">
+          <h2>快速跳转</h2>
+          <button class="secondary" id="mobileStepClose" type="button">关闭</button>
+        </div>
+        <div class="step-nav" id="mobileStepNav"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../../../assets/js/geometry-label-layout.js"></script>
+  <script src="../../../assets/js/interactive-lesson-ui.js"></script>
+  <script src="../../../assets/js/lesson-page-runtime.js"></script>
+
+  <!-- 第一段：页面数据（var 声明，跨脚本块全局可见） -->
+  <script>
+    var STEPS      = [{"id":"i1s1","section":"第（I）问","title":"第1步：由分解式直接读出 A、B、C","t":1,"derive":[["∵","a＝−1，b＝2，c＝3"],["∴","y＝−x²＋2x＋3"],["∴","y＝−(x−3)(x＋1)"],["∴","与 x 轴交于 (−1,0)，(3,0)"],["∵","点 A 在点 B 左侧"],["∴","A(−1,0)，B(3,0)"],["∵","x＝0 时，y＝3"],["∴","C(0,3)"]],"box":["A(−1,0)","B(3,0)","C(0,3)"]},{"id":"q1s1","section":"第（II）①问","title":"第1步：用根与 C 点求 a","t":3,"derive":[["∵","A(−m,0)，B(n,0)"],["∴","y＝a(x＋m)(x−n)"],["∵","C(0,3m) 在抛物线上"],["∴","3m＝a·m·(−n)＝−amn"],["∵","m＞0"],["∴","a＝−3/n"],["∵","n＝6"],["∴","a＝−1/2"]],"box":["a＝−1/2"]},{"id":"q1s2","section":"第（II）①问","title":"第2步：构造全等三角形得到 D，再求 E、F 和 EF","t":3,"derive":[["∵","m＝3"],["∴","A(−3,0)，C(0,9)"],["作","过 D 作 DG⊥OC，垂足为 G"],["∵","AC 绕 C 逆时针旋转 90° 得 DC"],["∴","AC＝DC，∠ACD＝90°"],["∵","∠AOC＝∠DGC＝90°"],["∴","∠ACO＝∠CDG"],["∴","△AOC≌△CDG"],["∴","CG＝AO＝3，DG＝OC＝9"],["∴","G(0,6)，D(9,6)"],["∵","E 是 AD 中点"],["∴","E(3,3)"],["∵","EF∥y轴，F 在抛物线上"],["∴","F 的横坐标为 3"],["∵","n＝6，y＝−1/2(x＋3)(x−6)"],["∴","F(3,9)，E(3,3)"],["∴","EF＝6"]],"box":["D(9,6)","E(3,3)","F(3,9)","EF＝6"]},{"id":"q2s1","section":"第（II）②问","title":"第1步：由平行四边形推出 B 坐标，推导函数表达式","t":0.75,"derive":[["∵","由上一步全等直角三角形思路",{"refStep":"q1s2","refLabel":"回看第（II）①第2步"}],["∴","D(3m,2m)"],["∵","A(−m,0)，E 是 AD 中点"],["∴","E(m,m)"],["∵","EF∥y轴"],["∴","F 的横坐标为 m"],["∵","M 在 y 轴上"],["∴","M 的横坐标为 0"],["∵","四边形 MFDB 是平行四边形"],["∴","对角线 MD 与 FB 的中点相同，即 M＋D＝F＋B"],["∴","0＋3m＝m＋n"],["∴","n＝2m"],["∴","B(2m,0)"],["∵","a＝−3/n",{"refStep":"q1s1","refLabel":"回看第（II）①第1步"}],["∴","a＝−3/(2m)"],["∴","y＝−3/(2m)(x＋m)(x−2m)"],["∴","y＝−3/(2m)x²＋(3/2)x＋3m"]],"box":["n＝2m","y＝−3/(2m)x²＋(3/2)x＋3m"]},{"id":"q2s2","section":"第（II）②问","title":"第2步：用对称轴把 PB−PM 转化为 PA−PM","t":0.75,"derive":[["∵","抛物线 y＝−3/(2m)x²＋(3/2)x＋3m"],["∴","对称轴 x＝m/2"],["∵","A(−m,0)，B(2m,0) 关于对称轴对称"],["∴","点 P 在对称轴上时，PA＝PB"],["∵","F 的横坐标为 m"],["∴","F(m,3m)"],["∵","M＋D＝F＋B"],["∴","M(0,m)"],["∴","PB−PM＝PA−PM"],["∵","在△APM中，PA−PM≤AM"],["∴","PB−PM≤AM"]],"box":["PA＝PB","PB−PM＝PA−PM≤AM"],"localControls":{"values":{"p":1.5},"note":"拖动 P：当 A、P、M 三点共线时，PA−PM 取到最大值 AM。","controls":[{"var":"p","label":"点 P：y/m","min":-0.2,"max":3,"step":0.01,"scale":1,"precision":2}]}},{"id":"q2s3","section":"第（II）②问","title":"第3步：AM即最大值，写出最终解析式和 P","t":0.75,"derive":[["∵","PB−PM≤AM"],["∴","当 A、P、M 三点共线时，PB−PM 取得最大值 AM"],["∵","A(−m,0)，M(0,m)"],["∴","AM＝m√2"],["∵","题中最大值为 3√2/4"],["∴","m＝3/4"],["∴","a＝−3/(2m)＝−2，b＝3/2，c＝3m＝9/4"],["∴","y＝−2x²＋(3/2)x＋9/4"],["∵","直线 AM 与对称轴 x＝m/2 交于 P(m/2,3m/2)"],["∴","P(3/8,9/8)"]],"box":["y＝−2x²＋(3/2)x＋9/4","P(3/8, 9/8)"]}];
+    var STEP_LABELS = {"i1s1":"1 写 A,B,C","q1s1":"1 求 a","q1s2":"2 求 EF","q2s1":"1 推 n=2m","q2s2":"2 将军饮马PB−PM->PA−PM","q2s3":"3 AM即最大值"};
+    var POLICIES   = {"i1s1":{"movable":false,"range":[1,1]},"q1s1":{"movable":false,"range":[3,3]},"q1s2":{"movable":false,"range":[3,3]},"q2s1":{"movable":false,"range":[0.75,0.75]},"q2s2":{"movable":false,"range":[0.75,0.75]},"q2s3":{"movable":false,"range":[0.75,0.75]}};
+    /** 图例 HTML；由 GEOMETRY_SCRIPT 中的脚本块覆盖赋值，默认空字符串 */
+    var __LESSON_LEGEND_HTML__ = "";
+    /** 步骤渲染后的回调；由 GEOMETRY_SCRIPT 中的脚本块覆盖赋值 */
+    var __AFTER_RENDER_ALL_STEPS__;
+    // diagramMarkupFor / drawMini / groupTitle 由下方 GEOMETRY_SCRIPT 提供
+  </script>
+
+  <!-- 第二段：几何引擎 + 渲染器（可含多个 <script> 标签，不能嵌在上面的块里） -->
+  <script type="application/json" id="geometrySpec">{"version":1,"id":"tj-2026-nankai-ermo-25","domain":{"minX":-3.8,"maxX":9.8,"minY":-1.2,"maxY":10.4},"movingParam":"m","expressionEnv":[{"name":"a1","expr":"-1"},{"name":"b1","expr":"2"},{"name":"c1","expr":"3"},{"name":"n","expr":"2*m"},{"name":"a","expr":"-3/(2*m)"},{"name":"b","expr":"3/2"},{"name":"c","expr":"3*m"},{"name":"axisX","expr":"m/2"},{"name":"pY","expr":"3*m/2"}],"fixedPoints":{"O":["0","0"],"A1":["-1","0"],"B1":["3","0"],"C1":["0","3"]},"movingPoints":{"A":["-m","0"],"B":["n","0"],"C":["0","c"],"D":["3*m","2*m"],"Gfoot":["0","2*m"],"E":["m","m"],"F":["m","3*m"],"M":["0","m"],"P":["axisX","pY"],"S":["axisX","0"],"Q":["axisX","m"],"R":["axisX","3*m/2"]},"curves":[{"id":"parabolaPart1","type":"parabola","a":"a1","b":"b1","c":"c1"},{"id":"parabolaMain","type":"parabola","a":"a","b":"b","c":"c"}],"derivedIntersections":[]}</script>
+<script src="../../../assets/js/geometry-engine.js"></script>
+<script src="../../../assets/js/geometry-lesson-from-spec.js"></script>
+
+<script>
+  const __GEOMETRY_SPEC__ = JSON.parse(document.getElementById('geometrySpec').textContent);
+  const __STEP_DECORATIONS__ = {"_comment":"南开 2026 二模第 25 题 — 二次函数综合","layers":{"global":{"elements":[{"type":"grid"},{"type":"point","at":"O","color":"#1f2937","showLabel":false}]},"partI":{"stepStartsWith":["i1"],"elements":[{"type":"parabola","curveId":"parabolaPart1","color":"#2563eb","width":2.8},{"type":"point","at":"A1","labelText":"A","color":"#0f766e","dx":-34,"dy":20},{"type":"point","at":"B1","labelText":"B","color":"#0f766e","dx":12,"dy":20},{"type":"point","at":"C1","labelText":"C","color":"#7c3aed","dx":12,"dy":-16}]},"partII":{"stepStartsWith":["q1","q2s1"],"elements":[{"type":"parabola","curveId":"parabolaMain","color":"#2563eb","width":2.8},{"type":"point","at":"A","color":"#0f766e","dx":-36,"dy":20},{"type":"point","at":"B","color":"#0f766e","dx":12,"dy":20},{"type":"point","at":"C","color":"#7c3aed","dx":12,"dy":-16},{"type":"coloredLine","from":"A","to":"C","color":"#94a3b8","width":1.8},{"type":"coloredLine","from":"C","to":"D","color":"#b45309","width":2.2},{"type":"point","at":"D","color":"#b45309","dx":14,"dy":12}]},"construction":{"stepStartsWith":["q1s2","q2s1"],"elements":[{"type":"coloredLine","from":"A","to":"D","color":"#64748b","width":1.8},{"type":"point","at":"E","color":"#dc2626","dx":12,"dy":16},{"type":"point","at":"F","color":"#dc2626","dx":12,"dy":-18},{"type":"coloredLine","from":"E","to":"F","color":"#dc2626","width":2.4}]},"parallelogram":{"stepStartsWith":["q2s1"],"elements":[{"type":"point","at":"M","color":"#7c3aed","dx":-28,"dy":14},{"type":"coloredLine","from":"M","to":"F","color":"#7c3aed","width":2},{"type":"coloredLine","from":"F","to":"D","color":"#7c3aed","width":2},{"type":"coloredLine","from":"D","to":"B","color":"#7c3aed","width":2},{"type":"coloredLine","from":"B","to":"M","color":"#7c3aed","width":2}]},"distance":{"stepStartsWith":["q2s2","q2s3"],"elements":[{"type":"axisOfSymmetry","curveId":"parabolaMain","color":"#94a3b8","width":1.5,"dash":"7 6"},{"type":"point","at":"A","color":"#0f766e","dx":-28,"dy":20},{"type":"point","at":"B","color":"#0f766e","dx":12,"dy":20},{"type":"point","at":"M","color":"#7c3aed","dx":-26,"dy":10},{"type":"point","at":"P","color":"#dc2626","dx":14,"dy":-14},{"type":"dashedLine","from":"S","to":"P","color":"#94a3b8","width":1.4,"dash":"5 5"}]}},"steps":{"i1s1":{"add":[{"type":"coordinateLabel","at":"A1","text":"A(−1, 0)","dx":-76,"dy":22},{"type":"coordinateLabel","at":"B1","text":"B(3, 0)","dx":14,"dy":22},{"type":"coordinateLabel","at":"C1","text":"C(0, 3)","dx":14,"dy":-22}]},"q1s1":{"add":[{"type":"coordinateLabel","at":"A","text":"A(−3, 0)","dx":-78,"dy":22},{"type":"coordinateLabel","at":"B","text":"B(6, 0)","dx":14,"dy":22},{"type":"coordinateLabel","at":"C","text":"C(0, 9)","dx":14,"dy":-22}]},"q1s2":{"add":[{"type":"dashedLine","from":"D","to":"Gfoot","color":"#64748b","width":1.5,"dash":"5 5"},{"type":"rightAngle","vertex":"Gfoot","rayA":"D","rayB":"C","size":10,"color":"#64748b"},{"type":"point","at":"Gfoot","labelText":"G","color":"#64748b","dx":-28,"dy":14},{"type":"coordinateLabel","at":"D","text":"D(9, 6)","dx":14,"dy":16},{"type":"coordinateLabel","at":"Gfoot","text":"G(0, 6)","dx":-70,"dy":18},{"type":"coordinateLabel","at":"E","text":"E(3, 3)","dx":14,"dy":20},{"type":"coordinateLabel","at":"F","text":"F(3, 9)","dx":14,"dy":-22},{"type":"segment","from":"E","to":"F","label":"EF＝6","color":"#dc2626","width":2.5,"offsetPx":18}]},"q2s1":{"domain":{"minX":-1,"maxX":3,"minY":-0.5,"maxY":3},"add":[{"type":"coordinateLabel","at":"D","text":"D(3m, 2m)","dx":14,"dy":-18},{"type":"coordinateLabel","at":"E","text":"E(m, m)","dx":14,"dy":16},{"type":"coordinateLabel","at":"F","text":"F 的横坐标为 m","dx":14,"dy":-20},{"type":"coordinateLabel","at":"M","text":"M 在 y 轴上","dx":-82,"dy":14},{"type":"coordinateLabel","at":"B","text":"B(2m, 0)","dx":14,"dy":20}]},"q2s2":{"domain":{"minX":-1,"maxX":2.45,"minY":-0.2,"maxY":2.55},"pointOverrides":{"P":["axisX","p*m"]},"add":[{"type":"outlineRegion","vertices":["A","P","M"],"style":"horseTriangle"},{"type":"coordinateLabel","at":"S","text":"x＝m/2","dx":12,"dy":20},{"type":"coordinateLabel","at":"P","text":"P(m/2, y)","dx":14,"dy":-14},{"type":"coordinateLabel","at":"A","text":"A(−m, 0)","dx":-76,"dy":20},{"type":"coordinateLabel","at":"B","text":"B(2m, 0)","dx":14,"dy":20},{"type":"coordinateLabel","at":"M","text":"M(0, m)","dx":-64,"dy":14},{"type":"coordinateLabel","at":"D","text":"D(3m, 2m)","dx":14,"dy":-18},{"type":"coordinateLabel","at":"F","text":"F(m, 3m)","dx":14,"dy":-18},{"type":"point","at":"D","color":"#7c3aed","dx":12,"dy":-12},{"type":"point","at":"F","color":"#7c3aed","dx":12,"dy":-12},{"type":"coloredLine","from":"M","to":"F","color":"#a78bfa","width":1.8},{"type":"coloredLine","from":"F","to":"D","color":"#a78bfa","width":1.8},{"type":"coloredLine","from":"D","to":"B","color":"#a78bfa","width":1.8},{"type":"coloredLine","from":"B","to":"M","color":"#a78bfa","width":1.8},{"type":"coloredLine","from":"A","to":"M","color":"#2563eb","width":2.2},{"type":"coloredLine","from":"P","to":"B","color":"#dc2626","width":2.2},{"type":"coloredLine","from":"P","to":"A","color":"#2563eb","width":2.2},{"type":"coloredLine","from":"P","to":"M","color":"#f59e0b","width":2.2}]},"q2s3":{"domain":{"minX":-1,"maxX":2.45,"minY":-0.2,"maxY":2.55},"add":[{"type":"outlineRegion","vertices":["A","P","M"],"style":"horseTriangle"},{"type":"coordinateLabel","at":"A","text":"A(−3/4, 0)","dx":-84,"dy":20},{"type":"coordinateLabel","at":"P","text":"P(3/8, 9/8)","dx":14,"dy":-16},{"type":"coordinateLabel","at":"B","text":"B(3/2, 0)","dx":14,"dy":20},{"type":"coordinateLabel","at":"M","text":"M(0, 3/4)","dx":-80,"dy":14},{"type":"coordinateLabel","at":"D","text":"D(9/4, 3/2)","dx":14,"dy":-18},{"type":"coordinateLabel","at":"F","text":"F(3/4, 9/4)","dx":14,"dy":-18},{"type":"coordinateLabel","at":"S","text":"x＝3/8","dx":12,"dy":20},{"type":"point","at":"D","color":"#7c3aed","dx":12,"dy":-12},{"type":"point","at":"F","color":"#7c3aed","dx":12,"dy":-12},{"type":"coloredLine","from":"M","to":"F","color":"#a78bfa","width":1.8},{"type":"coloredLine","from":"F","to":"D","color":"#a78bfa","width":1.8},{"type":"coloredLine","from":"D","to":"B","color":"#a78bfa","width":1.8},{"type":"coloredLine","from":"B","to":"M","color":"#a78bfa","width":1.8},{"type":"coloredLine","from":"A","to":"M","color":"#2563eb","width":2.2},{"type":"coloredLine","from":"P","to":"B","color":"#dc2626","width":2.2},{"type":"coloredLine","from":"P","to":"A","color":"#2563eb","width":2.2},{"type":"coloredLine","from":"P","to":"M","color":"#f59e0b","width":2.2}]}}};
+  const renderer = GeometryLessonFromSpec.createSpecRenderer(__GEOMETRY_SPEC__, __STEP_DECORATIONS__, STEPS, POLICIES);
+  function groupTitle(section) {
+    const map = {"第（I）问":"第（I）问  直接写交点","第（II）①问":"第（II）①  求 a 与 EF","第（II）②问":"第（II）②  平行四边形与距离差最大值"};
+    return map[section] || section;
+  }
+  var diagramMarkupFor = renderer.diagramMarkupFor;
+  var drawMini = renderer.drawMini;
+  var __LESSON_LEGEND_HTML__ = "<span><i class=\"sw\" style=\"background:var(--paper)\"></i>第（I）问抛物线  y＝−x²＋2x＋3</span><span><i class=\"sw\" style=\"background:var(--fold)\"></i>第（II）问动态图形（随 m 变化）</span><span><i class=\"sw\" style=\"background:var(--overlap)\"></i>第②问距离差线段</span>";
+  // 原题图形渲染：由 renderer 负责（可选）
+  var __AFTER_RENDER_ALL_STEPS__ = renderer.renderOriginalFigures;
+</script>
+
+  <!-- 第三段：初始化运行时 -->
+  <script>
+    LessonPageRuntime.init({
+      afterRenderAllSteps: typeof __AFTER_RENDER_ALL_STEPS__ === "function" ? __AFTER_RENDER_ALL_STEPS__ : undefined,
+      STEPS,
+      POLICIES,
+      STEP_LABELS,
+      diagramMarkupFor,
+      drawMini,
+      groupTitle: typeof groupTitle === "function" ? groupTitle : undefined,
+      legendHtml: __LESSON_LEGEND_HTML__,
+      sliderLabel: "参数 m",
+      paramLabelPrefix: "m=",
+      goToProblemMode: "doubleScroll"
+    });
+  </script>
+</body>
+</html>

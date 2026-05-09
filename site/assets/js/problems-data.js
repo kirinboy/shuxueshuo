@@ -195,6 +195,19 @@ window.__PROBLEMS_DATA__ = [
     "status": "published"
   },
   {
+    "id": "tj-2026-nankai-ermo-25",
+    "city": "tianjin",
+    "cityLabel": "天津",
+    "year": 2026,
+    "exam": "nankai-ermo",
+    "examLabel": "南开区二模",
+    "slot": "25",
+    "title": "2026 年天津市南开区二模第 25 题（二次函数综合）",
+    "tags": ["algebra", "quadratic-function", "coordinate-plane"],
+    "path": "../problems/tj/25/tj-2026-nankai-ermo-25.html",
+    "status": "published"
+  },
+  {
     "id": "tj-2026-xiqing-yimo-24",
     "city": "tianjin",
     "cityLabel": "天津",

@@ -22,7 +22,10 @@ const TAG_LABELS = {
   translation: "平移",
   rotation: "旋转",
   "dynamic-point": "动点",
-  function: "函数"
+  function: "函数",
+  algebra: "代数",
+  "quadratic-function": "二次函数",
+  "coordinate-plane": "坐标平面"
 };
 
 const state = {

@@ -17,6 +17,7 @@
   var DATA = {
     "tj-2026-nankai-yimo-24": spec({
       t: 3.75,
+      range: [1.2, 4.9],
       domain: { minX: -0.9, maxX: 7.3, minY: -1.65, maxY: 6.05 },
       fixedPoints: { O: ["0", "0"], A: ["0", "3*S3"], B: ["0", "-S3"], C: ["6", "S3"], D: ["3", "0"] },
       movingParam: "t",
@@ -34,6 +35,7 @@
 
     "tj-2026-nankai-ermo-24": spec({
       t: 5,
+      range: [1, 11],
       domain: { minX: -0.9, maxX: 12.9, minY: -0.9, maxY: 4.8 },
       fixedPoints: { O: ["0", "0"], A: ["12", "0"], C: ["2", "2*S3"], B: ["6", "2*S3"] },
       movingParam: "t",
@@ -49,6 +51,7 @@
 
     "tj-2026-hebei-yimo-24": spec({
       t: 2.5 * S3,
+      range: [0.5, 11 * S3 / 4],
       domain: { minX: -2.4, maxX: 5.8, minY: -0.55, maxY: 3.85 },
       fixedPoints: { O: ["0", "0"], A: ["3*S3", "3"], B: ["-S3", "3"], C: ["0", "3"] },
       movingParam: "t",
@@ -67,6 +70,7 @@
 
     "tj-2026-hedong-yimo-24": spec({
       t: 3,
+      range: [0.15, 5.85],
       domain: { minX: -2.6, maxX: 6.5, minY: -0.6, maxY: 4.7 },
       fixedPoints: { O: ["0", "0"], A: ["4", "0"], B: ["4", "4"], C: ["2", "2"], D: ["0", "4"] },
       movingParam: "t",
@@ -84,6 +88,7 @@
 
     "tj-2026-xiqing-yimo-24": spec({
       t: 7 * S3,
+      range: [6 * S3, 10 * S3],
       domain: { minX: -1.2, maxX: 11.4, minY: -0.8, maxY: 9.8 },
       fixedPoints: { O: ["0", "0"], B: ["6*S3", "0"], A: ["3*S3", "9"] },
       movingParam: "t",
@@ -100,6 +105,7 @@
 
     "tj-2026-binhai-yimo-24": spec({
       t: 4.5,
+      range: [3.05, 8.95],
       domain: { minX: -6.8, maxX: 9.6, minY: -0.8, maxY: 6.8 },
       fixedPoints: { O: ["0", "0"], E0: ["0", "3"], A: ["8", "0"], B: ["8", "6"], C: ["0", "6"] },
       movingParam: "t",
@@ -115,6 +121,7 @@
 
     "tj-2026-heping-yimo-24": spec({
       t: 1.5 * S3,
+      range: [S3 / 2, 11 * S3 / 2],
       domain: { minX: -0.8, maxX: 9.2, minY: -0.7, maxY: 5.7 },
       fixedPoints: { O: ["0", "0"], A: ["0", "5"], B: ["5*S3", "0"] },
       movingParam: "t",
@@ -129,6 +136,7 @@
 
     "tj-2026-hexi-yimo-24": spec({
       t: 1.6,
+      range: [0.05, 13 / 4],
       domain: { minX: -0.7, maxX: 5.1, minY: -0.6, maxY: 4 },
       fixedPoints: { O: ["0", "0"], A: ["4", "0"], B: ["2", "2*S3"], C: ["0", "S3"], D: ["3", "S3"] },
       movingParam: "t",
@@ -144,6 +152,7 @@
 
     "tj-2026-beichen-yimo-24": spec({
       t: 1,
+      range: [0.05, 3],
       domain: { minX: -0.4, maxX: 5.8, minY: -0.4, maxY: 4.1 },
       fixedPoints: { C: ["0", "2*S3"], D: ["2", "0"], E: ["2+2*S3", "2"], B: ["2+2*S3", "2*S3"] },
       movingParam: "t",
@@ -159,6 +168,7 @@
 
     "tj-2026-hedong-ermo-24": spec({
       t: 1,
+      range: [0.05, 4 / 3],
       domain: { minX: -4.2, maxX: 4.8, minY: -0.6, maxY: 6.6 },
       fixedPoints: { O: ["0", "0"], A: ["4", "0"], B: ["4", "4"], C: ["0", "4"] },
       movingParam: "t",
@@ -175,6 +185,7 @@
 
     "tj-2026-heping-ermo-24": spec({
       t: 3.6,
+      range: [1.5, 4.5],
       domain: { minX: -0.8, maxX: 7.7, minY: -0.6, maxY: 4.4 },
       fixedPoints: { O: ["0", "0"], A: ["1", "S3"], B: ["4", "S3"], C: ["5", "0"] },
       movingParam: "t",
@@ -189,6 +200,7 @@
 
     "tj-2026-dongli-yimo-24": spec({
       t: 1,
+      range: [1.25, 2.25],
       domain: { minX: -2.8, maxX: 2.8, minY: -0.9, maxY: 3.9 },
       fixedPoints: { O: ["0", "0"], A: ["1.5", "1"], B: ["1.5", "3"], C: ["0", "1.5"], D: ["0", "-0.5"], M0: ["0.5", "0"] },
       movingParam: "t",
@@ -204,6 +216,7 @@
 
     "tj-2026-hongqiao-yimo-24": spec({
       t: 2.5,
+      range: [4 / 3, 10 / 3],
       domain: { minX: -0.6, maxX: 6.4, minY: -0.6, maxY: 4.3 },
       fixedPoints: { O: ["0", "0"], A: ["2", "0"], C: ["2", "2*S3"], B: ["4", "2*S3"] },
       movingParam: "t",
@@ -218,6 +231,7 @@
 
     "tj-2026-hexi-jieke-24": spec({
       t: 2.4,
+      range: [0.05, 5],
       domain: { minX: -5.4, maxX: 5.4, minY: -0.55, maxY: 5.6 },
       fixedPoints: { O: ["0", "0"], A: ["24/5", "7/5"], B: ["0", "5"], C: ["-24/5", "18/5"] },
       movingParam: "t",
@@ -294,10 +308,11 @@
     return '<circle cx="' + p.x.toFixed(2) + '" cy="' + p.y.toFixed(2) + '" r="2.6" fill="' + color + '" stroke="#fffdf8" stroke-width="1" />' + text;
   }
 
-  function render(svg, config) {
-    var resolved = GL.resolveClipOverlap(config, config.t);
+  function render(svg, config, tValue) {
+    var active = Object.assign({}, config, { t: tValue == null ? config.t : tValue });
+    var resolved = GL.resolveClipOverlap(active, active.t);
     var points = resolved.points;
-    var domain = autoDomain(config, resolved);
+    var domain = autoDomain(active, resolved);
     var toScreen = toScreenFor(domain);
     var markup = "";
 
@@ -327,7 +342,7 @@
       markup += '<path d="' + pathD(resolved.overlap, toScreen) + '" fill="rgba(220,38,38,.20)" stroke="#dc2626" stroke-width="2.1" />';
     }
 
-    (config.labels || []).forEach(function (name) {
+    (active.labels || []).forEach(function (name) {
       var color = /p$|^E$|^F$|^G$|^H$|^M$|^N$|^P$|^Q$|^D$/.test(name) && !/^[OABC]$/.test(name) ? "#dc2626" : "#0b2f34";
       if (/p$/.test(name)) color = "#0f6b68";
       markup += pointSvg(points[name], name, toScreen, color);
@@ -336,16 +351,58 @@
     svg.innerHTML = markup;
   }
 
-  document.querySelectorAll("svg[data-ranking-figure]").forEach(function (svg) {
+  var items = [];
+
+  document.querySelectorAll("svg[data-ranking-figure]").forEach(function (svg, index) {
     var key = svg.getAttribute("data-ranking-figure");
     var config = DATA[key];
     if (!config) return;
     try {
       render(svg, config);
+      items.push({ svg: svg, key: key, config: config, phase: index * 0.37 });
     } catch (error) {
       svg.innerHTML = '<text x="105" y="72" text-anchor="middle" font-size="12" font-weight="800" fill="#9a3412">图 2 加载失败</text>';
       // Keep the page usable even if one thumbnail has bad geometry data.
       console.warn("ranking thumbnail failed:", key, error);
     }
   });
+
+  function shouldAnimate() {
+    if (!window.requestAnimationFrame) return false;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+    return items.length > 0;
+  }
+
+  if (shouldAnimate()) {
+    var startedAt = performance.now();
+    var duration = 5200;
+    var lastFrame = 0;
+
+    function animate(now) {
+      if (document.hidden) {
+        window.requestAnimationFrame(animate);
+        return;
+      }
+      if (now - lastFrame < 80) {
+        window.requestAnimationFrame(animate);
+        return;
+      }
+      lastFrame = now;
+      items.forEach(function (item) {
+        var range = item.config.range;
+        if (!range || range.length !== 2) return;
+        var progress = ((now - startedAt) / duration + item.phase) % 1;
+        var wave = 0.5 - 0.5 * Math.cos(progress * Math.PI * 2);
+        var t = range[0] + (range[1] - range[0]) * wave;
+        try {
+          render(item.svg, item.config, t);
+        } catch (error) {
+          render(item.svg, item.config);
+        }
+      });
+      window.requestAnimationFrame(animate);
+    }
+
+    window.requestAnimationFrame(animate);
+  }
 })();

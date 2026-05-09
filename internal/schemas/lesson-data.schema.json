@@ -115,6 +115,33 @@
           "t":       { "type": "number" },
           "derive":  { "type": "array" },
           "box":     { "type": "array", "items": { "type": "string" } },
+          "localControls": {
+            "type": "object",
+            "properties": {
+              "values": { "type": "object", "additionalProperties": { "type": "number" } },
+              "note": { "type": "string" },
+              "controls": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["var", "label", "min", "max"],
+                  "properties": {
+                    "var": { "type": "string" },
+                    "label": { "type": "string" },
+                    "min": { "type": "number" },
+                    "max": { "type": "number" },
+                    "step": { "type": "number" },
+                    "scale": { "type": "number" },
+                    "prefix": { "type": "string" },
+                    "suffix": { "type": "string" },
+                    "precision": { "type": "number" }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
           "minis":   { "type": "array" }
         }
       }

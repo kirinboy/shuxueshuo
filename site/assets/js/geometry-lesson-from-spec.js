@@ -154,8 +154,8 @@
     var W = opts.W || 1080;
     var H = opts.H || 760;
     var PAD = opts.PAD || { left: 92, right: 78, top: 48, bottom: 66 };
-    var domain = spec.domain;
-
+    var defaultDomain = spec.domain;
+    var domain = defaultDomain;
     var toScreen = GE.createToScreen(domain, PAD, W, H);
     var layers = decoData.layers || {};
     var stepDecos = decoData.steps || {};
@@ -163,6 +163,11 @@
     var _layout = null; // 当前 label layout（每次 render 开始时创建，结束时清空）
     var _coordinateLabelPoints = null; // 当前步骤中已显示坐标标签的点，避免重复点名
     var _pointLabelKeys = null; // 当前步骤中已显示的点名，避免层叠时重复点名
+
+    function setRenderDomain(nextDomain) {
+      domain = nextDomain || defaultDomain;
+      toScreen = GE.createToScreen(domain, PAD, W, H);
+    }
 
     // ── 内部 SVG 工具 ────────────────────────────────────────────────────
 
@@ -568,12 +573,31 @@
 
     // ── 完整步骤 SVG ─────────────────────────────────────────────────────
 
-    function diagramMarkupFor(index, overrideT) {
+    function applyPointOverrides(state, overrides, localVars) {
+      if (!overrides) return state;
+      var env = Object.assign({}, state.env || {}, localVars || {});
+      var nextPoints = Object.assign({}, state.points || {});
+      Object.keys(overrides).forEach(function (name) {
+        var pair = overrides[name];
+        if (!Array.isArray(pair) || pair.length < 2) return;
+        var x = GE.evalExpr(String(pair[0]), env);
+        var y = GE.evalExpr(String(pair[1]), env);
+        if (Number.isFinite(x) && Number.isFinite(y)) nextPoints[name] = { x: x, y: y };
+      });
+      var nextState = Object.assign({}, state);
+      nextState.points = nextPoints;
+      nextState.env = env;
+      return nextState;
+    }
+
+    function diagramMarkupFor(index, overrideT, localVars) {
       var step = STEPS[index];
       var policy = POLICIES[step.id];
       var rng = policy.range || [0, 10];
       var localT = Math.max(rng[0], Math.min(rng[1], overrideT != null ? overrideT : step.t));
-      var state = resolveClipOverlap(spec, localT);
+      var deco = stepDecos[step.id] || {};
+      setRenderDomain(deco.domain);
+      var state = applyPointOverrides(resolveClipOverlap(spec, localT), deco.pointOverrides, localVars);
       var pts = state.points;
 
       if (GLL) {
@@ -585,7 +609,6 @@
 
       var out = renderLayers(step.id, step.section, pts, state);
 
-      var deco = stepDecos[step.id] || {};
       (deco.add || []).forEach(function (elem) { out += renderElem(elem, pts, state); });
 
       var liveBox = policy.movable
@@ -596,6 +619,7 @@
       _layout = null;
       _coordinateLabelPoints = null;
       _pointLabelKeys = null;
+      setRenderDomain(defaultDomain);
       return out;
     }
 

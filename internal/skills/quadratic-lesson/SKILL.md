@@ -35,6 +35,7 @@ Load only the references needed for the current task:
 
 - **Always read** `references/quadratic-solving-principles.md` — quadratic-specific modeling rules (coefficient constraints, N-derivation via rotation, expressionEnv ordering, EG+FG optimization pattern, two-curve pattern for Part I vs Part II).
 - **Always read** `references/json-schema-guide.md` before writing any of the three JSON specs — covers field types, required vs optional, and how to align ids across files.
+- **Read** `../../docs/interactive-lesson-components.md` (repo path: `internal/docs/interactive-lesson-components.md`) before adding or changing sliders, local point controls, or draggable-point interactions. It defines the relationship between the main parameter slider and step-local point controls.
 - **Read** `references/nankai-25-fewshot.md` to match the exact JSON shape, layer naming convention, and `stepStartsWith` pattern for a parabola problem with Part I (fixed coefficients) and Part II (m-dependent coefficients).
 - Read the real schema files before writing JSON (they override anything in the reference docs if there is a conflict):
   - `internal/schemas/geometry-spec.schema.json` (`expressionEnv`, `curves`, optional `basePolygon`/`movingPolygon`)

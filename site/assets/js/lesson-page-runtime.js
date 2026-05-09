@@ -105,6 +105,7 @@
     let stepIndex = 0;
     let problemUserPreference = null;
     let stepObserver = null;
+    const localVarsByStep = {};
 
     function defaultGroupTitle(section) {
       return section;
@@ -225,12 +226,86 @@
       );
     }
 
+    function localVarsForStep(index, step) {
+      if (!localVarsByStep[index]) {
+        localVarsByStep[index] = Object.assign({}, (step.localControls && step.localControls.values) || {});
+      }
+      return localVarsByStep[index];
+    }
+
+    function controlValue(sourceValue, control) {
+      const scale = control.scale == null ? 1 : Number(control.scale);
+      return Number(sourceValue || 0) * scale;
+    }
+
+    function formatControlValue(v, control) {
+      const precision = control.precision == null ? 3 : Number(control.precision);
+      return (control.prefix || "") + defaultFmt(v, precision) + (control.suffix || "");
+    }
+
+    function renderLocalControlsMarkup(step, index) {
+      const cfg = step.localControls;
+      if (!cfg || !Array.isArray(cfg.controls) || !cfg.controls.length) return "";
+      const vars = localVarsForStep(index, step);
+      const rows = cfg.controls
+        .map(function (control, controlIndex) {
+          const source = Number(vars[control.var] ?? 0);
+          const value = controlValue(source, control);
+          const stepAttr = control.step == null ? "0.001" : String(control.step);
+          const id = "localControl-" + index + "-" + controlIndex;
+          return (
+            '<div class="step-slider-row step-point-control">' +
+            '<label for="' +
+            esc(id) +
+            '">' +
+            esc(control.label) +
+            "</label>" +
+            '<input id="' +
+            esc(id) +
+            '" type="range" min="' +
+            esc(String(control.min)) +
+            '" max="' +
+            esc(String(control.max)) +
+            '" step="' +
+            esc(stepAttr) +
+            '" value="' +
+            esc(String(value)) +
+            '" data-local-control-step="' +
+            index +
+            '" data-local-control-index="' +
+            controlIndex +
+            '" data-local-control-var="' +
+            esc(control.var) +
+            '" data-local-control-scale="' +
+            esc(String(control.scale == null ? 1 : control.scale)) +
+            '">' +
+            '<span class="step-t-value" data-local-control-label="' +
+            index +
+            "-" +
+            controlIndex +
+            '">' +
+            esc(formatControlValue(value, control)) +
+            "</span></div>"
+          );
+        })
+        .join("");
+      return (
+        '<div class="step-local-tools step-point-tools" data-local-controls="' +
+        index +
+        '">' +
+        rows +
+        (cfg.note ? '<div class="step-local-note">' + esc(cfg.note) + "</div>" : "") +
+        "</div>"
+      );
+    }
+
     function renderAllSteps() {
       if (typeof config.beforeRenderAllSteps === "function") config.beforeRenderAllSteps();
       stepCards.innerHTML = STEPS.map(function (step, index) {
         const sid = step[policyStepKey];
         const policy = POLICIES[sid] || { movable: false, range: [step.t, step.t], reason: "" };
         const activeT = clamp(step.t, policy.range[0], policy.range[1]);
+        const localVars = localVarsForStep(index, step);
         const derive = step.derive
           .map(function (pair) {
             return (
@@ -239,6 +314,7 @@
           })
           .join("");
         const minis = renderMinisMarkup(step, activeT);
+        const localControls = renderLocalControlsMarkup(step, index);
         const stepAttr = policy.step != null ? String(policy.step) : String(stepRangeStep);
         const tools = policy.movable
           ? '<div class="step-local-tools" data-step-tools="' +
@@ -292,11 +368,12 @@
           '" aria-label="' +
           esc(step.title) +
           '">' +
-          diagramMarkupFor(index) +
+          diagramMarkupFor(index, activeT, localVars) +
           '</svg></div><div class="legend">' +
           legendHtml +
           "</div>" +
           tools +
+          localControls +
           minis +
           '</div><div class="step-card-panel"><div class="derive-list">' +
           derive +
@@ -409,10 +486,38 @@
       const svgEl = card ? card.querySelector("svg") : null;
       const labelEl = card ? card.querySelector('[data-step-t-label="' + index + '"]') : null;
       const rangeEl = card ? card.querySelector('[data-step-range="' + index + '"]') : null;
-      if (svgEl) svgEl.innerHTML = diagramMarkupFor(index, nextT);
+      if (svgEl) svgEl.innerHTML = diagramMarkupFor(index, nextT, localVarsByStep[index]);
       if (labelEl) labelEl.textContent = paramPrefix + fmt(nextT);
       if (rangeEl && Number(rangeEl.value) !== nextT) rangeEl.value = String(nextT);
       syncMiniActiveClasses(card, nextT);
+    }
+
+    function currentStepT(card, index) {
+      const rangeEl = card ? card.querySelector('[data-step-range="' + index + '"]') : null;
+      if (rangeEl) return Number(rangeEl.value);
+      return STEPS[index] ? STEPS[index].t : 0;
+    }
+
+    function updateLocalControl(index, controlIndex, value) {
+      const step = STEPS[index];
+      const cfg = step && step.localControls;
+      const control = cfg && cfg.controls && cfg.controls[controlIndex];
+      if (!step || !control) return;
+      const scale = control.scale == null ? 1 : Number(control.scale);
+      const vars = localVarsForStep(index, step);
+      vars[control.var] = Number(value) / scale;
+
+      const card = document.querySelector('.lesson-step-card[data-step-index="' + index + '"]');
+      if (!card) return;
+      (cfg.controls || []).forEach(function (item, i) {
+        const v = controlValue(vars[item.var], item);
+        const input = card.querySelector('[data-local-control-index="' + i + '"]');
+        const label = card.querySelector('[data-local-control-label="' + index + "-" + i + '"]');
+        if (input && Number(input.value) !== v) input.value = String(v);
+        if (label) label.textContent = formatControlValue(v, item);
+      });
+      const svgEl = card.querySelector("svg");
+      if (svgEl) svgEl.innerHTML = diagramMarkupFor(index, currentStepT(card, index), vars);
     }
 
     function observeSteps() {
@@ -470,6 +575,11 @@
       });
     }
     stepCards.addEventListener("input", function (event) {
+      const localTarget = event.target.closest("input[data-local-control-step]");
+      if (localTarget) {
+        updateLocalControl(Number(localTarget.dataset.localControlStep), Number(localTarget.dataset.localControlIndex), localTarget.value);
+        return;
+      }
       const target = event.target.closest("input[data-step-range]");
       if (target) updateStepDiagram(Number(target.dataset.stepRange), target.value);
     });

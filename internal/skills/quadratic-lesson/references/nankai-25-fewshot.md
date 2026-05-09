@@ -148,6 +148,13 @@ Key patterns:
       ]
     },
     "q1s3": {
+      "domain": { "minX": 0.2, "maxX": 4.6, "minY": -3.0, "maxY": 1.8 },
+      "pointOverrides": {
+        "E": ["1+2*s", "s"],
+        "G": ["2+s/2", "-2+3*s/2"],
+        "H": ["2-s/2", "-2+s"],
+        "K": ["1+s", "s/2"]
+      },
       "add": [
         { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
         { "type": "coordinateLabel", "at": "M", "text": "M", "dx": 14, "dy": -16 },
@@ -162,11 +169,16 @@ Key patterns:
       ]
     },
     "q1s4": {
+      "domain": { "minX": 0.2, "maxX": 4.8, "minY": -3.0, "maxY": 1.8 },
+      "pointOverrides": {
+        "G": ["2+u", "-2+3*u"]
+      },
       "add": [
         { "type": "point", "at": "Dprime", "labelText": "D′", "color": "#b45309", "dx": 12, "dy": -10 },
         { "type": "dashedLine", "from": "D", "to": "Dprime", "color": "#b45309", "width": 1.8 },
         { "type": "coloredLine", "from": "M", "to": "Dprime", "color": "#b45309", "width": 2 },
         { "type": "coloredLine", "from": "N", "to": "Dprime", "color": "#b45309", "width": 2 },
+        { "type": "coloredLine", "from": "Dprime", "to": "G", "color": "#b45309", "width": 2 },
         { "type": "coloredLine", "from": "Dprime", "to": "F", "color": "#b45309", "width": 2.2 }
       ]
     }
@@ -240,7 +252,15 @@ Key patterns:
         ["∴", "△DGE 为等腰三角形，EG＝DG"],
         ["∴", "EG＋FG＝DG＋FG"]
       ],
-      "box": ["EG＝DG", "EG＋FG＝DG＋FG"]
+      "box": ["EG＝DG", "EG＋FG＝DG＋FG"],
+      "localControls": {
+        "values": { "s": 0.666667 },
+        "note": "拖动任一动点组件，另一个会按 DE＝√2·NG 自动联动。",
+        "controls": [
+          { "var": "s", "label": "动点 E：DE/DM", "min": 0, "max": 1, "step": 0.01, "scale": 1, "precision": 2 },
+          { "var": "s", "label": "动点 G：NG/MN", "min": 0, "max": 0.5, "step": 0.005, "scale": 0.5, "precision": 2 }
+        ]
+      }
     },
     {
       "id": "q1s4",
@@ -259,7 +279,14 @@ Key patterns:
         ["∴", "D′F＝√[(√5)²＋(√5/2)²]＝5/2"],
         ["∴", "y＝x²−2x−2；最小值＝5/2"]
       ],
-      "box": ["y＝x²−2x−2", "最小 EG＋FG＝5/2"]
+      "box": ["y＝x²−2x−2", "最小 EG＋FG＝5/2"],
+      "localControls": {
+        "values": { "u": 0.333333 },
+        "note": "拖动 G 观察：D′、G、F 三点共线时，D′G＋FG 最短。",
+        "controls": [
+          { "var": "u", "label": "动点 G：NG/MN", "min": 0, "max": 1, "step": 0.01, "scale": 1, "precision": 2 }
+        ]
+      }
     }
   ],
   "policies": {

@@ -38,10 +38,31 @@
     "stepDecoration": {
       "type": "object",
       "properties": {
+        "domain": { "$ref": "#/$defs/domain" },
+        "pointOverrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": { "$ref": "#/$defs/stringOrNumber" }
+          }
+        },
         "add": {
           "type": "array",
           "items": { "$ref": "#/$defs/decoration" }
         }
+      },
+      "additionalProperties": false
+    },
+    "domain": {
+      "type": "object",
+      "required": ["minX", "maxX", "minY", "maxY"],
+      "properties": {
+        "minX": { "$ref": "#/$defs/number" },
+        "maxX": { "$ref": "#/$defs/number" },
+        "minY": { "$ref": "#/$defs/number" },
+        "maxY": { "$ref": "#/$defs/number" }
       },
       "additionalProperties": false
     },

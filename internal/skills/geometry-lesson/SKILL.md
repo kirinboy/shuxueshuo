@@ -35,6 +35,7 @@ Load only the references needed for the current task:
 
 - Read `references/geometry-solving-principles.md` before writing `02_solution.md` or revising reasoning quality.
 - Read `references/json-schema-guide.md` before writing any of the three JSON specs.
+- Read `../../docs/interactive-lesson-components.md` (repo path: `internal/docs/interactive-lesson-components.md`) before adding or changing sliders, local point controls, or draggable-point interactions. It defines the relationship between the main parameter slider and step-local point controls.
 - Read `references/nankai-24-fewshot.md` when you need a compact example of the JSON shape and id alignment.
 - Read `references/piecewise-area-trends.md` for area ranges, overlap-area extrema, moving-figure phase analysis, boundary thumbnails, or representative interval minis.
 - Read the real schema files before finalizing JSON:

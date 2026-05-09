@@ -30,6 +30,9 @@
 
 LLM 只需填写**纯数据 JSON**，不写任何 HTML 标签或命令式 JS。
 
+互动组件（主参数滑块、局部动点组件、联动动点控制）的公共说明见
+[`internal/docs/interactive-lesson-components.md`](interactive-lesson-components.md)。新增或调整交互组件时，优先更新该文档和共享 runtime/schema，而不是在单题 HTML 中写特例。
+
 ---
 
 ## 二、整体架构
@@ -554,4 +557,3 @@ bash tools/setup-skills.sh
 4. **三段脚本有序执行**——数据段 → 几何段（含多个 `<script>` 标签）→ 初始化段，不可混用
 5. **Schema 护栏**——提交前用 `validate-geometry-spec.mjs` 校验，比浏览器调试更早发现问题
 6. **渲染错误改 JSON 或引擎**——不允许在题页内补丁式覆盖引擎行为
-

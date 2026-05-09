@@ -32,7 +32,6 @@
       "stepStartsWith": ["q1s3", "q1s4", "q2"],
       "elements": [
         { "type": "point",       "at": "F",  "color": "#7c3aed", "dx": 14, "dy": 8 },
-        { "type": "point",       "at": "E",  "color": "#dc2626",  "dx": 14, "dy": -14 },
         { "type": "point",       "at": "G",  "color": "#dc2626",  "dx": 14, "dy": 14 },
         { "type": "coloredLine", "from": "D", "to": "G",  "color": "#dc2626", "width": 2.2 },
         { "type": "coloredLine", "from": "F", "to": "G",  "color": "#7c3aed", "width": 2.2 },
@@ -74,10 +73,18 @@
       ]
     },
     "q1s3": {
+      "domain": { "minX": 0.2, "maxX": 4.6, "minY": -3.0, "maxY": 1.8 },
+      "pointOverrides": {
+        "E": ["1+2*s", "s"],
+        "G": ["2+s/2", "-2+3*s/2"],
+        "H": ["2-s/2", "-2+s"],
+        "K": ["1+s", "s/2"]
+      },
       "add": [
         { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
         { "type": "coordinateLabel", "at": "M", "text": "M", "dx": 14, "dy": -16 },
         { "type": "coordinateLabel", "at": "N", "text": "N", "dx": 14, "dy": 14 },
+        { "type": "point", "at": "E", "color": "#dc2626", "dx": 14, "dy": -14 },
         { "type": "coloredLine", "from": "E", "to": "G", "color": "#dc2626", "width": 2.2 },
         { "type": "dashedLine", "from": "G", "to": "H", "color": "#64748b", "width": 1.5, "dash": "5 5" },
         { "type": "dashedLine", "from": "G", "to": "K", "color": "#64748b", "width": 1.5, "dash": "5 5" },
@@ -88,6 +95,10 @@
       ]
     },
     "q1s4": {
+      "domain": { "minX": 0.2, "maxX": 4.8, "minY": -3.0, "maxY": 1.8 },
+      "pointOverrides": {
+        "G": ["2+u", "-2+3*u"]
+      },
       "add": [
         { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
         { "type": "coordinateLabel", "at": "M", "text": "M", "dx": 14, "dy": -16 },
@@ -96,6 +107,7 @@
         { "type": "dashedLine", "from": "D", "to": "Dprime", "color": "#b45309", "width": 1.8, "dash": "7 6" },
         { "type": "coloredLine", "from": "M", "to": "Dprime", "color": "#b45309", "width": 2 },
         { "type": "coloredLine", "from": "N", "to": "Dprime", "color": "#b45309", "width": 2 },
+        { "type": "coloredLine", "from": "Dprime", "to": "G", "color": "#b45309", "width": 2 },
         { "type": "coloredLine", "from": "Dprime", "to": "F", "color": "#b45309", "width": 2.3 }
       ]
     },
@@ -108,6 +120,7 @@
         { "type": "coloredLine", "from": "M", "to": "Dprime", "color": "#b45309", "width": 2 },
         { "type": "coloredLine", "from": "N", "to": "Dprime", "color": "#b45309", "width": 2 },
         { "type": "coloredLine", "from": "Dprime", "to": "F", "color": "#b45309", "width": 2.3 },
+        { "type": "segment", "from": "Dprime", "to": "F", "label": "D′F＝5√10/2", "color": "#b45309", "width": 2.3, "offsetPx": 18 },
         { "type": "coordinateLabel", "at": "M", "text": "M(8, 1)",    "dx": 14,  "dy": -24 },
         { "type": "coordinateLabel", "at": "N", "text": "N(2, −7)",   "dx": 14,  "dy": 22 }
       ]
@@ -115,11 +128,15 @@
     "q2s2": {
       "add": [
         { "type": "rightAngle", "vertex": "D", "rayA": "M", "rayB": "N", "size": 12, "color": "#b45309" },
+        { "type": "point", "at": "Dprime", "color": "#b45309", "showLabel": false },
+        { "type": "coloredLine", "from": "M", "to": "Dprime", "color": "#b45309", "width": 2 },
+        { "type": "coloredLine", "from": "N", "to": "Dprime", "color": "#b45309", "width": 2 },
+        { "type": "coloredLine", "from": "Dprime", "to": "F", "color": "#b45309", "width": 2.3 },
         { "type": "coordinateLabel", "at": "M", "text": "M(8, 1)",       "dx": 14,  "dy": -24 },
         { "type": "coordinateLabel", "at": "N", "text": "N(2, −7)",      "dx": 14,  "dy": 22 },
-        { "type": "coordinateLabel", "at": "E", "text": "E",             "dx": 8,   "dy": -18 },
         { "type": "coordinateLabel", "at": "G", "text": "G(4, −13/3)",  "dx": 14,  "dy": 18 },
-        { "type": "coordinateLabel", "at": "F", "text": "F",             "dx": 14,  "dy": 10 }
+        { "type": "coordinateLabel", "at": "F", "text": "F(3/2, −7/2)",  "dx": -84, "dy": -14 },
+        { "type": "coordinateLabel", "at": "Dprime", "text": "D′(9, −6)", "dx": 14, "dy": 14 }
       ]
     }
   }

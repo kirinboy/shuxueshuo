@@ -113,6 +113,8 @@ This keeps the reasoning on the original diagram and avoids abstract projection 
 - Mark the right angles at `H` and `K` when using `GH ⟂ DN` and `GK ⟂ DM`.
 - In this transformation step, remove distracting coordinate labels; point names plus the critical helper lines are enough.
 - Avoid showing `EG` as the visual focus after the goal becomes `EG + FG = DG + FG`.
+- Use a local step `domain` for transformation/proof diagrams when only the auxiliary construction matters. Do not let a far-away later point or the whole parabola shrink the important local shape.
+- If a transformation proof depends on movable points, add local point controls so students can drag the construction and observe the invariant. When the points are constrained, expose linked controls instead of independent sliders. For example, if `DE = √2·NG` in an isosceles-right setup, `E` and `G` share one source variable; moving either control should keep the constraint true.
 
 ### General's Horse-Drinking / Reflection Step
 
@@ -138,6 +140,21 @@ The minimum occurs when `D'、G、F` are collinear.
 - Keep `DG` visible as the bridge from `DG + FG` to `D'G + FG`.
 - Do not label every coordinate in this step; the visual priority is the shortest-path transformation.
 - Check the global `geometry-spec.domain` includes `D'` at every locked parameter value used by the lesson. For example, if a later sub-question locks at `m=8`, then `D'=(9,−6)` must be inside the visible domain or the square will silently disappear/crop.
+- For the reflection step itself, prefer a local step `domain` that frames the square and shortest segment closely. Students should see the relation `DG = D'G` and `D'G + FG ≥ D'F`, not a large mostly-empty coordinate plane.
+- For the reflection step, add a single local control for `G` on the mirror line when the minimum is about one moving point. Students should be able to drag `G` and see that the shortest state occurs when `D'、G、F` are collinear.
+
+### Finding the Final G Coordinate
+
+When the shortest state gives `D'、G、F` collinear and `G` lies on another segment such as `MN`, avoid presenting vector section formulas as the main student-facing method.
+
+Preferred middle-school path:
+
+1. State that `G` is the intersection of `MN` and `D'F`.
+2. Use the two endpoint coordinates on `MN` to write the line expression.
+3. Use the two endpoint coordinates on `D'F` to write the line expression.
+4. Solve the two linear equations simultaneously to get the intersection point `G`.
+
+This keeps the reasoning inside line expressions / slope ratios, which is easier for middle-school students than `G = N + k(M-N)`.
 
 ### Closed-Form Minimum
 
@@ -208,6 +225,7 @@ Correct order for the two-curve pattern:
 - **Do not create a separate “Part II setup” section by default.** Put preparatory work inside the sub-question that needs it.
 - **Part II sub-question with a specific condition** can use this sequence: determine `N` geometrically → solve the parameter and equation → transform the line-sum → apply shortest-path/reflection and merge the final answer.
 - **Coordinate steps** may show exact coordinates. **Optimization/transformation steps** should show point names, helper feet, and key segments rather than coordinate labels.
+- **Optimization/transformation diagrams may use a local step domain.** If the proof only uses a local auxiliary figure, zoom to that region so helper feet, equal segments, and reflection lines are legible.
 
 Use method-based titles: `用全等三角形确定 N 的坐标`, `求 m、M、N 与抛物线解析式`, `把两动点问题转化为单动点问题（EG+FG→DG+FG）`, `用将军饮马求最小值并合并答案`, `由最小值反推 m 值`.
 

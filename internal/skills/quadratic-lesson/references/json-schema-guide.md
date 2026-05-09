@@ -75,6 +75,10 @@ Step shape:
 {
   "steps": {
     "q1s1": {
+      "domain": { "minX": 0, "maxX": 5, "minY": -3, "maxY": 2 },
+      "pointOverrides": {
+        "G": ["2+u", "-2+3*u"]
+      },
       "add": [
         { "type": "segment", "from": "D", "to": "P", "label": "DP=t-3" }
       ]
@@ -102,10 +106,28 @@ Rules:
 - When point `O` is also the coordinate origin, avoid duplicate `O` labels. Prefer `{ "type": "point", "at": "O", "showLabel": false }` if the grid already labels the origin.
 - Avoid duplicate point labeling. If a context layer already draws a point, use `showLabel: false` there and add either a point-name label or a coordinate label in the current step, not both.
 - Use `coordinateLabel` only in coordinate-computation steps. In transformation or shortest-path steps, prefer plain point names and key segments.
+- Use `steps[stepId].domain` to locally zoom a single diagram when the derivation only depends on a small construction. This is especially useful for line-sum transformation and reflection/将军饮马 steps; avoid a large mostly-empty coordinate plane when students only need the local auxiliary figure.
+- Use `steps[stepId].pointOverrides` with `lesson-data.steps[].localControls` when a step needs local draggable points. The override expressions can reference the local control variables and replace only the named points for that step; the underlying `geometry-spec.movingPoints` remains the default/static state.
 - Keep step diagrams aligned with the derivation focus:
   - proving `EG = DG`: draw `DG`, helper perpendiculars, and label helper feet such as `H`/`K`;
   - applying reflection/将军饮马: draw `D'`, `MD'`, `ND'`, `DG`, and `D'F`; remove distracting `EG` if it is no longer the target segment.
 - If a step uses a point, the point must be declared in `fixedPoints`, `movingPoints`, or `derivedIntersections`. For auxiliary points that are explicit formulas, add them to `movingPoints` or `fixedPoints` rather than using ad hoc SVG.
+
+Local point controls in `lesson-data.json`:
+
+```json
+{
+  "localControls": {
+    "values": { "u": 0.333333 },
+    "note": "拖动 G 观察最短状态。",
+    "controls": [
+      { "var": "u", "label": "动点 G：NG/MN", "min": 0, "max": 1, "step": 0.01, "scale": 1, "precision": 2 }
+    ]
+  }
+}
+```
+
+For constrained two-point motion, use multiple controls backed by the same source variable and different `scale` values. This gives students two point components while preserving the mathematical constraint.
 
 ## `lesson-data.json`
 
